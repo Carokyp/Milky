@@ -1,9 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block page_header %}
+    <div class="container header-container">
+        <div class="row">
+            <div class="col-sm-12">
+            </div>
+        </div>
+    
+{% endblock %}
+
 {% block content %}
-    <div class="display-4 text-center mt-5 text-success">
-        <h1>Welcome to Milky</h1>
-        <p>This is the home page.</p>
+    <div class="container h-100">
+        <div class="row h-100">
+            <div class="col-sm-12 my-auto">
+                <h1 class="fs-4 logo-font text-black">FREAKING DELICIOUS!</h1>
+                <p class="fs-6">Crack. Sip. Smile.</p>
+                <div class="my-5">
+                    <h4>
+                        <a href="" class="shop-now-button btn btn-lg rounded-pill text-uppercase py-3">Shop Now</a>
+                    </h4>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
