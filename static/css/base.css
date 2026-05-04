@@ -1,0 +1,23 @@
+/* Footer images container */
+.footer-images {
+    position: relative;
+    height: 200px;
+}
+
+/* Footer images */
+.footer-img {
+    width: 140px;
+    position: absolute;
+}
+
+.footer-img-left {
+    transform: rotate(-10deg);
+    left: calc(50% - 120px);
+    top: 20px;
+}
+
+.footer-img-right {
+    transform: rotate(8deg);
+    left: calc(50% - 20px);
+    top: 80px;
+}

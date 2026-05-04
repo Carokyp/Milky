@@ -2,47 +2,155 @@
 
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     {% block meta %}
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     {% endblock %}
 
     {% block extra_meta %}
     {% endblock %}
-    
+
     {% block core_css %}
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% endblock %}
 
     {% block extra_css %}
     {% endblock %}
 
-    {% block core_js %}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
-    {% endblock %}
-
-    {% block extra_js %}
-    {% endblock %}
-
     <title>Milky {% block extra_title %}{% endblock %}</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <header class="container-fluid fixed-top">
+
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+
+                <!-- Logo -->
+                <a class="navbar-brand fw-bold" href="{% url 'home' %}">MILKY</a>
+
+                <!-- Icons always visible on mobile (account + cart) -->
+                <div class="d-flex d-lg-none align-items-center gap-3 ms-auto me-2">
+
+                    <!-- Account dropdown -->
+                    <div class="dropdown">
+                        <a href="#" class="text-dark" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-regular fa-circle-user fa-lg"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if request.user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="{% url 'account_login' %}">Login</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_signup' %}">Register</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <!-- Cart -->
+                    <a href="#" class="text-dark">
+                        <i class="fa-solid fa-cart-shopping fa-lg"></i>
+                    </a>
+                </div>
+
+                <!-- Burger button (no border) -->
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Desktop menu -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home' %}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Products</a>
+                        </li>
+                    </ul>
+
+                    <!-- Auth + Cart desktop -->
+                    <ul class="navbar-nav d-none d-lg-flex align-items-center gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fa-solid fa-cart-shopping"></i> Cart
+                            </a>
+                        </li>
+                        {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'account_signup' %}">Register</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+
         {% if messages %}
-            <div class="message-container"></div>
+        <div class="message-container"></div>
         {% endif %}
 
         {% block page_header %}
         {% endblock %}
 
+    </header>
+
+    <!-- Main content -->
+    <main class="pt-5 mt-3">
         {% block content %}
         {% endblock %}
+    </main>
+    <footer class="text-center py-5 mt-5">
 
-    </header>
-   
-  </body>
+        <!-- Tilted images -->
+        <div class="d-flex justify-content-center align-items-center mb-4 footer-images">
+            <img src="{% static 'images/can_kitchen.png' %}" alt="Milky can" class="footer-img footer-img-left">
+            <img src="{% static 'images/can_kitchen_2.png' %}" alt="Milky cans" class="footer-img footer-img-right">
+        </div>
+
+        <!-- Text -->
+        <p class="fw-bold text-uppercase fs-5 mb-3">
+            For a dose<br>of sweetness in<br>your feed
+        </p>
+
+        <!-- Social media icons -->
+        <div class="d-flex justify-content-center gap-4 mb-4">
+            <a href="https://x.com/" class="text-dark fs-4"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://www.instagram.com/" class="text-dark fs-4"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.facebook.com/" class="text-dark fs-4"><i class="fa-brands fa-facebook"></i></a>
+        </div>
+
+        <!-- Copyright -->
+        <p class="text-muted small">&copy;2026 Milky</p>
+
+    </footer>
+
+    <!-- JS Bootstrap bundle only (includes Popper) -->
+    {% block core_js %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    {% endblock %}
+
+    {% block extra_js %}
+    {% endblock %}
+
+</body>
+
 </html>
