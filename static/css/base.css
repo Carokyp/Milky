@@ -1,4 +1,63 @@
-/* Footer images container */
+
+/* #region Defaults settings */
+html{
+    height: 100%;
+}
+
+:root {
+    --light-cream: #faeade;
+    --brown: #523122;
+    --site-max-width: 1800px;
+}
+
+/* #endregion */
+
+/* #region Layout */
+body {
+    background-color: var(--light-cream);
+    max-width: var(--site-max-width);
+    margin: 0 auto;
+}
+
+/* #endregion */
+
+/* #region Navbar */
+.navbar > .container-fluid { 
+    max-width: 1800px;
+    margin: 0 auto; 
+}
+
+.navbar-nav{
+    background-color: var(--light-cream);
+}
+
+.text-dark {
+    transition: font-weight 0.3s ease;
+}
+
+.text-dark:hover,
+.text-dark:focus {
+    font-weight: bold;
+}
+
+/* #endregion */
+
+/* #region Buttons */
+.shop-now-button{
+    background-color: var(--brown);
+    color: white;
+    min-width: 120px;
+    transition: background-color 0.3s ease;
+}
+
+.shop-now-button:hover{
+    background-color: var(--brown);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+/* #endregion */
+
+/* #region Footer images container */
 .footer-images {
     position: relative;
     height: 200px;
@@ -21,3 +80,5 @@
     left: calc(50% - 20px);
     top: 80px;
 }
+
+/* #endregion */
