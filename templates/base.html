@@ -45,17 +45,26 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             {% if request.user.is_authenticated %}
-                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
+                                {% if request.user.is_superuser %}
+                                    <li><a href="" class="dropdown-item">Products Management</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="#">My Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
                             {% else %}
-                            <li><a class="dropdown-item" href="{% url 'account_login' %}">Login</a></li>
-                            <li><a class="dropdown-item" href="{% url 'account_signup' %}">Register</a></li>
+                                <li><a class="dropdown-item" href="{% url 'account_signup' %}">Register</a></li>
+                                <li><a class="dropdown-item" href="{% url 'account_login' %}">Login</a></li>
                             {% endif %}
                         </ul>
                     </div>
 
                     <!-- Cart -->
-                    <a href="#" class="text-dark">
+                    <a href="#" class="{% if grand_total %}text-info font-weight-bold{% else %}text-black{% endif %} nav-link">
                         <i class="fa-solid fa-cart-shopping fa-lg"></i>
+                        <p class="my-0">
+                            {% if grand_total %}
+                                <span class="badge bg-info text-white">{{ cart_items_count }}</span>
+                            {% endif %}
+                        </p>
                     </a>
                 </div>
 
@@ -85,16 +94,14 @@
                             </a>
                         </li>
                         {% if request.user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_logout' %}">Logout</a>
-                        </li>
+                            {% if request.user.is_superuser %}
+                                <li><a href="" class="dropdown-item">Products Management</a></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="#">My Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
                         {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'account_signup' %}">Register</a>
-                        </li>
+                            <li><a class="dropdown-item" href="{% url 'account_signup' %}">Register</a></li>
+                            <li><a class="dropdown-item" href="{% url 'account_login' %}">Login</a></li>
                         {% endif %}
                     </ul>
                 </div>
