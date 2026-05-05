@@ -1,0 +1,114 @@
+[
+    {
+        "model": "products.product",
+        "pk": 1,
+        "fields": {
+            "name": "Vanilla & Strawberry",
+            "flavor": "Vanilla, Strawberry",
+            "description": "Summer in a can. Creamy vanilla meets juicy strawberry for a combo so good, you'll forget it's not homemade.",
+            "product_image": "media/product_1.png",
+            "stock": 50,
+            "is_available": true,
+            "sku": "MLK-001",
+            "price": "3.99"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 2,
+        "fields": {
+            "name": "Chocolate & Caramel",
+            "flavor": "Chocolate, Caramel",
+            "description": "Dark, rich chocolate wrapped in golden caramel. One sip and you're done. No apologies.",
+            "product_image": "media/product_2.png",
+            "stock": 50,
+            "is_available": true,
+            "sku": "MLK-002",
+            "price": "3.99"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 3,
+        "fields": {
+            "name": "Salted Caramel & Pretzel",
+            "flavor": "Salted Caramel, Pretzel",
+            "description": "Sweet. Salty. Smooth. This one doesn't play by the rules and that's exactly why we love it.",
+            "product_image": "media/product_3.png",
+            "stock": 50,
+            "is_available": true,
+            "sku": "MLK-003",
+            "price": "3.99"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 4,
+        "fields": {
+            "name": "Pistachio & Cream",
+            "flavor": "Pistachio, Cream",
+            "description": "Fancy? Yes. Worth it? Absolutely. Smooth pistachio cream that hits different every single time.",
+            "product_image": "media/product_4.png",
+            "stock": 50,
+            "is_available": true,
+            "sku": "MLK-004",
+            "price": "3.99"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 5,
+        "fields": {
+            "name": "Banana & Peanut Butter",
+            "flavor": "Banana, Peanut Butter",
+            "description": "Thick, creamy, dangerously addictive. Peanut butter so thick, banana so ripe. This one hits hard and you will not see it coming.",
+            "product_image": "media/product_5.png",
+            "stock": 50,
+            "is_available": true,
+            "sku": "MLK-005",
+            "price": "3.99"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 6,
+        "fields": {
+            "name": "Red Velvet",
+            "flavor": "Red Velvet",
+            "description": "Cake in a can. Bold, velvety and unapologetically extra. You deserve this one.",
+            "product_image": "media/product_6.png",
+            "stock": 50,
+            "is_available": true,
+            "sku": "MLK-006",
+            "price": "3.99"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 7,
+        "fields": {
+            "name": "Vanilla & Marshmallow",
+            "flavor": "Vanilla, Marshmallow",
+            "description": "Cloud in a can. Soft vanilla with fluffy marshmallow, like a hug you can drink.",
+            "product_image": "media/product_7.png",
+            "stock": 50,
+            "is_available": true,
+            "sku": "MLK-007",
+            "price": "3.99"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 8,
+        "fields": {
+            "name": "Mint & Chocolate Chip",
+            "flavor": "Mint, Chocolate Chip",
+            "description": "Fresh, cool and packed with chocolate chips. Like a breeze on a hot day, but way more delicious.",
+            "product_image": "media/product_8.png",
+            "stock": 50,
+            "is_available": true,
+            "sku": "MLK-008",
+            "price": "3.99"
+        }
+    }
+]
