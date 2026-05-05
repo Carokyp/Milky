@@ -25,6 +25,7 @@ body {
 .navbar > .container-fluid { 
     max-width: 1800px;
     margin: 0 auto; 
+    background-color: var(--light-cream);
 }
 
 .navbar-nav{
