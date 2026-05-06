@@ -30,81 +30,16 @@
     <header class="container-fluid fixed-top">
 
         <nav class="navbar navbar-expand-lg py-0">
-            <div class="container-fluid py-3">
+            <div class="container-fluid py-3 d-flex align-items-center">
 
                 <!-- Logo -->
                 <a class="navbar-brand fw-bold" href="{% url 'home' %}">MILKY</a>
 
-                <!-- Icons always visible on mobile (account + cart) -->
-                <div class="d-flex d-lg-none align-items-center gap-3 ms-auto me-2">
-
-                    <!-- Account dropdown -->
-                    <div class="dropdown">
-                        <a href="#" class="text-dark" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-regular fa-circle-user fa-lg"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            {% if request.user.is_authenticated %}
-                                {% if request.user.is_superuser %}
-                                    <li><a href="" class="dropdown-item">Products Management</a></li>
-                                {% endif %}
-                                <li><a class="dropdown-item" href="#">My Profile</a></li>
-                                <li><a class="dropdown-item" href="{% url 'account_logout' %}">Logout</a></li>
-                            {% else %}
-                                <li><a class="dropdown-item" href="{% url 'account_signup' %}">Register</a></li>
-                                <li><a class="dropdown-item" href="{% url 'account_login' %}">Login</a></li>
-                            {% endif %}
-                        </ul>
-                    </div>
-
-                    <!-- Cart -->
-                    <a href="#" class="{% if grand_total %}text-info font-weight-bold{% else %}text-black{% endif %} nav-link">
-                        <i class="fa-solid fa-cart-shopping fa-lg"></i>
-                        <p class="my-0">
-                            {% if grand_total %}
-                                <span class="badge bg-info text-white">{{ cart_items_count }}</span>
-                            {% endif %}
-                        </p>
-                    </a>
+                <div class="d-flex align-items-center gap-3 ms-auto d-lg-none">
+                    {% include 'includes/mobile_nav.html' %}
                 </div>
 
-                <!-- Burger button (no border) -->
-                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <!-- Desktop menu -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="{% url 'home' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">All Products</a>
-                        </li>
-                    </ul>
-
-                    <!-- Auth + Cart desktop -->
-                    <ul class="navbar-nav d-none d-lg-flex align-items-center gap-2">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="#">
-                                <i class="fa-solid fa-cart-shopping"></i> Cart
-                            </a>
-                        </li>
-                        {% if request.user.is_authenticated %}
-                            {% if request.user.is_superuser %}
-                                <li><a href="" class="dropdown-item text-dark">Products Management</a></li>
-                            {% endif %}
-                            <li><a class="dropdown-item text-dark" href="#">My Profile</a></li>
-                            <li><a class="dropdown-item text-dark" href="{% url 'account_logout' %}">Logout</a></li>
-                        {% else %}
-                            <li><a class="dropdown-item text-dark" href="{% url 'account_signup' %}">Register</a></li>
-                            <li><a class="dropdown-item text-dark" href="{% url 'account_login' %}">Login</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
+                {% include 'includes/main_nav.html' %}
 
             </div>
         </nav>
