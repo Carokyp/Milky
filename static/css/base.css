@@ -44,17 +44,48 @@ body {
 /* #endregion */
 
 /* #region Buttons */
-.shop-now-button{
+.shop-now-button,
+.view-details-btn,
+.btn_detail_page,
+.btn_see_other {
     background-color: var(--brown);
     color: white;
     min-width: 120px;
     transition: background-color 0.3s ease;
 }
 
-.shop-now-button:hover{
+.shop-now-button:hover,
+.view-details-btn:hover,
+.btn_detail_page:hover,
+.btn_see_other:hover {
     background-color: var(--brown);
     color: white;
     transition: background-color 0.3s ease;
+}
+
+.btn_detail_page,
+.view-details-btn {
+    width: 200px;
+}
+
+.btn_see_other{
+    width: 250px;
+}
+/* #endregion */
+
+/* #region product detail */
+
+/* Product icon */
+.product-icon {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+/* Nutritional table */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-border-color: #000000;
 }
 /* #endregion */
 
