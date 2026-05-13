@@ -1,15 +1,101 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_title %}Cart - Milky{% endblock %}
+
 {% block page_header %}
-    <div class="container header-container">
-        <div class="row">
-            <div class="col-sm-12">
-            </div>
+<div class="container header-container">
+    <div class="row">
+        <div class="col-sm-12">
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block content %}
-    
+<div class="container">
+
+    <!-- Cart header -->
+    <div class="row align-items-center mt-3 px-3">
+        <div class="col-10">
+            <h2 class="text-uppercase fw-bold fs-5">Cart</h2>
+        </div>
+        <div class="col-2 text-end">
+            <!-- X button → go back to previous page -->
+            <a href="javascript:history.back()" class="text-dark">
+                <i class="fa-solid fa-xmark fa-xl"></i>
+            </a>
+        </div>
+    </div>
+
+    {% if cart_items %}
+    <!-- Cart items -->
+    {% for item in cart_items %}
+    <div class="row align-items-center mb-4">
+
+        <!-- Product image -->
+        <div class="col-4">
+            <img src="{{ item.product.product_image.url }}" class="img-fluid rounded" alt="{{ item.product.name }}">
+        </div>
+
+        <!-- Product info -->
+        <div class="col-8">
+            <p class="fw-bold text-uppercase mb-1">{{ item.product.name }}</p>
+            <p class="mb-2">${{ item.product.price }}</p>
+
+            <!-- Quantity + Delete -->
+            <div class="d-flex align-items-center gap-2">
+                <form method="POST" action="{% url 'update_cart' item.product_id %}">
+                    {% csrf_token %}
+                    <div class="d-flex align-items-center border rounded-pill px-3 py-1">
+                        <button type="button" class="btn btn-sm p-0 me-3 btn-quantity" data-action="decrease"
+                            data-product-id="{{ item.product_id }}"> - </button>
+                        <span class="quantity-value mx-2">{{ item.quantity }}</span>
+                        <button type="button" class="btn btn-sm p-0 ms-3 btn-quantity" data-action="increase"
+                            data-product-id="{{ item.product_id }}"> + </button>
+                        <input type="hidden" name="quantity" class="quantity-input" value="{{ item.quantity }}">
+                    </div>
+                </form>
+
+                <!-- Delete button -->
+                <form method="POST" action="{% url 'remove_from_cart' item.product_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-dark rounded-pill px-3 py-1">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr>
+    {% endfor %}
+
+    <!-- Total -->
+    <div class="row mt-3">
+        <div class="col-12 d-flex justify-content-between">
+            <p class="fw-bold">Total (Exc delivery):</p>
+            <p class="fw-bold">${{ total }}</p>
+        </div>
+    </div>
+
+    <!-- Checkout button -->
+    <div class="row mt-3 mb-5">
+        <div class="col-12">
+            <a href="#" class="btn btn-dark rounded-pill w-100 py-3 text-uppercase">Checkout</a>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty cart -->
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <p class="fs-6">Your cart is empty.</p>
+            <a href="{% url 'all_products' %}" class=" shop-now-button btn rounded-pill px-4 py-2 mt-3 fs-6">Shop Now</a>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/cart.js' %}"></script>
 {% endblock %}

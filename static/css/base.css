@@ -46,29 +46,34 @@ body {
 /* #region Buttons */
 .shop-now-button,
 .view-details-btn,
-.btn_detail_page,
-.btn_see_other {
+.btn-detail-page,
+.btn-see-other {
     background-color: var(--brown);
     color: white;
     min-width: 120px;
     transition: background-color 0.3s ease;
 }
 
+.btn-quantity{
+    border: 2px solid var(--brown);
+}
+
 .shop-now-button:hover,
 .view-details-btn:hover,
-.btn_detail_page:hover,
-.btn_see_other:hover {
+.btn-detail-page:hover,
+.btn-see-other:hover {
     background-color: var(--brown);
     color: white;
     transition: background-color 0.3s ease;
 }
 
-.btn_detail_page,
-.view-details-btn {
+.btn-detail-page,
+.view-details-btn,
+.btn-quantity {
     width: 200px;
 }
 
-.btn_see_other{
+.btn-see-other{
     width: 250px;
 }
 /* #endregion */
