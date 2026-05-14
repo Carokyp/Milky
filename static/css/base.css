@@ -127,7 +127,7 @@ body {
 .cart-product-price,
 .delete-btn,
 .btn-quantity-cart,
-.quantity-value{
+.quantity-value-cart{
     font-size: var(--font-sm);
 }
 
