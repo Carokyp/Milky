@@ -8,7 +8,15 @@ html{
     --light-cream: #faeade;
     --brown: #523122;
     --site-max-width: 1800px;
+
+    /* Typography */
+    --font-sm: 0.8rem;
+    --font-base: 1rem;
+    --font-lg: 1.2rem;
+    --font-xl: 1.5rem;
 }
+
+
 
 /* #endregion */
 
@@ -47,34 +55,48 @@ body {
 .shop-now-button,
 .view-details-btn,
 .btn-detail-page,
-.btn-see-other {
+.btn-see-other,
+.checkout-btn,
+.delete-btn {
     background-color: var(--brown);
     color: white;
     min-width: 120px;
     transition: background-color 0.3s ease;
 }
 
-.btn-quantity{
-    border: 2px solid var(--brown);
+.btn-quantity,
+.btn-quantity-cart {
+    border: 2px solid var(--brown) !important;
+}
+
+.btn-quantity-cart .btn{
+    border: none !important;
 }
 
 .shop-now-button:hover,
 .view-details-btn:hover,
 .btn-detail-page:hover,
-.btn-see-other:hover {
+.btn-see-other:hover,
+.checkout-btn:hover,
+.delete-btn:hover {
     background-color: var(--brown);
     color: white;
     transition: background-color 0.3s ease;
 }
 
+.delete-btn {
+    min-width: 75px;
+}
+
 .btn-detail-page,
 .view-details-btn,
-.btn-quantity {
-    width: 200px;
+.btn-quantity,
+.checkout-btn {
+    min-width: 200px;
 }
 
 .btn-see-other{
-    width: 250px;
+    min-width: 250px;
 }
 /* #endregion */
 
@@ -92,6 +114,23 @@ body {
     --bs-table-bg: transparent;
     --bs-table-border-color: #000000;
 }
+/* #endregion */
+
+/* #region Cart page */
+
+/* Free delivery banner */
+.free-delivery-banner {
+    background-color: #f0a500;
+}
+
+.cart-product-name,
+.cart-product-price,
+.delete-btn,
+.btn-quantity-cart,
+.quantity-value{
+    font-size: var(--font-sm);
+}
+
 /* #endregion */
 
 /* #region Footer images container */

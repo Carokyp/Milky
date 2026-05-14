@@ -1,7 +1,5 @@
-
-
 // Update quantity when clicking + or -
-    document.querySelectorAll('.btn-quantity').forEach(button => {
+    document.querySelectorAll('.btn-quantity-cart').forEach(button => {
         button.addEventListener('click', function() {
             const productId = this.dataset.productId;
             const action = this.dataset.action;
