@@ -5,7 +5,7 @@
             const action = this.dataset.action;
             const form = this.closest('form');
             const quantityInput = form.querySelector('.quantity-input');
-            const quantityDisplay = form.querySelector('.quantity-value');
+            const quantityDisplay = form.querySelector('.quantity-value-cart');
             
             let quantity = parseInt(quantityInput.value);
 

@@ -22,9 +22,15 @@
         </div>
         <div class="col-2 text-end">
             <!-- X button → go back to previous page -->
-            <a href="javascript:history.back()" class="text-dark">
+            {% if request.META.HTTP_REFERER %}
+            <a href="{{ request.META.HTTP_REFERER }}" class="text-dark">
                 <i class="fa-solid fa-xmark fa-xl"></i>
             </a>
+            {% else %}
+            <a href="{% url 'all_products' %}" class="text-dark">
+                <i class="fa-solid fa-xmark fa-xl"></i>
+            </a>
+            {% endif %}
         </div>
     </div>
 
