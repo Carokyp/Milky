@@ -45,14 +45,15 @@
             {% if item.quantity > 1 %}
             <p class="mb-2 text-muted small">Subtotal: ${{ item.subtotal }}</p>
             {% endif %}
-
             <!-- Quantity + Delete -->
             <div class="d-flex align-items-center gap-2">
                 <form method="POST" action="{% url 'update_cart' item.product_id %}">
                     {% csrf_token %}
                     <div class="btn-quantity-cart d-flex align-items-center gap-3 border rounded-pill px-3 py-1">
                         <button type="button" class="btn-quantity-cart btn btn-sm p-0" data-action="decrease"
-                            data-product-id="{{ item.product_id }}"> - </button>
+                            data-product-id="{{ item.product_id }}" 
+                            {% if item.quantity == 1 %}disabled{% endif %}> -
+                        </button>
                         <span class="quantity-value-cart">{{ item.quantity }}</span>
                         <button type="button" class="btn-quantity-cart btn btn-sm p-0" data-action="increase"
                             data-product-id="{{ item.product_id }}"> + </button>

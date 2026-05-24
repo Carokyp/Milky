@@ -1,22 +1,23 @@
 // Update quantity when clicking + or -
-    document.querySelectorAll('.btn-quantity-cart').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.dataset.productId;
-            const action = this.dataset.action;
-            const form = this.closest('form');
-            const quantityInput = form.querySelector('.quantity-input');
-            const quantityDisplay = form.querySelector('.quantity-value-cart');
-            
-            let quantity = parseInt(quantityInput.value);
+document.querySelectorAll('.btn-quantity-cart').forEach(button => {
+    button.addEventListener('click', function () {
+        const action = this.dataset.action;
+        const form = this.closest('form');
+        const quantityInput = form.querySelector('.quantity-input');
+        const quantityDisplay = form.querySelector('.quantity-value-cart');
 
-            if (action === 'increase') {
-                quantity += 1;
-            } else if (action === 'decrease' && quantity > 1) {
-                quantity -= 1;
-            }
+        let quantity = parseInt(quantityInput.value);
 
-            quantityInput.value = quantity;
-            quantityDisplay.textContent = quantity;
-            form.submit();
-        });
+        if (action === 'increase') {
+            quantity += 1;
+        } else if (action === 'decrease' && quantity > 1) {
+            quantity -= 1;
+        } else if (action === 'decrease' && quantity === 1) {
+            return; // stop - button at 1
+        }
+
+        quantityInput.value = quantity;
+        quantityDisplay.textContent = quantity;
+        form.submit();
     });
+});

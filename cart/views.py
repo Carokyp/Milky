@@ -45,7 +45,7 @@ def update_cart(request, product_id):
     quantity = int(request.POST.get("quantity", 1))
     cart = request.session.get("cart", {})
 
-    if quantity > 1:
+    if quantity >= 1:
         cart[str(product_id)] = quantity
         messages.success(request, f"{product.name} has been updated in your cart!")
     else:
