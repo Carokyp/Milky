@@ -5,11 +5,15 @@ html{
 }
 
 :root {
-    --light-cream: #faeade;
-    --brown: #523122;
     --site-max-width: 1800px;
 
+    /* Colors */
+    --light-cream: #faeade;
+    --brown: #523122;
+    --light-brown: #8c5e4a;
+
     /* Typography */
+    --font-xs: 0.6rem;
     --font-sm: 0.8rem;
     --font-base: 1rem;
     --font-lg: 1.2rem;
@@ -49,6 +53,12 @@ body {
     font-weight: bold;
 }
 
+.cart-badge {
+    background-color: var(--light-brown);
+    color: white;
+    font-size: var(--font-xs);
+}
+
 /* #endregion */
 
 /* #region Buttons */
@@ -60,7 +70,7 @@ body {
 .delete-btn {
     background-color: var(--brown);
     color: white;
-    min-width: 120px;
+    min-width: 300px;
     transition: background-color 0.3s ease;
 }
 
@@ -88,11 +98,10 @@ body {
     min-width: 75px;
 }
 
-.btn-detail-page,
 .view-details-btn,
 .btn-quantity,
 .checkout-btn {
-    min-width: 200px;
+    min-width: 300px;
 }
 
 .btn-see-other{

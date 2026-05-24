@@ -13,7 +13,15 @@
     <ul class="navbar-nav d-none d-lg-flex align-items-center gap-2">
         <li class="nav-item">
             <a class="nav-link text-dark" href="{% url 'view_cart' %}">
-                <i class="fa-solid fa-cart-shopping"></i> Cart
+                <span class="position-relative">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    {% if product_count > 0 %}
+                    <span class="position-absolute bottom-45 start-100 translate-middle badge cart-badge rounded-pill">
+                        {{ product_count }}
+                    </span>
+                    {% endif %}
+                </span>
+                Cart
             </a>
         </li>
         {% if request.user.is_authenticated %}

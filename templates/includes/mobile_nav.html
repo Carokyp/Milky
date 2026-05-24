@@ -18,13 +18,13 @@
 </div>
 
 <!-- Cart -->
-<a href="{% url 'view_cart' %}" class="{% if grand_total %}text-info font-weight-bold{% else %}text-black{% endif %} nav-link">
+<a href="{% url 'view_cart' %}" class="text-dark nav-link position-relative">
     <i class="fa-solid fa-cart-shopping fa-lg"></i>
-    <p class="my-0">
-        {% if grand_total %}
-        <span class="badge bg-info text-white">{{ cart_items_count }}</span>
-        {% endif %}
-    </p>
+    {% if product_count > 0 %}
+    <span class="position-absolute top-0 translate-middle badge cart-badge rounded-pill">
+        {{ product_count }}
+    </span>
+    {% endif %}
 </a>
 
 <!-- Burger button -->

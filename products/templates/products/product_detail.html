@@ -50,11 +50,17 @@
                         </button>
                     </div>
                 </div>
-
-                <!-- Add to cart button -->
-                <button type="submit" class="btn-detail-page btn rounded-pill text-uppercase px-4 py-2">
-                    Add to Cart
-                </button>
+                <div class="d-flex flex-column flex-md-row justify-content-center align-items-center mb-3">
+                    <!-- Add to cart button -->
+                    <button type="submit" class="btn-detail-page btn rounded-pill text-uppercase px-4 py-2 mb-3">
+                        Add to Cart
+                    </button>
+                    <!-- Explore more flavours button -->
+                    <a href="{% url 'all_products' %}"
+                        class="btn-detail-page btn rounded-pill text-uppercase px-4 py-2">
+                        Explore More Flavours
+                    </a>
+                </div>
             </form>
         </div>
 

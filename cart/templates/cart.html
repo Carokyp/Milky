@@ -21,16 +21,10 @@
             <h2 class="text-uppercase fw-bold fs-5">Cart</h2>
         </div>
         <div class="col-2 text-end">
-            <!-- X button → go back to previous page -->
-            {% if request.META.HTTP_REFERER %}
-            <a href="{{ request.META.HTTP_REFERER }}" class="text-dark">
-                <i class="fa-solid fa-xmark fa-xl"></i>
-            </a>
-            {% else %}
+            <!-- X button → go back to products -->
             <a href="{% url 'all_products' %}" class="text-dark">
                 <i class="fa-solid fa-xmark fa-xl"></i>
             </a>
-            {% endif %}
         </div>
     </div>
 
@@ -66,7 +60,7 @@
                 <!-- Delete button -->
                 <form method="POST" action="{% url 'remove_from_cart' item.product_id %}">
                     {% csrf_token %}
-                    <button type="submit" class=" delete-btn btn rounded-pill px-3 py-1">Delete</button>
+                    <button type="submit" class="delete-btn btn rounded-pill px-3 py-1">Delete</button>
                 </form>
             </div>
         </div>
@@ -78,7 +72,7 @@
     <div class="row mt-3">
         <div class="col-12 d-flex justify-content-between">
             <p class="fw-bold">Total (Exc delivery):</p>
-            <p class="fw-bold">${{ total }}</p>
+            <p class="fw-bold cart-total">${{ total }}</p>
         </div>
     </div>
 
