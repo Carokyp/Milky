@@ -38,14 +38,14 @@
 
                 <!-- Hidden fields -->
                 <input type="hidden" name="redirect_url" value="{{ request.path }}">
-                <input type="hidden" name="quantity" class="quantity-input" value="1">
 
                 <!-- Quantity selector -->
                 <div class="d-flex justify-content-center mb-3">
-                    <div class="d-flex align-items-center rounded-pill px-4 py-2 btn-quantity">
-                        <button type="button" class="btn p-0 btn-quantity-detail" data-action="decrease"> -
+                    <div class="d-flex align-items-center justify-content-between rounded-pill px-4 py-2 btn-quantity">
+                        <button type="button" class="btn p-0 btn-quantity-detail" data-action="decrease" disabled> -
                         </button>
-                        <span class="quantity-value mx-auto">1</span>
+                        <input type="number" name="quantity" class="quantity-input text-center border-0 bg-transparent"
+                            value="1" min="1" max="99" required>
                         <button type="button" class="btn btn-sm p-0 btn-quantity-detail" data-action="increase"> +
                         </button>
                     </div>
@@ -153,8 +153,8 @@
 
         <!-- See other products button -->
         <div class="col-12 text-center mt-4 mb-5">
-                <a href="{% url 'all_products' %}" class="btn-see-other btn rounded-pill text-uppercase px-3 py-3">
-                    See Other Products
+            <a href="{% url 'all_products' %}" class="btn-see-other btn rounded-pill text-uppercase px-3 py-3">
+                See Other Products
             </a>
         </div>
     </div>
@@ -162,5 +162,5 @@
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/product_detail.js' %}"></script>
+<script src="{% static 'js/product_detail.js' %}"></script>
 {% endblock %}

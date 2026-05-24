@@ -42,9 +42,7 @@
         <div class="col-8 col-md-6 col-lg-5">
             <p class="fw-bold text-uppercase mb-1 cart-product-name">{{ item.product.name }}</p>
             <p class="mb-2 cart-product-price">${{ item.product.price }}</p>
-            {% if item.quantity > 1 %}
-            <p class="mb-2 text-muted small">Subtotal: ${{ item.subtotal }}</p>
-            {% endif %}
+            <p class="mb-2 text-muted small item-subtotal">Subtotal: $<span class="item-subtotal-value">{{ item.subtotal }}</span></p>
             <!-- Quantity + Delete -->
             <div class="d-flex align-items-center gap-2">
                 <form method="POST" action="{% url 'update_cart' item.product_id %}">
@@ -54,10 +52,10 @@
                             data-product-id="{{ item.product_id }}" 
                             {% if item.quantity == 1 %}disabled{% endif %}> -
                         </button>
-                        <span class="quantity-value-cart">{{ item.quantity }}</span>
+                        <input type="number" name="quantity" class="quantity-input text-center border-0 bg-transparent"
+                            value="{{ item.quantity }}" min="1" max="99">
                         <button type="button" class="btn-quantity-cart btn btn-sm p-0" data-action="increase"
-                            data-product-id="{{ item.product_id }}"> + </button>
-                        <input type="hidden" name="quantity" class="quantity-input" value="{{ item.quantity }}">
+                            data-product-id="{{ item.product_id }}" {% if item.quantity == 99 %}disabled{% endif %}> + </button>
                     </div>
                 </form>
 
@@ -91,7 +89,7 @@
         <hr>
         <div class="col-12 d-flex justify-content-between">
             <p class="fw-bold">Grand Total:</p>
-            <p class="fw-bold">${{ grand_total }}</p>
+            <p class="fw-bold cart-grand-total">${{ grand_total }}</p>
         </div>
     </div>
 

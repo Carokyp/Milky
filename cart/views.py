@@ -1,8 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 from django.contrib import messages
+from decimal import Decimal
+from django.conf import settings
 from products.models import Product
 
 # Create your views here.
+
+
+def _parse_quantity(raw_quantity, default=1):
+    try:
+        return int(raw_quantity)
+    except (TypeError, ValueError):
+        return default
 
 
 def cart_view(request):
@@ -10,19 +20,81 @@ def cart_view(request):
     return render(request, "cart.html")
 
 
+def _cart_totals_json(cart, product_id=None, quantity=None):
+    """Helper function to calculate cart totals, subtotal and delivery costs for a specific item in real-time.
+    Returns the data as JSON for AJAX responses.
+    """
+    total = Decimal('0.00')
+    for pid, qty in cart.items():
+        products = get_object_or_404(Product, pk=pid)
+        total += Decimal(qty) * products.price
+
+    free_delivery_threshold = Decimal(str(settings.FREE_DELIVERY_THRESHOLD))
+    delivery_cost = Decimal(str(settings.DELIVERY_COST))
+
+    if total < free_delivery_threshold:
+        remaining = (free_delivery_threshold - total).quantize(Decimal('0.01'))
+        delivery = delivery_cost
+    else:
+        remaining = Decimal('0.00')
+        delivery = Decimal('0.00')
+
+    grand_total = (total + delivery).quantize(Decimal('0.01'))
+    total = total.quantize(Decimal('0.01'))
+
+    product_count = sum(int(q) for q in cart.values())
+
+    data = {
+        'total': str(total),
+        'delivery': str(delivery),
+        'grand_total': str(grand_total),
+        'remaining_for_free_delivery': str(remaining),
+        'product_count': product_count,
+    }
+
+    # Calculate the subtotal of a specific item
+    if product_id is not None:
+        prod = get_object_or_404(Product, pk=product_id)
+        if quantity is None:
+            item_qty = int(cart.get(str(product_id), 0))
+        else:
+            item_qty = int(quantity)
+        item_subtotal = (Decimal(item_qty) * prod.price).quantize(Decimal('0.01'))
+        data.update({
+            'product_id': product_id,
+            'item_subtotal': str(item_subtotal),
+        })
+
+    return data
+
+
 def add_to_cart(request, product_id):
     """Add a product to the cart"""
     product = get_object_or_404(Product, pk=product_id)
-    quantity = int(request.POST.get("quantity", 1))
+    quantity = _parse_quantity(request.POST.get("quantity"))
+    quantity = max(1, quantity)
     cart = request.session.get("cart", {})
+    key = str(product_id)
+    existing = int(cart.get(key, 0))
 
-    if str(product_id) in cart:
-        cart[str(product_id)] += quantity
+    # Compute new total but cap at 99 to prevent bypass via repeated adds
+    new_total = min(existing + quantity, 99)
+    cart[key] = new_total
+
+    # Inform user about the result
+    if existing >= 99:
+        messages.info(request, f"{product.name} is already at the maximum quantity (99).")
+    elif new_total < existing + quantity:
+        messages.warning(request, f"Requested quantity was reduced so {product.name} is capped at 99 in your cart.")
     else:
-        cart[str(product_id)] = quantity
+        messages.success(request, f"{product.name} has been added to your cart!")
 
     request.session["cart"] = cart
-    messages.success(request, f"{product.name} has been added to your cart!")
+    # AJAX request, return JSON with updated totals so users can see update UI
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        data = _cart_totals_json(cart, product_id=product_id)
+        return JsonResponse(data)
+
     return redirect(request.POST.get("redirect_url", "/"))
 
 
@@ -30,27 +102,39 @@ def remove_from_cart(request, product_id):
     """Remove a product from the cart"""
     product = get_object_or_404(Product, pk=product_id)
     cart = request.session.get("cart", {})
-
     if str(product_id) in cart:
         del cart[str(product_id)]
         messages.success(request, f"{product.name} has been removed from your cart!")
 
     request.session["cart"] = cart
+
+    # AJAX request, return JSON with updated totals so users can see update UI
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        data = _cart_totals_json(cart)
+        return JsonResponse(data)
+
     return redirect("view_cart")
 
 
 def update_cart(request, product_id):
     """Update the quantity of a product in the cart"""
     product = get_object_or_404(Product, pk=product_id)
-    quantity = int(request.POST.get("quantity", 1))
+    quantity = _parse_quantity(request.POST.get("quantity"))
     cart = request.session.get("cart", {})
 
     if quantity >= 1:
         cart[str(product_id)] = quantity
         messages.success(request, f"{product.name} has been updated in your cart!")
     else:
-        del cart[str(product_id)]
+        if str(product_id) in cart:
+            del cart[str(product_id)]
         messages.success(request, f"{product.name} has been removed from your cart!")
 
     request.session["cart"] = cart
+
+    # AJAX request, return JSON with updated totals so users can see update UI
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        data = _cart_totals_json(cart, product_id=product_id, quantity=quantity)
+        return JsonResponse(data)
+
     return redirect("view_cart")
