@@ -171,4 +171,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Free delivery threshold
-FREE_DELIVERY_THRESHOLD = 20
+FREE_DELIVERY_THRESHOLD = 25.00
+DELIVERY_COST = 3.99
