@@ -28,7 +28,7 @@
 </head>
 
 <body>
-    <header class="container-fluid fixed-top">
+    <header class="container-fluid fixed-top px-0">
 
         <nav class="navbar navbar-expand-lg py-0">
             <div class="container-fluid py-3 d-flex align-items-center">
@@ -46,12 +46,20 @@
         </nav>
 
         {% if messages %}
-        <div class="message-container"></div>
+        <div class= "position-fixed top-0 w-100 d-flex justify-content-center justify-content-md-end p-3">
+            {% for message in messages %}
+            {% if message.tags == 'success' %}
+            {% include 'includes/toast/toast_success.html' with message=message %}
+            {% elif message.tags == 'warning' %}
+            {% include 'includes/toast/toast_warning.html' with message=message %}
+            {% elif message.tags == 'info' %}
+            {% include 'includes/toast/toast_info.html' with message=message %}
+            {% elif message.tags == 'error' %}
+            {% include 'includes/toast/toast_error.html' with message=message %}
+            {% endif %}
+            {% endfor %}
+        </div>
         {% endif %}
-
-        {% block page_header %}
-        {% endblock %}
-
     </header>
 
     <!-- Main content -->
@@ -89,6 +97,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+    <script src="{% static 'js/toast.js' %}"></script>
     {% endblock %}
 
     {% block extra_js %}

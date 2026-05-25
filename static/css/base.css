@@ -108,6 +108,24 @@ body {
 
 /* #endregion */
 
+/* #region Toast */
+
+.toast {
+    max-width: 300px;
+    z-index: 9999;
+    border: none;
+    box-shadow: none;
+}
+
+/* Remove hover effects inside toasts */
+.toast .text-dark:hover,
+.toast .text-dark:focus {
+    font-weight: normal !important;
+}
+    
+
+/* #endregion */
+
 /* #region product detail */
 
 /* Product icon */
