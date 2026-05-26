@@ -110,7 +110,7 @@ def update_cart(request, product_id):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse(_cart_totals_json(cart, product_id=product_id, quantity=quantity), status=200)
 
-        messages.success(request, f"{product.name} has been updated in your cart!")
+        messages.info(request, f"{product.name} has been updated in your cart!")
         return redirect("view_cart")
 
     except Exception as e:
@@ -134,7 +134,7 @@ def remove_from_cart(request, product_id):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse(_cart_totals_json(cart), status=200)
 
-        messages.success(request, f"{product.name} has been removed from your cart!")
+        messages.info(request, f"{product.name} has been removed from your cart!")
         return redirect("view_cart")
 
     except Exception as e:

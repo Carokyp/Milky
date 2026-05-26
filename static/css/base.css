@@ -67,13 +67,17 @@ body {
 .delete-btn {
     background-color: var(--brown);
     color: white;
-    min-width: 300px;
+    width: 80%;
     transition: background-color 0.3s ease;
 }
 
 .btn-quantity,
 .btn-quantity-cart {
     border: 2px solid var(--brown) !important;
+}
+
+.btn-quantity {
+    width: 80%;
 }
 
 .btn-quantity-cart .btn,
@@ -96,15 +100,6 @@ body {
     min-width: 75px;
 }
 
-.view-details-btn,
-.btn-quantity,
-.checkout-btn {
-    min-width: 300px;
-}
-
-.btn-see-other {
-    min-width: 250px;
-}
 
 /* #endregion */
 
@@ -117,12 +112,11 @@ body {
     box-shadow: none;
 }
 
-/* Remove hover effects inside toasts */
-.toast .text-dark:hover,
-.toast .text-dark:focus {
-    font-weight: normal !important;
+.bag-preview-wrapper {
+    height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
-    
 
 /* #endregion */
 

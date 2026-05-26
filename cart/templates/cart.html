@@ -52,7 +52,7 @@
                             data-product-id="{{ item.product_id }}" 
                             {% if item.quantity == 1 %}disabled{% endif %}> -
                         </button>
-                        <input type="number" name="quantity" class="quantity-input text-center border-0 bg-transparent"
+                        <input type="number" name="quantity" class="quantity-input text-center border-0 bg-transparent p-0"
                             value="{{ item.quantity }}" min="1" max="99">
                         <button type="button" class="btn-quantity-cart btn btn-sm p-0" data-action="increase"
                             data-product-id="{{ item.product_id }}" {% if item.quantity == 99 %}disabled{% endif %}> + </button>
@@ -106,7 +106,7 @@
 
     <!-- Checkout button -->
     <div class="row text-center mt-3 mb-5">
-        <div class="col-12">
+        <div class="col-12 w-100">
             <a href="#" class=" checkout-btn btn rounded-pill py-2 text-uppercase fs-6">Checkout</a>
         </div>
     </div>

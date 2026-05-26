@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from django.contrib import messages
+from products.models import Product
 from django.shortcuts import redirect
 
 
 def index(request):
     """View to return the index page """
-    return render(request, 'home/index.html')
+    products = Product.objects.all()
+    return render(request, 'home/index.html', {'products': products})
 
 # TODO: Remove test views before deployment
 
