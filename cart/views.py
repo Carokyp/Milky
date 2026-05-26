@@ -15,7 +15,7 @@ def _parse_quantity(raw_quantity, default=1):
 
 def cart_view(request):
     """View for the shopping cart page."""
-    return render(request, "cart.html")
+    return render(request, "cart/cart.html")
 
 
 def _cart_totals_json(cart, product_id=None, quantity=None):
@@ -81,7 +81,7 @@ def add_to_cart(request, product_id):
         elif new_total < existing + quantity:
             messages.warning(request, f"Requested quantity was reduced so {product.name} is capped at 99 in your cart.")
         else:
-            messages.success(request, f"{product.name} has been added to your cart!")
+            messages.success(request, f"{product.name} has been added to your cart!", extra_tags='cart')
 
         return redirect(request.POST.get("redirect_url", "/"))
 
@@ -110,7 +110,7 @@ def update_cart(request, product_id):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse(_cart_totals_json(cart, product_id=product_id, quantity=quantity), status=200)
 
-        messages.info(request, f"{product.name} has been updated in your cart!")
+        messages.success(request, f"{product.name} has been updated in your cart!")
         return redirect("view_cart")
 
     except Exception as e:
@@ -134,7 +134,7 @@ def remove_from_cart(request, product_id):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse(_cart_totals_json(cart), status=200)
 
-        messages.info(request, f"{product.name} has been removed from your cart!")
+        messages.success(request, f"{product.name} has been removed from your cart!")
         return redirect("view_cart")
 
     except Exception as e:

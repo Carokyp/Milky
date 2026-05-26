@@ -48,13 +48,13 @@
         {% if messages %}
         <div class= "position-fixed top-0 w-100 d-flex justify-content-center justify-content-md-end p-3">
             {% for message in messages %}
-            {% if message.tags == 'success' %}
+            {% if 'success' in message.tags %}
             {% include 'includes/toast/toast_success.html' with message=message %}
-            {% elif message.tags == 'warning' %}
+            {% elif 'warning' in message.tags %}
             {% include 'includes/toast/toast_warning.html' with message=message %}
-            {% elif message.tags == 'info' %}
+            {% elif 'info' in message.tags %}
             {% include 'includes/toast/toast_info.html' with message=message %}
-            {% elif message.tags == 'error' %}
+            {% elif 'error' in message.tags %}
             {% include 'includes/toast/toast_error.html' with message=message %}
             {% endif %}
             {% endfor %}

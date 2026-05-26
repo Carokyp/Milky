@@ -25,7 +25,7 @@ class Customer(models.Model):
         return f"{self.name} {self.surname}"
 
 
-class User_customer(models.Model):
+class UserCustomer(models.Model):
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     enabled = models.BooleanField(default=True)

@@ -10,70 +10,72 @@
   <div class="toast-body bg-white">
     <div class="row">
       <div class="col">{{message}}</div>
-      <hr class="mt-3 mb-3" />
 
-      <div class="bag-preview-wrapper">
-        {% if grand_total %}
-        <p class="bg-white text-black text-uppercase text-center py-1">
-          Your bag {{product_count}} items
-        </p>
-
-        {% if cart_items %}
-        {% for item in cart_items %}
-        <div class="row mb-2">
-          <div class="col-4">
-            <img src="{{ item.product.product_image.url }}" class="rounded w-100" alt="{{ item.product.name }}" />
-          </div>
-          <div class="col-8">
-            <p class="my-0 text-uppercase">
-              <strong>{{ item.product.name }}</strong>
+      {% if 'cart' in message.tags %}
+        <hr class="mt-3 mb-3" />
+        <div class="bag-preview-wrapper">
+          {% if grand_total %}
+            <p class="bg-white text-black text-uppercase text-center py-1">
+              Your bag {{product_count}} items
             </p>
-            <p class="my-0 text-muted small">Qty: {{ item.quantity }}</p>
-          </div>
-        </div>
-        {% endfor %}
-        {% endif %}
 
-        <!-- Total -->
-        <div class="row mt-3">
-          <div class="col-12 d-flex justify-content-between">
-            <p class="fw-bold">Total (Exc delivery):</p>
-            <p class="fw-bold cart-total">${{ total }}</p>
-          </div>
-          <div class="col-12 d-flex justify-content-between">
-            <p class="text-muted">Delivery:</p>
-            <p class="text-muted">
-              {% if delivery == 0 %}
-              Free
-              {% else %}
-              ${{ delivery }}
-              {% endif %}
-            </p>
-          </div>
-          <hr>
-          <div class="col-12 d-flex justify-content-between">
-            <p class="fw-bold">Grand Total:</p>
-            <p class="fw-bold cart-grand-total">${{ grand_total }}</p>
-          </div>
-        </div>
+            {% if cart_items %}
+              {% for item in cart_items %}
+                <div class="row mb-2">
+                  <div class="col-4">
+                    <img src="{{ item.product.product_image.url }}" class="rounded w-100" alt="{{ item.product.name }}" />
+                  </div>
+                  <div class="col-8">
+                    <p class="my-0 text-uppercase">
+                      <strong>{{ item.product.name }}</strong>
+                    </p>
+                    <p class="my-0 text-muted small">Qty: {{ item.quantity }}</p>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endif %}
 
-        <!-- Free delivery banner -->
-        {% if remaining_for_free_delivery > 0 %}
-        <div class="row mt-2">
-          <div class="col-12">
-            <div class="p-2 text-center free-delivery-banner">
-              Spend ${{ remaining_for_free_delivery }} more to get free delivery
+            <!-- Total -->
+            <div class="row mt-3">
+              <div class="col-12 d-flex justify-content-between">
+                <p class="fw-bold">Total (Exc delivery):</p>
+                <p class="fw-bold cart-total">${{ total }}</p>
+              </div>
+              <div class="col-12 d-flex justify-content-between">
+                <p class="text-muted">Delivery:</p>
+                <p class="text-muted">
+                  {% if delivery == 0 %}
+                    Free
+                  {% else %}
+                    ${{ delivery }}
+                  {% endif %}
+                </p>
+              </div>
+              <hr>
+              <div class="col-12 d-flex justify-content-between">
+                <p class="fw-bold">Grand Total:</p>
+                <p class="fw-bold cart-grand-total">${{ grand_total }}</p>
+              </div>
             </div>
-          </div>
-        </div>
-        {% endif %}
 
-        <!-- Checkout button -->
-        <div class="row text-center mt-3">
-          <div class="col-12">
-            <a href="" class=" checkout-btn btn rounded-pill py-2 text-uppercase fs-6">Checkout</a>
-          </div>
-        </div>
+            <!-- Free delivery banner -->
+            {% if remaining_for_free_delivery > 0 %}
+              <div class="row mt-2">
+                <div class="col-12">
+                  <div class="p-2 text-center free-delivery-banner">
+                    Spend ${{ remaining_for_free_delivery }} more to get free delivery
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+            <!-- Checkout button -->
+            <div class="row text-center mt-3">
+              <div class="col-12">
+                <a href="" class=" checkout-btn btn rounded-pill py-2 text-uppercase fs-6">Checkout</a>
+              </div>
+            </div>
+          {% endif %}
         {% endif %}
       </div>
     </div>
