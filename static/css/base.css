@@ -57,6 +57,17 @@ body {
 
 /* #endregion */
 
+/* #region Forms */
+
+/* Country flag */
+.country-select-flag {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 8px 0 0 !important;
+}
+
+/* #endregion */
+
 /* #region Buttons */
 
 .shop-now-button,
@@ -64,7 +75,8 @@ body {
 .btn-detail-page,
 .btn-see-other,
 .checkout-btn,
-.delete-btn {
+.delete-btn,
+.update-profile-btn {
     background-color: var(--brown);
     color: white;
     width: 80%;
@@ -90,7 +102,8 @@ body {
 .btn-detail-page:hover,
 .btn-see-other:hover,
 .checkout-btn:hover,
-.delete-btn:hover {
+.delete-btn:hover,
+.update-profile-btn:hover {
     background-color: var(--brown);
     color: white;
     transition: background-color 0.3s ease;

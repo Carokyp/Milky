@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block extra_title %}Profile - Milky{% endblock %}
 
@@ -12,7 +13,34 @@
 </div>
 {% endblock %}
 
-
 {% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 class="mb-4">Profile</h1>
+
+            <form method="post">
+                <h2 class="mb-4">Details</h2>
+                {% csrf_token %}
+
+                <p>{{ form.name |as_crispy_field }}</p>
+                <p>{{ form.surname |as_crispy_field }}</p>
+
+                <h2 class="mb-4">Delivery Information</h2>
+                <p>{{ form.address |as_crispy_field }}</p>
+                <p>{{ form.city |as_crispy_field }}</p>
+                <p>{{ form.postal_code |as_crispy_field }}</p>
+                <p>{{ form.country |as_crispy_field }}</p>
+                <p>{{ form.phone_number |as_crispy_field }}</p>
+
+                <!-- TODO: Add payment information with Stripe later -->
+
+
+                <button type="submit" class="btn rounded-pill update-profile-btn">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

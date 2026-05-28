@@ -1,25 +1,15 @@
 from django.db import models
-
-
-class Country(models.Model):
-    name = models.CharField(max_length=255)
-    iso_code = models.CharField(max_length=2)
-
-    class Meta:
-        verbose_name_plural = 'Countries'
-
-    def __str__(self):
-        return self.name
+from django_countries.fields import CountryField
 
 
 class Customer(models.Model):
-    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=20)
     address = models.CharField(max_length=255)
     postal_code = models.CharField(max_length=20)
     city = models.CharField(max_length=255)
+    country = CountryField(null=True, blank=True)
+    phone_number = models.CharField(max_length=20)
 
     def __str__(self):
         return f"{self.name} {self.surname}"

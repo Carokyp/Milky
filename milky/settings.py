@@ -47,11 +47,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_countries',
+
+    'crispy_forms',
+    'crispy_bootstrap5',
 
     'home',
     'products',
     'cart',
     'accounts',
+    'checkout',
 ]
 
 MIDDLEWARE = [
@@ -98,11 +103,9 @@ SITE_ID = 1
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ACCOUNT_LOGIN_METHODS = {'email', 'username'}
+ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_MIN_LENGTH = 4
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = 'profile'
 
@@ -175,3 +178,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Free delivery threshold
 FREE_DELIVERY_THRESHOLD = 25.00
 DELIVERY_COST = 3.99
+
+# Crispy forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
