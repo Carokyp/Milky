@@ -76,7 +76,8 @@ body {
 .btn-see-other,
 .checkout-btn,
 .delete-btn,
-.update-profile-btn {
+.update-profile-btn,
+.complete-order-btn {
     background-color: var(--brown);
     color: white;
     width: 80%;
@@ -103,7 +104,8 @@ body {
 .btn-see-other:hover,
 .checkout-btn:hover,
 .delete-btn:hover,
-.update-profile-btn:hover {
+.update-profile-btn:hover,
+.complete-order-btn:hover {
     background-color: var(--brown);
     color: white;
     transition: background-color 0.3s ease;
@@ -163,6 +165,12 @@ body {
 .btn-quantity-cart,
 .quantity-value-cart {
     font-size: var(--font-sm);
+}
+
+.cart-product-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* #endregion */

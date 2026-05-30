@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_title %}Checkout - Milky{% endblock %}
+
+{% block page_header %}
+<div class="container header-container">
+    <div class="row">
+        <div class="col-sm-12">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <!-- Checkout header -->
+    <div class="row mb-3 px-3">
+        <div class="col-10">
+            <h2 class="text-uppercase fw-bold fs-5">Checkout</h2>
+        </div>
+
+        <div class="col-2 text-end">
+            <!-- X button → go back to cart -->
+            <a href="{% url 'view_cart' %}" class="text-dark">
+                <i class="fa-solid fa-xmark fa-xl"></i>
+            </a>
+        </div>
+
+        <div class="col-12">
+            <p>Order Summary ({{ cart_items|length }})</p>
+            <p class="">Items in your cart</p>
+        </div>
+        {% for item in cart_items %}
+        <div class="d-flex align-items-center my-4 gap-3">
+
+            <!-- Product image -->
+            <div class="col-5 col-md-3 col-lg-2">
+                <img src="{{ item.product.product_image.url }}" class="img-fluid rounded" alt="{{ item.product.name }}">
+            </div>
+
+            <!-- Product info -->
+            <div class="col-7 col-md-6 col-lg-5">
+                <p class="fw-bold text-uppercase mb-1 small cart-product-name">{{ item.product.name }}</p>
+                <p class="mb-2 text-muted small">Qty: {{ item.quantity }}</p>
+                <p class="mb-2 text-muted small item-subtotal">Subtotal: $<span
+                        class="item-subtotal-value">{{item.subtotal }}</span></p>
+            </div>
+        </div>
+        <hr class="my-0">
+        
+        {% endfor %}
+
+        <!-- Order totals -->
+        <div class="col-12 mt-3 small">
+            <div class="d-flex justify-content-between">
+                <p>Subtotal</p>
+                <p>${{ total }}</p>
+            </div>
+            <div class="d-flex justify-content-between">
+                <p>Shipping cost</p>
+                <p>${{ delivery }}</p>
+            </div>
+            <hr class="">
+            <div class="d-flex justify-content-between fw-bold">
+                <p>Total</p>
+                <p>${{ grand_total }}</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-12">
+
+    </div>
+    <div class="col-12">
+
+    </div>
+    <div class="col-12 d-flex justify-content-center gap-3 mt-4">
+        <a href="{% url 'view_cart' %}" class="complete-order-btn btn rounded-pill px-4 py-2 mt-3 fs-6">
+            <p class="mb-0">Adjust Bag</p>
+        </a>
+        <a href="" class="complete-order-btn btn rounded-pill px-4 py-2 mt-3 fs-6">
+            <p class="mb-0">Complete Order</p>
+        </a>
+    </div>
+</div>
+{% endblock %}
