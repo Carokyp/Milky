@@ -26,7 +26,8 @@ class Order(models.Model):
     invoice_surname = models.CharField(max_length=100)
     invoice_phone = models.CharField(max_length=20)
     invoice_address = models.CharField(max_length=255)
-    invoice_postcode = models.CharField(max_length=20)
+    invoice_county = models.CharField(max_length=100, null=True, blank=True)
+    invoice_postcode = models.CharField(max_length=20, null=True, blank=True)
     invoice_city = models.CharField(max_length=100)
     invoice_country = CountryField(max_length=100)
 
@@ -34,7 +35,8 @@ class Order(models.Model):
     delivery_surname = models.CharField(max_length=100)
     delivery_phone = models.CharField(max_length=20)
     delivery_address = models.CharField(max_length=255)
-    delivery_postcode = models.CharField(max_length=20)
+    delivery_county = models.CharField(max_length=100, null=True, blank=True)
+    delivery_postcode = models.CharField(max_length=20, null=True, blank=True)
     delivery_city = models.CharField(max_length=100)
     delivery_country = CountryField(max_length=100)
 
@@ -48,9 +50,10 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    sku = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name} for Order {self.order.reference_code}"
+        return f"Order {self.order.reference_code} | {self.product.name} (SKU: {self.product.sku}) x {self.quantity}"
 
 
 class Payment(models.Model):
