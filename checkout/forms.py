@@ -1,5 +1,4 @@
 from django import forms
-from django_countries.widgets import CountrySelectWidget
 from .models import Order
 
 
@@ -16,6 +15,16 @@ class OrderForm(forms.ModelForm):
             "delivery_county",
             "delivery_postcode",
             "delivery_country",
+
+            "invoice_name",
+            "invoice_surname",
+            "invoice_phone",
+            "invoice_address",
+            "invoice_city",
+            "invoice_county",
+            "invoice_postcode",
+            "invoice_country",
+
         )
 
     def __init__(self, *args, **kwargs):
@@ -29,10 +38,25 @@ class OrderForm(forms.ModelForm):
             "delivery_county": "County",
             "delivery_postcode": "Postal Code",
             "delivery_country": "Country",
+
+            "invoice_name": "Name",
+            "invoice_surname": "Surname",
+            "invoice_phone": "Phone Number",
+            "invoice_address": "Street Address",
+            "invoice_city": "City",
+            "invoice_county": "County",
+            "invoice_postcode": "Postal Code",
+            "invoice_country": "Country",
         }
 
         self.fields["delivery_name"].widget.attrs["autofocus"] = True
+
         for field in self.fields:
+            if field in ("delivery_country", "invoice_country"):
+                self.fields[field].widget.attrs["class"] = "form-control"
+                self.fields[field].label = False  # type: ignore
+                continue
+
             if self.fields[field].required:
                 placeholder = f"{placeholders[field]} *"
             else:
@@ -41,11 +65,3 @@ class OrderForm(forms.ModelForm):
             self.fields[field].widget.attrs["placeholder"] = placeholder
             self.fields[field].widget.attrs["class"] = "form-control"
             self.fields[field].label = False  # type: ignore
-
-            if field == "delivery_country":
-                self.fields[field].widget = CountrySelectWidget(
-                    attrs={
-                        "class": "form-control country-select",
-                        "data-placeholder": placeholder,
-                    }
-                )
