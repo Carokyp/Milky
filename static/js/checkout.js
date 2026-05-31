@@ -1,6 +1,7 @@
 // Get Stripe keys from Django template
 const stripePublicKey = JSON.parse(document.getElementById('id_stripe_public_key').textContent);
 const clientSecret = JSON.parse(document.getElementById('id_client_secret').textContent);
+const checkoutUrl = document.getElementById('payment-form').dataset.checkoutUrl;
 
 // Toggle the invoice fields visibility when the "same-as-delivery" 
 // checkbox changes — hide them when checked, show them when unchecked.
@@ -34,11 +35,28 @@ async function initialize() {
 
 async function handleSubmit(e) {
     e.preventDefault();
-    
-    // Disable button while processing
+
     document.querySelector("#submit-button").disabled = true;
     document.querySelector("#submit-button").textContent = "Processing...";
 
+    // 1. First, save the data to the session.
+    const form = document.querySelector("#payment-form");
+    const formData = new FormData(form);
+
+    const saveResponse = await fetch(checkoutUrl, {
+        method: "POST",
+        headers: { "X-CSRFToken": formData.get("csrfmiddlewaretoken") },
+        body: formData,
+    });
+    const data = await saveResponse.json();
+    if (data.status !== 'ok') {
+        document.querySelector("#card-errors").textContent = "Error saving order data.";
+        document.querySelector("#submit-button").disabled = false;
+        document.querySelector("#submit-button").textContent = "Complete Order";
+        return;
+    }
+
+    // 2. Then, Stripe confirms and redirects
     const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
@@ -52,7 +70,6 @@ async function handleSubmit(e) {
         } else {
             document.querySelector("#card-errors").textContent = "An unexpected error occurred.";
         }
-        // Re-enable button if error
         document.querySelector("#submit-button").disabled = false;
         document.querySelector("#submit-button").textContent = "Complete Order";
     }
