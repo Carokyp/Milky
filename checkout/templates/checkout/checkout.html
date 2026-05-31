@@ -83,12 +83,12 @@
         <p class="text-muted">Please fill out the form below to complete your order</p>
         <form action="{% url 'checkout' %}" method="POST" id="payment-form">
             {% csrf_token %}
-            <fieldset class="rounded px-3 mb-5">
+            <fieldset class="rounded px-3 mb-2">
                 <legend class="fieldset-label small text-black px-2 w-auto">Details</legend>
                 {{ form.delivery_name|as_crispy_field }}
                 {{ form.delivery_surname|as_crispy_field }}
             </fieldset>
-            <fieldset class="rounded px-3 mb-5">
+            <fieldset class="rounded px-3 mb-2">
                 <legend class="fieldset-label small text-black px-2 w-auto">Delivery</legend>
                 {{ form.delivery_phone|as_crispy_field }}
                 {{ form.delivery_address|as_crispy_field }}
@@ -111,11 +111,11 @@
                 </div>
             </fieldset>
 
-            <fieldset class="rounded px-3 mb-5">
+            <fieldset class="rounded px-3 mb-2">
                 <legend class="fieldset-label small text-black px-2 w-auto">Invoice</legend>
 
                 <!-- Toggle checkbox -->
-                <div class="form-check mb-3">
+                <div class="form-check mb-1">
                     <input class="form-check-input" type="checkbox" id="same-as-delivery" checked>
                     <label class="form-check-label" for="same-as-delivery">
                         Same as delivery address

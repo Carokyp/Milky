@@ -1,10 +1,16 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
+import stripe
+from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 from django.urls import reverse
-from .forms import OrderForm
+
 from accounts.models import UserCustomer
 from cart.context_processors import cart_contents
+
+from .forms import OrderForm
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 @login_required
@@ -64,4 +70,18 @@ def checkout(request):
         else:
             order_form = form
 
-    return render(request, 'checkout/checkout.html', {'form': order_form})
+    # prepare cart data for payment intent and template
+    cart_data = cart_contents(request)
+
+    # create payment intent for frontend to complete payment
+    payment_intent = stripe.PaymentIntent.create(
+        amount=int(cart_data['grand_total'] * 100),  # Convert to cents
+        currency='usd',
+        metadata={'user_id': request.user.id}
+    )
+
+    return render(request, 'checkout/checkout.html', {
+        'form': order_form,
+        'client_secret': payment_intent.client_secret,
+        'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
+    })
