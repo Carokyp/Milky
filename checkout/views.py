@@ -24,7 +24,6 @@ def checkout(request):
     user_customers = UserCustomer.objects.filter(user=request.user).first()
     customer = user_customers.customer if user_customers else None
 
-    # If no customer profile, redirect to profile page
     if not customer:
         messages.warning(request, 'Please complete your profile before checkout.')
         return redirect(reverse('profile'))
@@ -43,39 +42,36 @@ def checkout(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            try:
-                order = form.save(commit=False)
-
-                same_as_delivery = request.POST.get('same-as-delivery')
-                if same_as_delivery:
-                    order.invoice_name = order.delivery_name
-                    order.invoice_surname = order.delivery_surname
-                    order.invoice_phone = order.delivery_phone
-                    order.invoice_address = order.delivery_address
-                    order.invoice_city = order.delivery_city
-                    order.invoice_county = order.delivery_county
-                    order.invoice_postcode = order.delivery_postcode
-                    order.invoice_country = order.delivery_country
-
-                order.customer = customer
-                cart_data = cart_contents(request)
-                order.order_total = cart_data['total']
-                order.delivery_cost = cart_data['delivery']
-                order.save()
-                messages.success(request, 'Order placed successfully!')
-                return redirect(reverse('checkout_success', args=[order.reference_code]))
-
-            except Exception as e:
-                messages.error(request, f'There was an error processing your order: {e}')
+            # Save form data to session
+            same_as_delivery = request.POST.get('same-as-delivery')
+            request.session['order_data'] = {
+                'delivery_name': form.cleaned_data['delivery_name'],
+                'delivery_surname': form.cleaned_data['delivery_surname'],
+                'delivery_phone': form.cleaned_data['delivery_phone'],
+                'delivery_address': form.cleaned_data['delivery_address'],
+                'delivery_city': form.cleaned_data['delivery_city'],
+                'delivery_county': form.cleaned_data.get('delivery_county', ''),
+                'delivery_postcode': form.cleaned_data.get('delivery_postcode', ''),
+                'delivery_country': str(form.cleaned_data['delivery_country']),
+                'same_as_delivery': bool(same_as_delivery),
+           
+                # Invoice fields
+                'invoice_name': form.cleaned_data.get('invoice_name', ''),
+                'invoice_surname': form.cleaned_data.get('invoice_surname', ''),
+                'invoice_phone': form.cleaned_data.get('invoice_phone', ''),
+                'invoice_address': form.cleaned_data.get('invoice_address', ''),
+                'invoice_city': form.cleaned_data.get('invoice_city', ''),
+                'invoice_county': form.cleaned_data.get('invoice_county', ''),
+                'invoice_postcode': form.cleaned_data.get('invoice_postcode', ''),
+                'invoice_country': str(form.cleaned_data.get('invoice_country', '')),
+            }
         else:
             order_form = form
 
-    # prepare cart data for payment intent and template
     cart_data = cart_contents(request)
 
-    # create payment intent for frontend to complete payment
     payment_intent = stripe.PaymentIntent.create(
-        amount=int(cart_data['grand_total'] * 100),  # Convert to cents
+        amount=int(cart_data['grand_total'] * 100),
         currency='usd',
         metadata={'user_id': request.user.id}
     )

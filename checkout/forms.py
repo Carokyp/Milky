@@ -65,3 +65,12 @@ class OrderForm(forms.ModelForm):
             self.fields[field].widget.attrs["placeholder"] = placeholder
             self.fields[field].widget.attrs["class"] = "form-control"
             self.fields[field].label = False  # type: ignore
+
+        # Make invoice fields not required (filled automatically if same as delivery)
+        invoice_fields = [
+            'invoice_name', 'invoice_surname', 'invoice_phone',
+            'invoice_address', 'invoice_city', 'invoice_county',
+            'invoice_postcode', 'invoice_country',
+        ]
+        for field in invoice_fields:
+            self.fields[field].required = False
