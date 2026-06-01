@@ -24,6 +24,7 @@ class Order(models.Model):
 
     # Core order identity and ownership.
     reference_code = models.CharField(max_length=100, unique=True, default=generate_reference_code, editable=False)
+    stripe_pid = models.CharField(max_length=254, null=True, blank=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     status = models.IntegerField(default=0, choices=STATUS_CHOICES)  # 0: pending, 1: completed, 2: cancelled
     created_at = models.DateTimeField(auto_now_add=True)
@@ -120,25 +121,3 @@ class OrderItem(models.Model):
         # Clear label for admin lists and debugging.
         return f"Order {self.order.reference_code} | {self.product.name} (SKU: {self.sku}) x {self.quantity}"
 
-
-class Payment(models.Model):
-
-    # Payment states mirrored in the admin.
-    STATUS_CHOICES = [
-        (0, 'Pending'),
-        (1, 'Completed'),
-        (2, 'Failed'),
-    ]
-
-    # Each payment belongs to one order.
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
-
-    # Stripe payment identifier and current state.
-    stripe_pid = models.CharField(max_length=255, blank=True, null=True)
-    status = models.IntegerField(default=0, choices=STATUS_CHOICES)
-    paid_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        # Display a readable status instead of the raw integer.
-        status_display = dict(self.STATUS_CHOICES).get(self.status, 'Unknown')
-        return f"Payment for Order {self.order.reference_code} - Status: {status_display}"

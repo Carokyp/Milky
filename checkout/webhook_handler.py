@@ -47,12 +47,15 @@ class StripeWHHandler:
         # Check if order already exists
         order = Order.objects.filter(
             customer=customer,
+            stripe_pid=payment_intent.id,
             delivery_name=order_data.get('delivery_name', ''),
             delivery_address=order_data.get('delivery_address', ''),
             delivery_postcode=order_data.get('delivery_postcode', ''),
         ).first()
 
         if order:
+            order.status = 1  # Completed
+            order.save()
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: Order already in database',
                 status=200)
@@ -62,6 +65,8 @@ class StripeWHHandler:
         try:
             order = Order.objects.create(
                 customer=customer,
+                status=1,  # Completed
+                stripe_pid=payment_intent.id,
                 delivery_name=order_data.get('delivery_name', ''),
                 delivery_surname=order_data.get('delivery_surname', ''),
                 delivery_phone=order_data.get('delivery_phone', ''),
@@ -106,6 +111,11 @@ class StripeWHHandler:
 
     def handle_payment_intent_payment_failed(self, event):
         """Handle the payment_intent.payment_failed webhook from Stripe"""
+        payment_intent = event.data.object
+        order = Order.objects.filter(stripe_pid=payment_intent.id).first()
+        if order:
+            order.status = 2  # Cancelled
+            order.save()
         return HttpResponse(
             content=f'Webhook received: {event["type"]}',
             status=200)

@@ -109,6 +109,7 @@ def checkout(request):
 
 @login_required
 def checkout_success(request):
+    pid = request.GET.get('payment_intent')
     order_data = request.session.get('order_data', {})
     cart = request.session.get('cart', {})
 
@@ -123,6 +124,7 @@ def checkout_success(request):
 
     order = Order(
         customer=customer,
+        stripe_pid=pid,
         delivery_name=order_data['delivery_name'],
         delivery_surname=order_data['delivery_surname'],
         delivery_phone=order_data['delivery_phone'],

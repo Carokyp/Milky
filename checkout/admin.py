@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.contrib import admin
 from django.db.models import Sum
 
-from .models import Order, OrderItem, Payment
+from .models import Order, OrderItem
 
 # Register your models here.
 
@@ -70,4 +70,3 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Order, OrderAdmin)
-admin.site.register(Payment)
