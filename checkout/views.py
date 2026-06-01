@@ -155,4 +155,7 @@ def checkout_success(request):
 @login_required
 def order_confirmation(request, reference_code):
     order = get_object_or_404(Order, reference_code=reference_code, customer__usercustomer__user=request.user)
-    return render(request, 'checkout/checkout_success.html', {'order': order})
+    return render(request, 'checkout/checkout_success.html', {
+        'order': order,
+        'user_email': request.user.email,
+    })

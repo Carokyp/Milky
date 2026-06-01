@@ -43,20 +43,28 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ('reference_code', 'customer__name', 'customer__surname')
 
     def save_formset(self, request, form, formset, change):
+        # Prepare OrderItems in memory without saving to DB yet
         instances = formset.save(commit=False)
 
+        # Save each OrderItem — triggers OrderItem.save()
+        # which automatically recalculates total_price
         for instance in instances:
             instance.save()
 
+        # Delete any OrderItems the admin marked for removal
         for deleted_object in formset.deleted_objects:
             deleted_object.delete()
 
+        # Best practice — save Many-to-Many relationships if any exist
         formset.save_m2m()
 
+        # Recalculate the order total after all changes
+        # Especially needed after an OrderItem is deleted
         order = form.instance
         order.order_total = order.items.aggregate(total=Sum('total_price'))['total'] or Decimal('0.00')
         order.save()
 
+    # custom JavaScript to show/hide invoice fields based on "same as delivery" checkbox
     class Media:
         js = ('js/admin_invoice.js',)
 
