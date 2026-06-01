@@ -39,10 +39,11 @@ async function handleSubmit(e) {
     document.querySelector("#submit-button").disabled = true;
     document.querySelector("#submit-button").textContent = "Processing...";
 
-    // 1. First, save the data to the session.
     const form = document.querySelector("#payment-form");
     const formData = new FormData(form);
+    const cacheUrl = document.getElementById('payment-form').dataset.cacheUrl;
 
+    // 1. Save form data to session
     const saveResponse = await fetch(checkoutUrl, {
         method: "POST",
         headers: { "X-CSRFToken": formData.get("csrfmiddlewaretoken") },
@@ -56,11 +57,38 @@ async function handleSubmit(e) {
         return;
     }
 
-    // 2. Then, Stripe confirms and redirects
+    // 2. Cache checkout data in PaymentIntent metadata
+    const cacheData = new FormData();
+    cacheData.append('client_secret', clientSecret);
+    cacheData.append('csrfmiddlewaretoken', formData.get("csrfmiddlewaretoken"));
+
+    const cacheResponse = await fetch(cacheUrl, {
+        method: "POST",
+        headers: { "X-CSRFToken": formData.get("csrfmiddlewaretoken") },
+        body: cacheData,
+    });
+    if (!cacheResponse.ok) {
+        document.querySelector("#card-errors").textContent = "Error processing payment data.";
+        document.querySelector("#submit-button").disabled = false;
+        document.querySelector("#submit-button").textContent = "Complete Order";
+        return;
+    }
+
+    // 3. Stripe confirms and redirects
     const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
             return_url: window.location.origin + "/checkout/success/",
+            shipping: {
+                name: document.querySelector('[name="delivery_name"]').value + ' ' + document.querySelector('[name="delivery_surname"]').value,
+                phone: document.querySelector('[name="delivery_phone"]').value,
+                address: {
+                    line1: document.querySelector('[name="delivery_address"]').value,
+                    city: document.querySelector('[name="delivery_city"]').value,
+                    postal_code: document.querySelector('[name="delivery_postcode"]').value,
+                    country: document.querySelector('[name="delivery_country"]').value,
+                }
+            },
         },
     });
 

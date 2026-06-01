@@ -1,10 +1,13 @@
 import stripe
+import json
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render, get_object_or_404
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 from accounts.models import UserCustomer
 from cart.context_processors import cart_contents
@@ -14,6 +17,26 @@ from .models import Order, OrderItem
 from products.models import Product
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+@require_POST
+def cache_checkout_data(request):
+    try:
+        pid = request.POST.get("client_secret").split("_secret")[0]
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe.PaymentIntent.modify(
+            pid,
+            metadata={
+                "user_id": request.user.id,
+                "save_info": request.POST.get("save_info"),
+                "order_data": json.dumps(request.session.get("order_data", {})),
+                "cart": json.dumps(request.session.get("cart", {})),
+            },
+        )
+        return HttpResponse(status=200)
+    except Exception as e:
+        messages.error(request, "Sorry, your payment cannot be processed right now.")
+        return HttpResponse(content=e, status=400)
 
 
 @login_required

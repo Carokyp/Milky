@@ -7,4 +7,5 @@ urlpatterns = [
     path('success/', views.checkout_success, name='checkout_success'),
     path('confirmation/<str:reference_code>/', views.order_confirmation, name='order_confirmation'),
     path('webhook/', webhook, name='webhook'),
+    path('cache_checkout_data/', views.cache_checkout_data, name='cache_checkout_data'),
 ]
