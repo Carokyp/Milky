@@ -16,7 +16,6 @@ class OrderForm(forms.ModelForm):
             "delivery_county",
             "delivery_postcode",
             "delivery_country",
-
             "invoice_name",
             "invoice_surname",
             "invoice_phone",
@@ -25,11 +24,13 @@ class OrderForm(forms.ModelForm):
             "invoice_county",
             "invoice_postcode",
             "invoice_country",
-
+            "email",
         )
 
     def __init__(self, *args, **kwargs):
+        user_authenticated = kwargs.pop("user_authenticated", False)
         super().__init__(*args, **kwargs)
+
         placeholders = {
             "delivery_name": "Name",
             "delivery_surname": "Surname",
@@ -39,7 +40,6 @@ class OrderForm(forms.ModelForm):
             "delivery_county": "County",
             "delivery_postcode": "Postal Code",
             "delivery_country": "Country",
-
             "invoice_name": "Name",
             "invoice_surname": "Surname",
             "invoice_phone": "Phone Number",
@@ -48,7 +48,12 @@ class OrderForm(forms.ModelForm):
             "invoice_county": "County",
             "invoice_postcode": "Postal Code",
             "invoice_country": "Country",
+            "email": "Email Address",
         }
+
+        # Make email not required if user is authenticated
+        if user_authenticated:
+            self.fields["email"].required = False
 
         self.fields["delivery_name"].widget.attrs["autofocus"] = True
 
@@ -65,7 +70,9 @@ class OrderForm(forms.ModelForm):
                 country_field.label = False  # type: ignore
                 existing_choices = [
                     (str(code), str(name))
-                    for code, name in cast(list[tuple[object, object]], list(country_field.choices))
+                    for code, name in cast(
+                        list[tuple[object, object]], list(country_field.choices)
+                    )
                     if code
                 ]
                 country_field.choices = [("", "Country *"), *existing_choices]
@@ -82,9 +89,14 @@ class OrderForm(forms.ModelForm):
 
         # Make invoice fields not required (filled automatically if same as delivery)
         invoice_fields = [
-            'invoice_name', 'invoice_surname', 'invoice_phone',
-            'invoice_address', 'invoice_city', 'invoice_county',
-            'invoice_postcode', 'invoice_country',
+            "invoice_name",
+            "invoice_surname",
+            "invoice_phone",
+            "invoice_address",
+            "invoice_city",
+            "invoice_county",
+            "invoice_postcode",
+            "invoice_country",
         ]
         for field in invoice_fields:
             self.fields[field].required = False  # type: ignore

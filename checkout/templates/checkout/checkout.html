@@ -134,6 +134,15 @@
                     {{ form.invoice_country|as_crispy_field }}
                 </div>
             </fieldset>
+
+            {% if not user.is_authenticated %}
+                <fieldset class="rounded px-3 mb-2">
+                    <legend class="fieldset-label small text-black px-2 w-auto">Email</legend>
+                    {{ form.email|as_crispy_field }}
+                </fieldset>
+            {% endif %}
+
+            <fieldset class="rounded px-3 mb-2"></fieldset>
             <fieldset class="px-3">
                 <legend class="fieldset-label small text-black px-2 w-auto">Payment</legend>
                 <div class="card p-3 mb-3">

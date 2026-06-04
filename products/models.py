@@ -12,7 +12,9 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
     # Media
-    product_image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    product_image = models.ImageField(
+        upload_to="product_images/", null=True, blank=True
+    )
     product_image_url = models.URLField(null=True, blank=True)
 
     # Stock

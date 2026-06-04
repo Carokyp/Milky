@@ -21,7 +21,7 @@ class Customer(models.Model):
 
 class UserCustomer(models.Model):
     # Relationships
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 
     # Status
