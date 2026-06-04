@@ -4,16 +4,16 @@ from django_countries.fields import CountryField
 
 class Customer(models.Model):
     # Personal info
-    name = models.CharField(max_length=255)
-    surname = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=20)
+    name = models.CharField(max_length=255, blank=True)
+    surname = models.CharField(max_length=255, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
 
     # Address
-    address = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=255, blank=True)
     county = models.CharField(max_length=100, null=True, blank=True)
-    postal_code = models.CharField(max_length=20)
-    country = CountryField(null=True)
+    postal_code = models.CharField(max_length=20, blank=True)
+    country = CountryField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.name} {self.surname}"

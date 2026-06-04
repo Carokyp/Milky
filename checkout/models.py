@@ -120,4 +120,3 @@ class OrderItem(models.Model):
     def __str__(self):
         # Clear label for admin lists and debugging.
         return f"Order {self.order.reference_code} | {self.product.name} (SKU: {self.sku}) x {self.quantity}"
-

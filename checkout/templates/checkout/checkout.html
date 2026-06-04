@@ -140,6 +140,9 @@
                     <div id="payment-element">
                         <!--Stripe.js injects the Payment Element-->
                     </div>
+                    <p id="payment-status" class="small text-danger text-center mt-2 mb-0">
+                        Payment form not ready. Please wait a moment.
+                    </p>
                     <!-- Card errors OUTSIDE payment-element -->
                     <div class="mb-3 text-danger" id="card-errors" role="alert"></div>
                     <p class="small text-danger text-center my-3">
@@ -154,7 +157,7 @@
                     <a href="{% url 'view_cart' %}" class="complete-order-btn btn rounded-pill px-4 py-2 mt-3 fs-6">
                         <p class="mb-0">Adjust Bag</p>
                     </a>
-                    <button id="submit-button" class="complete-order-btn btn rounded-pill px-4 py-2 mt-3 fs-6">
+                    <button id="submit-button" class="complete-order-btn btn rounded-pill px-4 py-2 mt-3 fs-6" disabled>
                         <span class="mb-0">Complete Order</span>
                     </button>
                 </div>

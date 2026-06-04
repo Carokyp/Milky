@@ -1,6 +1,5 @@
 from django import forms
 from .models import Customer
-from django_countries.widgets import CountrySelectWidget
 
 
 class CustomerForm(forms.ModelForm):
@@ -15,6 +14,6 @@ class CustomerForm(forms.ModelForm):
             'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Address'}),
             'postal_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Postal Code'}),
             'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City'}),
-            'country': CountrySelectWidget(attrs={'class': 'form-control'}),
+            'county': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'County'}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone Number'}),
         }

@@ -1,11 +1,11 @@
-// Get Stripe keys from Django template
+// Get Stripe keys and URLs from Django template
 const stripePublicKey = JSON.parse(document.getElementById('id_stripe_public_key').textContent);
 const clientSecret = JSON.parse(document.getElementById('id_client_secret').textContent);
 const checkoutUrl = document.getElementById('payment-form').dataset.checkoutUrl;
+const cacheUrl = document.getElementById('payment-form').dataset.cacheUrl;
 
 // Toggle the invoice fields visibility when the "same-as-delivery" 
 // checkbox changes — hide them when checked, show them when unchecked.
-
 document.getElementById('same-as-delivery').addEventListener('change', function () {
     const invoiceFields = document.getElementById('invoice-fields');
     invoiceFields.style.display = this.checked ? 'none' : 'block';
@@ -13,10 +13,14 @@ document.getElementById('same-as-delivery').addEventListener('change', function 
 
 // Stripe payment handling
 const stripe = Stripe(stripePublicKey);
+const submitButton = document.querySelector("#submit-button");
+const paymentStatus = document.querySelector("#payment-status");
 let elements;
 
-initialize();
+// Disable button until Stripe is ready
+submitButton.disabled = true;
 
+initialize();
 document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
 
 async function initialize() {
@@ -31,17 +35,23 @@ async function initialize() {
 
     const paymentElement = elements.create("payment");
     paymentElement.mount("#payment-element");
+
+    // Enable button when Stripe is ready
+    paymentElement.on('ready', function () {
+        submitButton.disabled = false;
+        paymentStatus.style.display = "none";
+    });
 }
 
 async function handleSubmit(e) {
     e.preventDefault();
 
-    document.querySelector("#submit-button").disabled = true;
-    document.querySelector("#submit-button").textContent = "Processing...";
+    // Disable button and show processing state
+    submitButton.disabled = true;
+    submitButton.querySelector('span').textContent = "Processing...";
 
     const form = document.querySelector("#payment-form");
     const formData = new FormData(form);
-    const cacheUrl = document.getElementById('payment-form').dataset.cacheUrl;
 
     // 1. Save form data to session
     const saveResponse = await fetch(checkoutUrl, {
@@ -52,8 +62,8 @@ async function handleSubmit(e) {
     const data = await saveResponse.json();
     if (data.status !== 'ok') {
         document.querySelector("#card-errors").textContent = "Error saving order data.";
-        document.querySelector("#submit-button").disabled = false;
-        document.querySelector("#submit-button").textContent = "Complete Order";
+        submitButton.disabled = false;
+        submitButton.querySelector('span').textContent = "Complete Order";
         return;
     }
 
@@ -69,8 +79,8 @@ async function handleSubmit(e) {
     });
     if (!cacheResponse.ok) {
         document.querySelector("#card-errors").textContent = "Error processing payment data.";
-        document.querySelector("#submit-button").disabled = false;
-        document.querySelector("#submit-button").textContent = "Complete Order";
+        submitButton.disabled = false;
+        submitButton.querySelector('span').textContent = "Complete Order";
         return;
     }
 
@@ -93,12 +103,14 @@ async function handleSubmit(e) {
     });
 
     if (error) {
-        if (error.type === "card_error" || error.type === "validation_error") {
+        if (error.type === "card_error") {
             document.querySelector("#card-errors").textContent = error.message;
+        } else if (error.type === "validation_error") {
+            document.querySelector("#card-errors").textContent = "";
         } else {
             document.querySelector("#card-errors").textContent = "An unexpected error occurred.";
         }
-        document.querySelector("#submit-button").disabled = false;
-        document.querySelector("#submit-button").textContent = "Complete Order";
+        submitButton.disabled = false;
+        submitButton.querySelector('span').textContent = "Complete Order";
     }
 }

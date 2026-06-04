@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 
+from accounts.models import Customer
 from accounts.models import UserCustomer
 from cart.context_processors import cart_contents
 
@@ -28,7 +29,7 @@ def cache_checkout_data(request):
             pid,
             metadata={
                 "user_id": request.user.id,
-                "save_info": request.POST.get("save_info"),
+                "save_info": request.POST.get("save-info"),
                 "order_data": json.dumps(request.session.get("order_data", {})),
                 "cart": json.dumps(request.session.get("cart", {})),
             },
@@ -51,18 +52,22 @@ def checkout(request):
     customer = user_customers.customer if user_customers else None
 
     if not customer:
-        messages.warning(request, 'Please complete your profile before checkout.')
-        return redirect(reverse('profile'))
+        customer = Customer.objects.create()
+        UserCustomer.objects.create(
+            user=request.user,
+            customer=customer,
+            enabled=True,
+        )
 
     order_form = OrderForm(initial={
-        'delivery_name': customer.name if customer else '',
-        'delivery_surname': customer.surname if customer else '',
-        'delivery_phone': customer.phone_number if customer else '',
-        'delivery_address': customer.address if customer else '',
-        'delivery_city': customer.city if customer else '',
-        'delivery_county': customer.county if customer else '',
-        'delivery_postcode': customer.postal_code if customer else '',
-        'delivery_country': customer.country if customer else '',
+        'delivery_name': customer.name or '',
+        'delivery_surname': customer.surname or '',
+        'delivery_phone': customer.phone_number or '',
+        'delivery_address': customer.address or '',
+        'delivery_city': customer.city or '',
+        'delivery_county': customer.county or '',
+        'delivery_postcode': customer.postal_code or '',
+        'delivery_country': customer.country or '',
     })
 
     if request.method == 'POST':
@@ -87,6 +92,7 @@ def checkout(request):
                 'invoice_county': form.cleaned_data.get('invoice_county', ''),
                 'invoice_postcode': form.cleaned_data.get('invoice_postcode', ''),
                 'invoice_country': str(form.cleaned_data.get('invoice_country', '')),
+                'save_info': bool(request.POST.get('save-info')),
             }
             return JsonResponse({'status': 'ok'})
         else:
@@ -164,6 +170,19 @@ def checkout_success(request):
             messages.error(request, 'Product not found.')
             order.delete()
             return redirect(reverse('cart'))
+
+    # Save delivery info to profile if checkbox was ticked
+    save_info = order_data.get('save_info')
+    if save_info and customer:
+        customer.name = order_data['delivery_name']
+        customer.surname = order_data['delivery_surname']
+        customer.phone_number = order_data['delivery_phone']
+        customer.address = order_data['delivery_address']
+        customer.city = order_data['delivery_city']
+        customer.county = order_data.get('delivery_county', '')
+        customer.postal_code = order_data.get('delivery_postcode', '')
+        customer.country = order_data['delivery_country']
+        customer.save()
 
     # Clear session
     del request.session['cart']

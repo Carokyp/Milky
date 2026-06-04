@@ -59,11 +59,28 @@ body {
 
 /* #region Forms */
 
-/* Country flag */
-.country-select-flag {
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0 8px 0 0 !important;
+/* Country select field */
+select:invalid,
+select option[value=""] {
+    color: #aab7c4 !important;
+
+}
+
+select:has(option[value=""]:checked) {
+    color: #aab7c4 !important;
+}
+
+/* Placeholder colors */
+input::placeholder,
+textarea::placeholder {
+    color: #aab7c4 !important;
+    opacity: 1;
+}
+
+.county-field,
+.county-field::placeholder {
+    color: #aab7c4 !important;
+    opacity: 1;
 }
 
 /* Input fields for checkout forms */
@@ -83,11 +100,34 @@ body {
 .checkout-btn,
 .delete-btn,
 .update-profile-btn,
-.complete-order-btn{
+.complete-order-btn,
+.continue-shopping-btn{
     background-color: var(--brown);
     color: white;
     width: 80%;
+    border: none;
     transition: background-color 0.3s ease;
+}
+
+.shop-now-button:hover,
+.view-details-btn:hover,
+.btn-detail-page:hover,
+.btn-see-other:hover,
+.checkout-btn:hover,
+.delete-btn:hover,
+.update-profile-btn:hover,
+.complete-order-btn:hover,
+.continue-shopping-btn:hover {  
+    background-color: var(--light-brown);
+    color: white;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+#submit-button:disabled {
+    background-color: var(--light-brown) !important;
+    color: white !important;
+    border: none !important;
 }
 
 .btn-quantity,
@@ -102,18 +142,6 @@ body {
 .btn-quantity-cart .btn,
 .btn-quantity-detail {
     border: none !important;
-}
-
-.shop-now-button:hover,
-.view-details-btn:hover,
-.btn-detail-page:hover,
-.btn-see-other:hover,
-.checkout-btn:hover,
-.delete-btn:hover,
-.update-profile-btn:hover {
-    background-color: var(--brown);
-    color: white;
-    transition: background-color 0.3s ease;
 }
 
 .delete-btn {

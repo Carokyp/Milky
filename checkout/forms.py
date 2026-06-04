@@ -1,4 +1,5 @@
 from django import forms
+from typing import cast
 from .models import Order
 
 
@@ -52,9 +53,22 @@ class OrderForm(forms.ModelForm):
         self.fields["delivery_name"].widget.attrs["autofocus"] = True
 
         for field in self.fields:
-            if field in ("delivery_country", "invoice_country"):
-                self.fields[field].widget.attrs["class"] = "form-control"
+            if field in ("delivery_county", "invoice_county"):
+                self.fields[field].widget.attrs["class"] = "form-control county-field"
+                self.fields[field].widget.attrs["placeholder"] = placeholders[field]
                 self.fields[field].label = False  # type: ignore
+                continue
+
+            if field in ("delivery_country", "invoice_country"):
+                country_field = cast(forms.ChoiceField, self.fields[field])
+                country_field.widget.attrs["class"] = "form-control"
+                country_field.label = False  # type: ignore
+                existing_choices = [
+                    (str(code), str(name))
+                    for code, name in cast(list[tuple[object, object]], list(country_field.choices))
+                    if code
+                ]
+                country_field.choices = [("", "Country *"), *existing_choices]
                 continue
 
             if self.fields[field].required:
@@ -73,4 +87,4 @@ class OrderForm(forms.ModelForm):
             'invoice_postcode', 'invoice_country',
         ]
         for field in invoice_fields:
-            self.fields[field].required = False
+            self.fields[field].required = False  # type: ignore
