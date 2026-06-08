@@ -10,6 +10,7 @@ html {
     --light-cream: #faeade;
     --brown: #523122;
     --light-brown: #8c5e4a;
+    --light-gray: #5c5c5c;
 
     /* Typography */
     --font-xs: 0.6rem;
@@ -57,6 +58,18 @@ body {
 
 /* #endregion */
 
+/* #region Allauth form formatting */
+
+.allauth-form-inner-content input {
+    border-color: #000;
+}
+
+.allauth-form-inner-content label:not([for='id_remember']) {
+    display: none;
+}
+
+/* #endregion */
+
 /* #region Forms */
 
 /* Country select field */
@@ -85,7 +98,9 @@ textarea::placeholder {
 
 /* Input fields for checkout forms */
 #payment-form .form-control,
-#card-element{
+#card-element,
+#profile-form .form-control,
+#profile-form select {
     color: #000000;
     border: 1px solid #000000;
 }
@@ -160,7 +175,7 @@ textarea::placeholder {
 
 /* #endregion */
 
-/* #region product detail */
+/* #region Product detail */
 
 /* Product icon */
 .product-icon {
@@ -189,6 +204,27 @@ textarea::placeholder {
 .delete-btn,
 .btn-quantity-cart,
 .quantity-value-cart {
+    font-size: var(--font-sm);
+}
+
+/* #endregion */
+
+/* #region Profile */
+
+.profile-avatar {
+    width: 56px;
+    height: 56px;
+    background: var(--light-brown);
+    font-size: var(--font-lg);
+    color: white;
+}
+
+.profile-section-title {
+    font-size: var(--font-sm); 
+    letter-spacing: 0.05em;
+}
+
+.profile-email {
     font-size: var(--font-sm);
 }
 

@@ -4,43 +4,62 @@
 
 {% block extra_title %}Profile - Milky{% endblock %}
 
-{% block page_header %}
-<div class="container header-container">
-    <div class="row">
-        <div class="col-sm-12">
-        </div>
-    </div>
-</div>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
 
 {% block content %}
-
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12">
-            <h1 class="mb-4">Profile</h1>
-
-            <form method="post">
-                <h2 class="mb-4">Details</h2>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form method="post" id="profile-form">
                 {% csrf_token %}
+                <div class="card border-0 p-4">
 
-                <p>{{ form.name |as_crispy_field }}</p>
-                <p>{{ form.surname |as_crispy_field }}</p>
+                    <!-- Avatar + name-->
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="profile-avatar align-items-center justify-content-center d-flex 
+                        flex-shrink-0 rounded-circle text-uppercase fw-bold">
+                            {% if customer.name %}
+                                {{ customer.name|first|upper }}{{ customer.surname|first|upper }}
+                            {% else %}
+                                {{ request.user.username|first|upper }}
+                            {% endif %}
+                        </div>
+                        <div>
+                            {% if customer.name %}
+                                <p class="mb-0 fw-bold">{{ customer.name }} {{ customer.surname }}</p>
+                            {% else %}
+                                <p class="mb-0 fw-bold">{{ request.user.username }}</p>
+                            {% endif %}
+                            <p class="mb-0 small text-muted profile-email">{{ request.user.email }}</p>
+                        </div>
+                    </div>
 
-                <h2 class="mb-4">Delivery Information</h2>
-                <p>{{ form.address |as_crispy_field }}</p>
-                <p>{{ form.city |as_crispy_field }}</p>
-                <p>{{ form.postal_code |as_crispy_field }}</p>
-                <p>{{ form.country |as_crispy_field }}</p>
-                <p>{{ form.phone_number |as_crispy_field }}</p>
+                    <!-- Personal details -->
+                    <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</p>
+                    {{ form.name|as_crispy_field }}
+                    {{ form.surname|as_crispy_field }}
+                    {{ form.phone_number|as_crispy_field }}
 
-                <!-- TODO: Add payment information with Stripe later -->
+                    <hr>
 
+                    <!-- Delivery address -->
+                    <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Delivery address</p>
+                    {{ form.address|as_crispy_field }}
+                    {{ form.city|as_crispy_field }}
+                    {{ form.postal_code|as_crispy_field }}
+                    {{ form.country|as_crispy_field }}
 
-                <button type="submit" class="btn-milky btn rounded-pill update-profile-btn">Update Profile</button>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn-milky btn rounded-pill px-4 py-2">
+                            Update profile
+                        </button>
+                    </div>
+
+                </div>
             </form>
         </div>
     </div>
 </div>
-
 {% endblock %}
