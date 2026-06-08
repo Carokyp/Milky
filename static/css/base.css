@@ -101,19 +101,19 @@ textarea::placeholder {
     transition: background-color 0.3s ease;
 }
 
-.shop-now-button:hover,
-.view-details-btn:hover,
-.btn-detail-page:hover,
-.btn-see-other:hover,
-.checkout-btn:hover,
-.delete-btn:hover,
-.update-profile-btn:hover,
-.complete-order-btn:hover,
-.continue-shopping-btn:hover {  
+.btn-milky:hover {
     background-color: var(--light-brown);
     color: white;
-    transition: background-color 0.3s ease;
     border: none;
+}
+
+.btn-milky:focus,
+.btn-milky:active,
+.btn-milky:disabled {
+    background-color: var(--brown) !important;
+    color: white !important;
+    border: none !important;
+    opacity: 0.7;
 }
 
 #submit-button:disabled {
