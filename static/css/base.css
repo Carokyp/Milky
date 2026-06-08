@@ -93,15 +93,7 @@ textarea::placeholder {
 
 /* #region Buttons */
 
-.shop-now-button,
-.view-details-btn,
-.btn-detail-page,
-.btn-see-other,
-.checkout-btn,
-.delete-btn,
-.update-profile-btn,
-.complete-order-btn,
-.continue-shopping-btn{
+.btn-milky {
     background-color: var(--brown);
     color: white;
     width: 80%;
