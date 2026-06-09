@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import UserCustomer
@@ -35,3 +35,16 @@ def profile_view(request):
     }
 
     return render(request, "accounts/profile.html", context)
+
+
+def orders_history_view(request, reference_code):
+    """View for the user's order history."""
+    order = get_object_or_404(
+        Order,
+        reference_code=reference_code,
+        customer__usercustomer__user=request.user
+    )
+    return render(request, 'checkout/checkout_success.html', {
+        'order': order,
+        'from_profile': True,
+    })
