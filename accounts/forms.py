@@ -44,3 +44,8 @@ class CustomerForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].label = False  # type: ignore
+
+        # Replace blank label on country dropdown
+        choices = list(self.fields["country"].choices)
+        choices[0] = ("", "Country")
+        self.fields["country"].choices = choices

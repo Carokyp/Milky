@@ -83,6 +83,14 @@ select:has(option[value=""]:checked) {
     color: #aab7c4 !important;
 }
 
+#id_country option:not(:first-child) {
+    color: black;
+}
+
+#id_country option:first-child {
+    color: #adb5bd;
+}
+
 /* Placeholder colors */
 input::placeholder,
 textarea::placeholder {
