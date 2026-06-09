@@ -69,10 +69,11 @@
                                 <div>
                                     <p class="mb-0 fw-bold small">{{ order.reference_code }}</p>
                                     <p class="mb-0 small text-muted">{{ order.created_at|date:"d M Y" }}</p>
+                                    <p class="mb-0 small text-muted">{{ order.items.count }} item{% if order.items.count > 1 %}s{% endif %}</p>
                                 </div>
-                                <div class="text-end">
+                                <div class="text-end justify-content-center d-flex flex-column">
                                     <p class=" mb-0 small fw-bold">${{ order.grand_total }}</p>
-                                    <span class=" mb-2 badge rounded-pill 
+                                    <span class="badge rounded-pill 
                                         {% if order.status == 1 %}bg-success
                                         {% elif order.status == 2 %}bg-danger
                                         {% else %}bg-warning text-dark{% endif %}">
@@ -80,7 +81,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <a href="{% url 'order_confirmation' order.reference_code %}" class="small text-muted">
+                            <a href="{% url 'order_history' order.reference_code %}" class="small text-muted">
                                 View details →
                             </a>
                         </div>
