@@ -1,0 +1,23 @@
+Hello {{ order.delivery_name }},
+
+Thank you for your order! Here are your order details:
+
+Order reference: {{ order.reference_code }}
+Date: {{ order.created_at|date:"d M Y" }}
+
+Items ordered:
+{% for item in order.items.all %}
+- {{ item.product.name }} x {{ item.quantity }} - ${{ item.total_price }}
+{% endfor %}
+
+Order total: ${{ order.order_total }}
+Delivery: ${{ order.delivery_cost }}
+Grand total: ${{ order.grand_total }}
+
+Delivery to:
+{{ order.delivery_name }} {{ order.delivery_surname }}
+{{ order.delivery_address }}, {{ order.delivery_city }}, {{ order.delivery_country }}
+
+If you have any questions, contact us at {{ contact_email }}.
+
+Thank you for choosing Milky! 🥛
