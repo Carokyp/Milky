@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import UserCustomer
+from checkout.models import Order
 from .forms import CustomerForm
 
 
@@ -11,6 +12,7 @@ def profile_view(request):
 
     user_customers = UserCustomer.objects.filter(user=request.user).first()
     customer = user_customers.customer if user_customers else None
+    orders = Order.objects.filter(customer=customer) if customer else None
 
     if request.method == "POST":
         form = CustomerForm(request.POST, instance=customer)
@@ -29,6 +31,7 @@ def profile_view(request):
         "user_customers": user_customers,
         "customer": customer,
         "form": form,
+        'orders': orders,
     }
 
     return render(request, "accounts/profile.html", context)

@@ -4,9 +4,6 @@
 
 {% block extra_title %}Profile - Milky{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/profile.css' %}">
-{% endblock %}
 
 {% block content %}
 <div class="container py-4">
@@ -21,16 +18,16 @@
                         <div class="profile-avatar align-items-center justify-content-center d-flex 
                         flex-shrink-0 rounded-circle text-uppercase fw-bold">
                             {% if customer.name %}
-                                {{ customer.name|first|upper }}{{ customer.surname|first|upper }}
+                            {{ customer.name|first|upper }}{{ customer.surname|first|upper }}
                             {% else %}
-                                {{ request.user.username|first|upper }}
+                            {{ request.user.username|first|upper }}
                             {% endif %}
                         </div>
                         <div>
                             {% if customer.name %}
-                                <p class="mb-0 fw-bold">{{ customer.name }} {{ customer.surname }}</p>
+                            <p class="mb-0 fw-bold">{{ customer.name }} {{ customer.surname }}</p>
                             {% else %}
-                                <p class="mb-0 fw-bold">{{ request.user.username }}</p>
+                            <p class="mb-0 fw-bold">{{ request.user.username }}</p>
                             {% endif %}
                             <p class="mb-0 small text-muted profile-email">{{ request.user.email }}</p>
                         </div>
@@ -59,6 +56,41 @@
 
                 </div>
             </form>
+            <div class="card border-0 p-4 mt-4">
+
+                <!-- Orders History -->
+                <div class=" row d-flex align-items-center gap-3 mb-4">
+                    <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Orders History</p>
+                    <div class="">
+                        {% if orders %}
+                        {% for order in orders %}
+                        <div class="border-bottom py-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <p class="mb-0 fw-bold small">{{ order.reference_code }}</p>
+                                    <p class="mb-0 small text-muted">{{ order.created_at|date:"d M Y" }}</p>
+                                </div>
+                                <div class="text-end">
+                                    <p class=" mb-0 small fw-bold">${{ order.grand_total }}</p>
+                                    <span class=" mb-2 badge rounded-pill 
+                                        {% if order.status == 1 %}bg-success
+                                        {% elif order.status == 2 %}bg-danger
+                                        {% else %}bg-warning text-dark{% endif %}">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            <a href="{% url 'order_confirmation' order.reference_code %}" class="small text-muted">
+                                View details →
+                            </a>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <p class="mb-0 small text-muted text-center">No orders found yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
