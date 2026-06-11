@@ -23,7 +23,11 @@
               {% for item in cart_items %}
                 <div class="row mb-2">
                   <div class="col-4">
+                    {% if item.product.product_image %}
                     <img src="{{ item.product.product_image.url }}" class="rounded w-100" alt="{{ item.product.name }}" />
+                    {% else %}
+                    <img src="{% static 'images/no_image.png' %}" class="rounded w-100" alt="{{ item.product.name }}" />
+                    {% endif %}
                   </div>
                   <div class="col-8">
                     <p class="my-0 text-uppercase">

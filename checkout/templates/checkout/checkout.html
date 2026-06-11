@@ -31,7 +31,7 @@
 
         <div class="col-12">
             <p>Order Summary ({{ cart_items|length }})</p>
-            <p class="">Items in your cart</p>
+            <p>Items in your cart</p>
         </div>
         {% for item in cart_items %}
         <div class="d-flex align-items-center my-4 gap-3">
@@ -41,7 +41,7 @@
                 {% if item.product.product_image %}
                 <img src="{{ item.product.product_image.url }}" class="img-fluid rounded" alt="{{ item.product.name }}">
                 {% else %}
-                <img src="{{ MEDIA_URL }}no_image.png" class="img-fluid" alt="{{ item.product.name }}">
+                <img src="{% static 'images/no_image.png' %}" class="img-fluid" alt="{{ item.product.name }}">
                 {% endif %}
             </div>
 
