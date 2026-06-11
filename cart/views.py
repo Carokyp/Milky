@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib import messages
 from decimal import Decimal
@@ -67,6 +68,12 @@ def add_to_cart(request, product_id):
     """Add a product to the cart"""
     try:
         product = get_object_or_404(Product, pk=product_id)
+
+        # Vérification disponibilité en premier !
+        if not product.is_available:
+            messages.error(request, 'This product is not available.')
+            return redirect(reverse('product_detail', args=[product_id]))
+
         quantity = _parse_quantity(request.POST.get("quantity"))
         quantity = max(1, quantity)
         cart = request.session.get("cart", {})
@@ -83,20 +90,11 @@ def add_to_cart(request, product_id):
             )
 
         if existing >= 99:
-            messages.info(
-                request, f"{product.name} is already at the maximum quantity (99)."
-            )
+            messages.info(request, f"{product.name} is already at the maximum quantity (99).")
         elif new_total < existing + quantity:
-            messages.warning(
-                request,
-                f"Requested quantity was reduced so {product.name} is capped at 99 in your cart.",
-            )
+            messages.warning(request, f"Requested quantity was reduced so {product.name} is capped at 99 in your cart.")
         else:
-            messages.success(
-                request,
-                f"{product.name} has been added to your cart!",
-                extra_tags="cart",
-            )
+            messages.success(request, f"{product.name} has been added to your cart!", extra_tags="cart")
 
         return redirect(request.POST.get("redirect_url", "/"))
 
