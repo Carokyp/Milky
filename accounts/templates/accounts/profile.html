@@ -23,7 +23,7 @@
                             {{ request.user.username|first|upper }}
                             {% endif %}
                         </div>
-                        <div>
+                        <div style=" min-width: 0;">
                             {% if customer.name %}
                             <p class="mb-0 fw-bold">{{ customer.name }} {{ customer.surname }}</p>
                             {% else %}
