@@ -163,6 +163,29 @@ textarea::placeholder {
     min-width: 75px;
 }
 
+/* Buttons Superuser edit/delete */
+
+.superuser-btn-edit{
+    border: 1px solid var(--brown);
+    color: var(--brown);
+    font-size: var(--font-sm);
+}
+
+.superuser-btn-delete {
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    font-size: var(--font-sm);
+}
+
+.superuser-btn-edit:hover {
+    background-color: var(--brown);
+    color: white;
+}
+.superuser-btn-delete:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
 
 /* #endregion */
 
@@ -234,6 +257,9 @@ textarea::placeholder {
 
 .profile-email {
     font-size: var(--font-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* #endregion */

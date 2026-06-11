@@ -26,7 +26,7 @@
         </li>
         {% if request.user.is_authenticated %}
         {% if request.user.is_superuser %}
-        <li><a href="" class="dropdown-item text-dark">Products Management</a></li>
+        <li><a href="{% url 'add_product' %}" class="dropdown-item text-dark">Products Management</a></li>
         {% endif %}
         <li><a class="dropdown-item text-dark" href="{% url 'profile' %}">My Profile</a></li>
         <li><a class="dropdown-item text-dark" href="{% url 'account_logout' %}">Logout</a></li>
