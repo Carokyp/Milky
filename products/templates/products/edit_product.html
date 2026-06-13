@@ -14,7 +14,13 @@
 
             <form method="POST" enctype="multipart/form-data" action="{% url 'edit_product' product.id %}">
                 {% csrf_token %}
-                {{ form|crispy }}
+                {% for field in form %}
+                    {% if field.field.widget.template_name == 'products/custom_widget_templates/custom_clearable_file_input.html' %}
+                        {{ field }}
+                    {% else %}
+                        {{ field|as_crispy_field }}
+                    {% endif %}
+                {% endfor %}
                 <div class="text-center mt-4">
                     <button type="submit" class="btn-milky btn rounded-pill px-4 py-2 mb-2">
                         Update Product
@@ -28,4 +34,13 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('id_product_image').addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        document.getElementById('filename').textContent = file ? file.name : '';
+    });
+</script>
 {% endblock %}
