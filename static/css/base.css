@@ -10,7 +10,9 @@ html {
     --light-cream: #faeade;
     --brown: #523122;
     --light-brown: #8c5e4a;
-    --light-gray: #5c5c5c;
+    --placeholder-color: #aab7c4;
+    --danger: #dc3545;
+    --gold: #f0a500;
 
     /* Typography */
     --font-xs: 0.6rem;
@@ -32,17 +34,13 @@ body {
 
 /* #region Navbar */
 .navbar>.container-fluid {
-    max-width: 1800px;
+    max-width: var(--site-max-width);
     margin: 0 auto;
     background-color: var(--light-cream);
 }
 
 .navbar-nav {
     background-color: var(--light-cream);
-}
-
-.text-dark {
-    transition: font-weight 0.3s ease;
 }
 
 .text-dark:hover,
@@ -58,60 +56,30 @@ body {
 
 /* #endregion */
 
-/* #region Allauth form formatting */
-
-.allauth-form-inner-content input {
-    border-color: #000;
+/* #region Footer images container */
+.footer-images {
+    position: relative;
+    height: 200px;
 }
 
-.allauth-form-inner-content label:not([for='id_remember']) {
-    display: none;
+/* Footer images */
+.footer-img {
+    width: 140px;
+    position: absolute;
 }
 
-/* #endregion */
-
-/* #region Forms */
-
-/* Country select field */
-select:invalid,
-select option[value=""] {
-    color: #aab7c4 !important;
-
+.footer-img-left {
+    transform: rotate(-10deg);
+    left: calc(50% - 120px);
+    top: 20px;
 }
 
-select:has(option[value=""]:checked) {
-    color: #aab7c4 !important;
+.footer-img-right {
+    transform: rotate(8deg);
+    left: calc(50% - 20px);
+    top: 80px;
 }
 
-#id_country option:not(:first-child) {
-    color: black;
-}
-
-#id_country option:first-child {
-    color: #adb5bd;
-}
-
-/* Placeholder colors */
-input::placeholder,
-textarea::placeholder {
-    color: #aab7c4 !important;
-    opacity: 1;
-}
-
-.county-field,
-.county-field::placeholder {
-    color: #aab7c4 !important;
-    opacity: 1;
-}
-
-/* Input fields for checkout forms */
-#payment-form .form-control,
-#card-element,
-#profile-form .form-control,
-#profile-form select {
-    color: #000000;
-    border: 1px solid #000000;
-}
 /* #endregion */
 
 /* #region Buttons */
@@ -165,15 +133,15 @@ textarea::placeholder {
 
 /* Buttons Superuser edit/delete */
 
-.superuser-btn-edit{
+.superuser-btn-edit {
     border: 1px solid var(--brown);
     color: var(--brown);
     font-size: var(--font-sm);
 }
 
 .superuser-btn-delete {
-    border: 1px solid #dc3545;
-    color: #dc3545;
+    border: 1px solid var(--danger);
+    color: var(--danger);
     font-size: var(--font-sm);
 }
 
@@ -181,11 +149,67 @@ textarea::placeholder {
     background-color: var(--brown);
     color: white;
 }
+
 .superuser-btn-delete:hover {
-    background-color: #dc3545;
+    background-color: var(--danger);
     color: white;
 }
 
+/* #endregion */
+
+/* #region Forms */
+
+/* Country select field */
+select:invalid,
+select option[value=""] {
+    color: var(--placeholder-color) !important;
+}
+
+select:has(option[value=""]:checked) {
+    color: var(--placeholder-color) !important;
+}
+
+#id_country option:not(:first-child) {
+    color: black;
+}
+
+#id_country option:first-child {
+    color: var(--placeholder-color);
+}
+
+/* Placeholder colors */
+input::placeholder,
+textarea::placeholder {
+    color: var(--placeholder-color) !important;
+    opacity: 1;
+}
+
+.county-field,
+.county-field::placeholder {
+    color: var(--placeholder-color) !important;
+    opacity: 1;
+}
+
+/* Input fields for checkout forms */
+#payment-form .form-control,
+#card-element,
+#profile-form .form-control,
+#profile-form select {
+    color: black;
+    border: 1px solid black;
+}
+
+/* #endregion */
+
+/* #region Allauth form formatting */
+
+.allauth-form-inner-content input {
+    border-color: black;
+}
+
+.allauth-form-inner-content label:not([for='id_remember']) {
+    display: none;
+}
 
 /* #endregion */
 
@@ -206,7 +230,7 @@ textarea::placeholder {
 
 /* #endregion */
 
-/* #region Product detail */
+/* #region Product Detail Page */
 
 /* Product icon */
 .product-icon {
@@ -218,16 +242,16 @@ textarea::placeholder {
 /* Nutritional table */
 .table {
     --bs-table-bg: transparent;
-    --bs-table-border-color: #000000;
+    --bs-table-border-color: black;
 }
 
 /* #endregion */
 
-/* #region Cart page */
+/* #region Cart Page */
 
 /* Free delivery banner */
 .free-delivery-banner {
-    background-color: #f0a500;
+    background-color: var(--gold);
 }
 
 .cart-product-name,
@@ -240,7 +264,7 @@ textarea::placeholder {
 
 /* #endregion */
 
-/* #region Profile */
+/* #region Profile Page */
 
 .profile-avatar {
     width: 56px;
@@ -251,7 +275,7 @@ textarea::placeholder {
 }
 
 .profile-section-title {
-    font-size: var(--font-sm); 
+    font-size: var(--font-sm);
     letter-spacing: 0.05em;
 }
 
@@ -260,32 +284,6 @@ textarea::placeholder {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-/* #endregion */
-
-/* #region Footer images container */
-.footer-images {
-    position: relative;
-    height: 200px;
-}
-
-/* Footer images */
-.footer-img {
-    width: 140px;
-    position: absolute;
-}
-
-.footer-img-left {
-    transform: rotate(-10deg);
-    left: calc(50% - 120px);
-    top: 20px;
-}
-
-.footer-img-right {
-    transform: rotate(8deg);
-    left: calc(50% - 20px);
-    top: 80px;
 }
 
 /* #endregion */
