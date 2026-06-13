@@ -65,11 +65,14 @@
                 </div>
                 <div class="d-flex flex-column flex-md-row justify-content-center align-items-center mb-3">
                     <!-- Add to cart button -->
-                    {% if product.is_available and product.stock > 0 %}
-                    <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 mb-2 mt-3">Add to cart</button>
-                    {% else %}
+                    {% if not product.is_available %}
                     <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 disabled mb-2 mt-3"
                         disabled>Coming Soon</button>
+                    {% elif product.stock == 0 %}
+                    <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 disabled mb-2 mt-3"
+                        disabled>Out of Stock</button>
+                    {% else %}
+                    <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 mb-2 mt-3">Add to cart</button>
                     {% endif %}
                     <!-- Explore more flavours button -->
                     <a href="{% url 'all_products' %}" class="btn-milky btn rounded-pill text-uppercase px-4 py-2">
