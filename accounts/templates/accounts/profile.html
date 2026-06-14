@@ -37,6 +37,8 @@
                     <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</p>
                     {{ form.name|as_crispy_field }}
                     {{ form.surname|as_crispy_field }}
+                    {{ form.display_name|as_crispy_field }}
+                    <p class="small text-muted mb-3" style="margin-top: -12px;">Shown on reviews instead of your real name.</p>
                     {{ form.phone_number|as_crispy_field }}
 
                     <hr>

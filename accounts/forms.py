@@ -10,6 +10,7 @@ class CustomerForm(forms.ModelForm):
         fields = [
             "name",
             "surname",
+            "display_name",
             "address",
             "postal_code",
             "city",
@@ -22,6 +23,9 @@ class CustomerForm(forms.ModelForm):
             ),
             "surname": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Surname"}
+            ),
+            "display_name": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Username"}
             ),
             "address": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Address"}
