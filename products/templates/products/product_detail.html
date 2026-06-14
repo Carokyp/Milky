@@ -69,8 +69,8 @@
                     <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 disabled mb-2 mt-3"
                         disabled>Coming Soon</button>
                     {% elif product.stock == 0 %}
-                    <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 disabled mb-2 mt-3"
-                        disabled>Out of Stock</button>
+                    <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 disabled mb-2 mt-3" disabled>Out
+                        of Stock</button>
                     {% else %}
                     <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 mb-2 mt-3">Add to cart</button>
                     {% endif %}
@@ -167,6 +167,45 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <!-- Comments section -->
+        <div class="col-12 mt-5 mb-5">
+            <h4 class="text-uppercase fw-bold mb-4">Reviews</h4>
+
+            {% if comments %}
+            {% for comment in comments %}
+            <div class="border-bottom comment-item py-3">
+                <p class="fw-bold mb-0">{{ comment.name }} {% if comment.surname %}{{ comment.surname }}{% endif %}</p>
+                <p class="small mb-1">
+                    {% for i in "12345" %}
+                    {% if forloop.counter <= comment.rating %} <i class="fa-solid fa-star star">
+                        </i>
+                        {% else %}
+                        <i class="fa-regular fa-star star"></i>
+                        {% endif %}
+                        {% endfor %}
+                        ({{ comment.rating }}/5)
+                </p>
+                {% if comment.comment %}
+                <p class="mb-0 small">{{ comment.comment }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="text-muted small">No reviews yet. Be the first to review!</p>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            <div class="mt-4">
+                <h5 class="fw-bold">Leave a Review</h5>
+                {% include 'products/add_comment.html' with form=comment_form %}
+            </div>
+            {% else %}
+            <p class="text-muted small">
+                <a href="{% url 'account_login' %}">Login</a> to leave a review.
+            </p>
+            {% endif %}
         </div>
 
         <!-- See other products button -->
