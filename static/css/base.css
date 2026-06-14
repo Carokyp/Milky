@@ -245,6 +245,22 @@ textarea::placeholder {
     --bs-table-border-color: black;
 }
 
+/* Product comments */
+
+.comment-item {
+    border-bottom-color: var(--brown) !important; /* Comment separator */
+}
+
+/* Star rating */
+.star {
+    color: var(--brown);
+}
+
+.star-btn {
+    cursor: pointer;
+}
+
+
 /* #endregion */
 
 /* #region Cart Page */
