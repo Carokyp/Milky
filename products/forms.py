@@ -1,5 +1,6 @@
 from django import forms
 from .models import Product
+from .models import Comment
 from .widgets import CustomClearableFileInput
 
 
@@ -35,3 +36,13 @@ class ProductForm(forms.ModelForm):
                 'placeholder': 'Enter product description here...',
                 'class': 'form-control',
             })
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
+            'comment': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+        }
