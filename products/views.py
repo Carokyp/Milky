@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
 from .models import Product
-from .forms import ProductForm
+from accounts.models import UserCustomer
+from checkout.models import Order
+from .forms import CommentForm, ProductForm
 
 
 def all_products(request):
@@ -23,11 +25,14 @@ def product_detail(request, product_id):
     """View to display a single product."""
 
     product = get_object_or_404(Product, pk=product_id)
+    comment_form = CommentForm()
+    comments = product.comments.all()  # type: ignore
 
     context = {
         "product": product,
+        "comment_form": comment_form,
+        "comments": comments,
     }
-
     return render(request, "products/product_detail.html", context)
 
 
@@ -64,7 +69,7 @@ def edit_product(request, product_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Product updated successfully!')
-            return redirect(reverse('product_detail', args=[product.id]))
+            return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
         else:
             messages.error(request, 'Failed to update product.')
     else:
@@ -84,3 +89,38 @@ def delete_product(request, product_id):
     product.delete()
     messages.success(request, 'Product deleted successfully!')
     return redirect(reverse('all_products'))
+
+
+@login_required
+def add_comment(request, product_id):
+    product = get_object_or_404(Product, pk=product_id)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+
+            user_customer = UserCustomer.objects.filter(user=request.user).first()
+            customer = user_customer.customer if user_customer else None
+
+            # display_name overrides name/surname if set
+            if customer and customer.display_name:
+                comment.name = customer.display_name  # type: ignore
+                comment.surname = ''  # type: ignore
+            else:
+                comment.name = (customer.name if customer and customer.name else request.user.username)  # type: ignore
+                comment.surname = (customer.surname if customer and customer.surname else '')  # type: ignore
+
+            comment.product = product
+            if customer:
+                order = Order.objects.filter(customer=customer, items__product=product).last()
+                comment.order = order
+            comment.save()
+            messages.success(request, 'Comment added successfully!')
+            return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
+        else:
+            messages.error(request, 'Failed to add comment. Please check the form.')
+    else:
+        form = CommentForm()
+
+    return render(request, 'products/add_comment.html', {'form': form, 'product': product})
