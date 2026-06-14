@@ -1,0 +1,26 @@
+{% load crispy_forms_tags %}
+{% load static %}
+
+<form method="POST" action="{% url 'add_comment' product.id %}" id="comment-form">
+    {% csrf_token %}
+    
+    <!-- Star rating selector -->
+    <div class="mb-3">
+        <label class="form-label fw-bold">Rating</label>
+        <div id="star-rating" class="d-flex gap-1 fs-4">
+            {% for i in "12345" %}
+            <i class="fa-regular fa-star star star-btn"
+               data-value="{{ forloop.counter }}"></i>
+            {% endfor %}
+        </div>
+        <input type="hidden" name="rating" id="rating-input" value="1" required>
+    </div>
+
+    {{ comment_form.comment|as_crispy_field }}
+
+    <button type="submit" class="btn-milky btn rounded-pill px-4 py-2 mt-3">
+        Submit Review
+    </button>
+</form>
+
+<script src="{% static 'js/add_comment.js' %}"></script>
