@@ -3,10 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.conf import settings
+from decimal import Decimal
 from .models import Product
-from accounts.models import UserCustomer
+from accounts.models import UserCustomer, Contact
 from checkout.models import Order
 from .forms import CommentForm, ProductForm
+from accounts.forms import GiftACanForm
 
 
 def all_products(request):
@@ -27,11 +32,20 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     comment_form = CommentForm()
     comments = product.comments.all()  # type: ignore
+    gift_form = GiftACanForm()
+    contacts = []
+
+    if request.user.is_authenticated:
+        user_customer = UserCustomer.objects.filter(user=request.user).first()
+        if user_customer:
+            contacts = user_customer.customer.contact_set.all()  # type: ignore
 
     context = {
         "product": product,
         "comment_form": comment_form,
         "comments": comments,
+        "gift_form": gift_form,
+        "contacts": contacts,
     }
     return render(request, "products/product_detail.html", context)
 
@@ -124,3 +138,69 @@ def add_comment(request, product_id):
         form = CommentForm()
 
     return render(request, 'products/add_comment.html', {'form': form, 'product': product})
+
+
+@login_required
+def gift_a_can_view(request, product_id):
+    """View for gifting a can to a friend."""
+    product = get_object_or_404(Product, pk=product_id)
+
+    user_customer = UserCustomer.objects.filter(user=request.user).first()
+    customer = user_customer.customer if user_customer else None
+
+    if not customer:
+        messages.warning(request, 'Please complete your profile before gifting a can.')
+        return redirect(reverse('profile'))
+
+    contacts = customer.contact_set.all()  # type: ignore
+
+    if request.method == "POST":
+        existing_contact_id = request.POST.get("existing_contact")
+        form = GiftACanForm(request.POST)
+
+        if existing_contact_id:
+            contact = get_object_or_404(
+                Contact,
+                pk=existing_contact_id,
+                customer=customer,
+            )
+        elif form.is_valid():
+            contact = form.save(commit=False)
+            contact.customer = customer
+            contact.ip_address = request.META.get('REMOTE_ADDR', '')
+            contact.save()
+        else:
+            messages.error(request, 'Failed to gift a can. Please check the form.')
+            return render(request, 'products/gift_a_can.html', {
+                'form': form,
+                'product': product,
+                'contacts': contacts,
+            })
+
+        customer.promo_discount = Decimal('10')
+        customer.save()
+
+        subject = render_to_string(
+            'products/gift_email_subject.txt',
+            {'product': product, 'customer': customer}
+        )
+        body = render_to_string(
+            'products/gift_email_body.txt',
+            {'product': product, 'customer': customer, 'contact': contact}
+        )
+        send_mail(
+            subject,
+            body,
+            settings.DEFAULT_FROM_EMAIL,
+            [contact.email]
+        )
+        messages.success(request, 'You gifted a can! You get 10% off your next order!')
+        return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
+    else:
+        form = GiftACanForm()
+
+    return render(request, 'products/gift_a_can.html', {
+        'form': form,
+        'product': product,
+        'contacts': contacts,
+    })

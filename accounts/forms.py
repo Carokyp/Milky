@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer
+from .models import Customer, Contact
 
 
 class CustomerForm(forms.ModelForm):
@@ -53,3 +53,36 @@ class CustomerForm(forms.ModelForm):
         choices = list(self.fields["country"].choices)
         choices[0] = ("", "Country")
         self.fields["country"].choices = choices
+
+
+class GiftACanForm(forms.ModelForm):
+    """Form for gifting a can to a friend."""
+    class Meta:
+
+        model = Contact
+        fields = [
+            "email",
+            "name",
+            "surname",
+            "phone_number",
+        ]
+
+        widgets = {
+            "email": forms.EmailInput(
+                attrs={"class": "form-control", "placeholder": "Friend's Email"}
+            ),
+            "name": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Name"}
+            ),
+            "surname": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Surname"}
+            ),
+            "phone_number": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Phone Number"}
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].label = False  # type: ignore

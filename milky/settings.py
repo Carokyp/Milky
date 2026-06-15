@@ -175,6 +175,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 FREE_DELIVERY_THRESHOLD = 25.00
 DELIVERY_COST = 3.99
 
+# Promotional discount percentage for gifting a can
+PROMO_DISCOUNT_PERCENTAGE = 10
+
 # Crispy forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"

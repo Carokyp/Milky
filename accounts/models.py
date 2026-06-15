@@ -16,6 +16,9 @@ class Customer(models.Model):
     postal_code = models.CharField(max_length=20, blank=True)
     country = CountryField(null=True, blank=True)
 
+    # Discount
+    promo_discount = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+
     def __str__(self):
         return f"{self.name} {self.surname}"
 

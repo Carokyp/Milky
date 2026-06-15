@@ -1,0 +1,9 @@
+Hello {{ contact.name }},
+
+{{ customer.name }} {{ customer.surname }} has gifted you a can of {{ product.name|safe }} from Milky!
+
+Product: {{ product.name|safe }}
+
+We hope you enjoy it!
+
+The Milky Team

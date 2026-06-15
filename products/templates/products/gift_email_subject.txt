@@ -1,0 +1,1 @@
+You received a gift from {{ customer.name }}! 

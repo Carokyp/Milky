@@ -74,6 +74,12 @@
                     {% else %}
                     <button class="btn-milky btn rounded-pill text-uppercase px-4 py-2 mb-2 mt-3">Add to cart</button>
                     {% endif %}
+                    {% if user.is_authenticated %}
+                    <button type="button" class="btn-milky btn rounded-pill text-uppercase px-4 py-2 mb-2"
+                        data-bs-toggle="modal" data-bs-target="#giftModal">
+                        Gift a Can
+                    </button>
+                    {% endif %}
                     <!-- Explore more flavours button -->
                     <a href="{% url 'all_products' %}" class="btn-milky btn rounded-pill text-uppercase px-4 py-2">
                         Explore More Flavours
@@ -81,6 +87,11 @@
                 </div>
             </form>
         </div>
+
+         <!-- Gift a Can Modal -->
+        {% if user.is_authenticated %}
+            {% include 'products/gift_a_can.html' with product=product contacts=contacts form=gift_form %}
+        {% endif %}
 
         <!-- Tagline -->
         <div class="col-12 text-center mt-5">

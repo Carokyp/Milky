@@ -263,6 +263,15 @@ textarea::placeholder {
 
 /* #endregion */
 
+/* #region Modal Gift a Can */
+
+
+.modal-content {
+   background-color:#f5ede6;
+}
+
+/* #endregion */
+
 /* #region Cart Page */
 
 /* Free delivery banner */

@@ -67,10 +67,16 @@
                 <p>Shipping cost</p>
                 <p>${{ delivery }}</p>
             </div>
-            <hr class="">
+            {% if promo_discount %}
+            <div class="d-flex justify-content-between text-success">
+                <p>Promo discount</p>
+                <p>-{{ promo_discount }}%</p>
+            </div>
+            {% endif %}
+            <hr>
             <div class="d-flex justify-content-between fw-bold">
                 <p>Total</p>
-                <p>${{ grand_total }}</p>
+                <p>${{ grand_total|floatformat:2 }}</p>
             </div>
         </div>
 
@@ -81,7 +87,8 @@
     </div>
     <div class="col-12">
         <p class="text-muted">Please fill out the form below to complete your order</p>
-        <form action="{% url 'checkout' %}" method="POST" id="payment-form" data-checkout-url="{% url 'checkout' %}" data-cache-url="{% url 'cache_checkout_data' %}">
+        <form action="{% url 'checkout' %}" method="POST" id="payment-form" data-checkout-url="{% url 'checkout' %}"
+            data-cache-url="{% url 'cache_checkout_data' %}">
             {% csrf_token %}
             <fieldset class="rounded px-3 mb-2">
                 <legend class="fieldset-label small text-black px-2 w-auto">Details</legend>
@@ -116,7 +123,8 @@
 
                 <!-- Toggle checkbox -->
                 <div class="form-check mb-1">
-                    <input class="form-check-input" type="checkbox" id="same-as-delivery" name="same-as-delivery" checked>
+                    <input class="form-check-input" type="checkbox" id="same-as-delivery" name="same-as-delivery"
+                        checked>
                     <label class="form-check-label" for="same-as-delivery">
                         Same as delivery address
                     </label>
@@ -136,10 +144,10 @@
             </fieldset>
 
             {% if not user.is_authenticated %}
-                <fieldset class="rounded px-3 mb-2">
-                    <legend class="fieldset-label small text-black px-2 w-auto">Email</legend>
-                    {{ form.email|as_crispy_field }}
-                </fieldset>
+            <fieldset class="rounded px-3 mb-2">
+                <legend class="fieldset-label small text-black px-2 w-auto">Email</legend>
+                {{ form.email|as_crispy_field }}
+            </fieldset>
             {% endif %}
 
             <fieldset class="rounded px-3 mb-2"></fieldset>
@@ -161,15 +169,15 @@
                         <span>Your card will be charged <strong>${{ grand_total|floatformat:2 }}</strong></span>
                     </p>
                 </div>
-                </fieldset>
-                <div class="submit-button mb-2 text-center">
-                    <a href="{% url 'view_cart' %}" class="btn-milky btn rounded-pill px-4 py-2 mt-3 fs-6">
-                        <p class="mb-0">Adjust Bag</p>
-                    </a>
-                    <button id="submit-button" class="btn-milky btn rounded-pill px-4 py-2 mt-3 fs-6" disabled>
-                        <span class="mb-0">Complete Order</span>
-                    </button>
-                </div>
+            </fieldset>
+            <div class="submit-button mb-2 text-center">
+                <a href="{% url 'view_cart' %}" class="btn-milky btn rounded-pill px-4 py-2 mt-3 fs-6">
+                    <p class="mb-0">Adjust Bag</p>
+                </a>
+                <button id="submit-button" class="btn-milky btn rounded-pill px-4 py-2 mt-3 fs-6" disabled>
+                    <span class="mb-0">Complete Order</span>
+                </button>
+            </div>
         </form>
 
     </div>
