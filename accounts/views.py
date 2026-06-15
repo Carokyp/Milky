@@ -11,7 +11,8 @@ def profile_view(request):
     customer = user_customers.customer if user_customers else None
     orders = Order.objects.filter(customer=customer) if customer else None
     contacts = customer.contact_set.all() if customer else []  # type: ignore
-    contact_form = GiftACanForm()  # ← ajoute ça
+    contact_form = GiftACanForm()
+    active_tab = request.session.pop('profile_active_tab', 'profile')
 
     if request.method == "POST":
         form = CustomerForm(request.POST, instance=customer)
@@ -31,6 +32,7 @@ def profile_view(request):
         'orders': orders,
         'contacts': contacts,
         'contact_form': contact_form,  # ← ajoute ça
+        'active_tab': active_tab,
     }
     return render(request, "accounts/profile.html", context)
 
@@ -65,12 +67,15 @@ def add_contact_view(request):
             contact.ip_address = request.META.get('REMOTE_ADDR', '')
             contact.save()
             messages.success(request, 'Contact added successfully.')
+            request.session['profile_active_tab'] = 'contacts'
             return redirect('profile')
         else:
             messages.error(request, 'Failed to add contact.')
+            request.session['profile_active_tab'] = 'contacts'
             return redirect('profile')
 
-    return redirect('')
+    request.session['profile_active_tab'] = 'contacts'
+    return redirect('profile')
 
 
 @login_required
@@ -82,12 +87,15 @@ def edit_contact_view(request, contact_id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Contact updated successfully.')
+            request.session['profile_active_tab'] = 'contacts'
             return redirect('profile')
         else:
             messages.error(request, 'Failed to update contact.')
+            request.session['profile_active_tab'] = 'contacts'
             return redirect('profile')
 
-    return redirect('')
+    request.session['profile_active_tab'] = 'contacts'
+    return redirect('profile')
 
 
 @login_required
@@ -95,4 +103,5 @@ def delete_contact_view(request, contact_id):
     contact = get_object_or_404(Contact, id=contact_id, customer__usercustomer__user=request.user)
     contact.delete()
     messages.success(request, "Contact deleted successfully.")
-    return redirect('')
+    request.session['profile_active_tab'] = 'contacts'
+    return redirect('profile')

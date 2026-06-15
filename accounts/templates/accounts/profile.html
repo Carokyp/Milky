@@ -33,18 +33,18 @@
                 <!-- Tabs navigation -->
                 <ul class="nav nav-tabs mb-4">
                     <li class="nav-item">
-                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-tab"
+                        <button class="nav-link {% if active_tab == 'profile' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#profile-tab"
                             type="button">
                             My Profile
                         </button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#orders-tab" type="button">
+                        <button class="nav-link {% if active_tab == 'orders' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#orders-tab" type="button">
                             Orders
                         </button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#contacts-tab" type="button">
+                        <button class="nav-link {% if active_tab == 'contacts' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#contacts-tab" type="button">
                             Contacts
                         </button>
                     </li>
@@ -54,7 +54,7 @@
                 <div class="tab-content">
 
                     <!-- Profile tab -->
-                    <div class="tab-pane fade show active" id="profile-tab">
+                    <div class="tab-pane fade {% if active_tab == 'profile' %}show active{% endif %}" id="profile-tab">
                         <form method="post" id="profile-form">
                             {% csrf_token %}
                             <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</p>
@@ -76,7 +76,7 @@
                     </div>
 
                     <!-- Orders tab -->
-                    <div class="tab-pane fade" id="orders-tab">
+                    <div class="tab-pane fade {% if active_tab == 'orders' %}show active{% endif %}" id="orders-tab">
                         {% if orders %}
                         {% for order in orders %}
                         <div class="border-bottom py-3">
@@ -107,7 +107,7 @@
                     </div>
 
                     <!-- Contacts tab -->
-                    <div class="tab-pane fade" id="contacts-tab">
+                    <div class="tab-pane fade {% if active_tab == 'contacts' %}show active{% endif %}" id="contacts-tab">
 
                         {% if contacts %}
                         {% for contact in contacts %}
