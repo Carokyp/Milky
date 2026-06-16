@@ -40,6 +40,9 @@ class Order(models.Model):
     delivery_cost = models.DecimalField(
         max_digits=6, decimal_places=2, null=False, default=Decimal("0.00")
     )
+    promo_discount_percent = models.DecimalField(
+        max_digits=5, decimal_places=2, null=True, blank=True
+    )
 
     # Invoice address fields.
     invoice_name = models.CharField(max_length=100, blank=True)
@@ -65,10 +68,16 @@ class Order(models.Model):
 
     @property
     def grand_total(self):
-        # Grand total is the order total plus shipping.
+        # Grand total is the order total plus shipping, minus any promo discount.
         order_total = self.order_total or Decimal("0.00")
         delivery_cost = self.delivery_cost or Decimal("0.00")
-        return order_total + delivery_cost
+        grand_total = order_total + delivery_cost
+
+        if self.promo_discount_percent:
+            discount_rate = self.promo_discount_percent / Decimal("100")
+            grand_total = grand_total * (Decimal("1") - discount_rate)
+
+        return grand_total.quantize(Decimal("0.01"))
 
     def recalculate_delivery_cost(self):
         # Recompute shipping from the current subtotal and the global free-delivery threshold.

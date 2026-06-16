@@ -22,6 +22,7 @@ class OrderAdmin(admin.ModelAdmin):
         "delivery_cost",
         "order_total",
         "grand_total",
+        "promo_discount_percent",
         "stripe_pid",
     )
 
@@ -39,7 +40,10 @@ class OrderAdmin(admin.ModelAdmin):
                 )
             },
         ),
-        ("Financials", {"fields": ("order_total", "delivery_cost", "grand_total")}),
+        (
+            "Financials",
+            {"fields": ("order_total", "delivery_cost", "promo_discount_percent", "grand_total")},
+        ),
         (
             "Delivery Details",
             {
