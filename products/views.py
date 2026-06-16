@@ -177,7 +177,7 @@ def gift_a_can_view(request, product_id):
                 'contacts': contacts,
             })
 
-        customer.promo_discount = Decimal('10')
+        customer.promo_discount = Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE))
         customer.save()
 
         subject = render_to_string(

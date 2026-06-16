@@ -212,11 +212,13 @@ def checkout_success(request):
             if same_as_delivery
             else order_data.get("invoice_country", "")
         ),
+        promo_discount_percent=(
+            customer.promo_discount if customer and customer.promo_discount else None
+        ),
     )
 
     cart_data = cart_contents(request)
     order.order_total = cart_data["total"]
-    order.delivery_cost = cart_data["delivery"]
     order.save()
 
     # Create order items
@@ -251,6 +253,10 @@ def checkout_success(request):
 
     # Save last order reference for non-authenticated users
     request.session["last_order"] = order.reference_code
+
+    if customer and customer.promo_discount:
+        customer.promo_discount = None
+        customer.save(update_fields=["promo_discount"])
 
     # Clear session
     del request.session["cart"]

@@ -65,7 +65,6 @@ class StripeWHHandler:
             except User.DoesNotExist:
                 customer = None
 
-        # Save delivery info to profile if save_info is True ← ajoute ici
         save_info = order_data.get("save_info", False)
         if save_info and customer:
             customer.name = order_data.get("delivery_name", "")
@@ -88,6 +87,9 @@ class StripeWHHandler:
         if order:
             order.status = 1  # Completed
             order.save()
+            if customer and customer.promo_discount:
+                customer.promo_discount = None
+                customer.save(update_fields=["promo_discount"])
             self._send_confirmation_email(order)
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: Order already in database',
@@ -109,6 +111,7 @@ class StripeWHHandler:
                 delivery_county=order_data.get("delivery_county", ""),
                 delivery_postcode=order_data.get("delivery_postcode", ""),
                 delivery_country=order_data.get("delivery_country", ""),
+                email=order_data.get("email", ""),
                 invoice_name=(
                     order_data.get("delivery_name", "")
                     if same_as_delivery
@@ -150,6 +153,9 @@ class StripeWHHandler:
                     else order_data.get("invoice_country", "")
                 ),
                 order_total=Decimal("0.00"),
+                promo_discount_percent=(
+                    customer.promo_discount if customer and customer.promo_discount else None
+                ),
             )
 
             # Create order items
@@ -163,6 +169,10 @@ class StripeWHHandler:
                     quantity=quantity,
                     total_price=product.price * quantity,
                 )
+
+            if customer and customer.promo_discount:
+                customer.promo_discount = None
+                customer.save(update_fields=["promo_discount"])
 
         except Exception as e:
             if order:
