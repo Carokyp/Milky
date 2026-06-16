@@ -276,7 +276,20 @@ textarea::placeholder {
 
 /* Free delivery banner */
 .free-delivery-banner {
-    background-color: var(--gold);
+    background-color: transparent;
+    border: 1.5px dashed var(--light-brown);
+    border-radius: 0.75rem;
+    color: var(--brown);
+    font-size: var(--font-sm);
+    font-weight: 500;
+}
+
+.free-delivery-banner-icon {
+    color: var(--light-brown);
+}
+
+.free-delivery-banner-text {
+    white-space: nowrap;
 }
 
 .cart-product-name,

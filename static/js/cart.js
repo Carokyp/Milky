@@ -1,13 +1,19 @@
 // Helper functions
 
 function updateBanner(remaining) {
-    const banner = document.querySelector('.free-delivery-banner');
+    const banner = document.querySelector('#free-delivery-banner');
     if (!banner) return;
+    const text = banner.querySelector('.free-delivery-banner-text');
     if (remaining > 0) {
-        banner.style.display = '';
-        banner.textContent = `Spend $${remaining.toFixed(2)} more to get free delivery`;
+        banner.classList.remove('d-none');
+        if (text) {
+            text.innerHTML = `Add <strong>$${remaining.toFixed(2)}</strong> for free delivery`;
+        }
     } else {
-        banner.style.display = 'none';
+        banner.classList.add('d-none');
+        if (text) {
+            text.textContent = 'Free delivery unlocked';
+        }
     }
 }
 
