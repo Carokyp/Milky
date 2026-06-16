@@ -74,6 +74,12 @@
     <hr>
     {% endfor %}
 
+    {% if promo_discount %}
+    <div class="alert alert-success py-2 px-3 small mb-3">
+        You gifted a can to a friend — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied to this order.
+    </div>
+    {% endif %}
+
     <!-- Total -->
     <div class="row mt-3">
         <div class="col-12 d-flex justify-content-between">
@@ -90,6 +96,12 @@
                 {% endif %}
             </p>
         </div>
+        {% if promo_discount %}
+        <div class="col-12 d-flex justify-content-between text-success">
+            <p>Gift reward</p>
+            <p>-{{ promo_discount|floatformat:0 }}%</p>
+        </div>
+        {% endif %}
         <hr>
         <div class="col-12 d-flex justify-content-between">
             <p class="fw-bold">Grand Total:</p>
@@ -99,12 +111,9 @@
 
     <!-- Free delivery banner -->
     {% if remaining_for_free_delivery > 0 %}
-    <div class="row mt-2">
-        <div class="col-12">
-            <div class="p-2 text-center free-delivery-banner">
-                Spend ${{ remaining_for_free_delivery }} more to get free delivery
-            </div>
-        </div>
+    <div id="free-delivery-banner" class="free-delivery-banner d-flex align-items-center justify-content-center gap-2 px-3 py-2 mt-2">
+        <i class="fa-solid fa-truck-fast free-delivery-banner-icon"></i>
+        <span class="free-delivery-banner-text">Add <strong>${{ remaining_for_free_delivery }}</strong> for free delivery</span>
     </div>
     {% endif %}
 

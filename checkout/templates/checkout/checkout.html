@@ -59,6 +59,11 @@
 
         <!-- Order totals -->
         <div class="col-12 mt-3 small">
+            {% if promo_discount %}
+            <div class="alert alert-success py-2 px-3 small mb-3">
+                You gifted a can to a friend — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied to this order.
+            </div>
+            {% endif %}
             <div class="d-flex justify-content-between">
                 <p>Subtotal</p>
                 <p>${{ total }}</p>
@@ -69,8 +74,8 @@
             </div>
             {% if promo_discount %}
             <div class="d-flex justify-content-between text-success">
-                <p>Promo discount</p>
-                <p>-{{ promo_discount }}%</p>
+                <p>Gift reward</p>
+                <p>-{{ promo_discount|floatformat:0 }}%</p>
             </div>
             {% endif %}
             <hr>
