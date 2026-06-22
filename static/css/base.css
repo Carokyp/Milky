@@ -12,7 +12,11 @@ html {
     --light-brown: #8c5e4a;
     --placeholder-color: #aab7c4;
     --danger: #dc3545;
-    --gold: #f0a500;
+    --gold: #fbcb62;
+
+    /* Fonts */
+    --font-family-body: 'Poppins', sans-serif;
+    --font-family-heading: 'Bebas Neue', sans-serif;
 
     /* Typography — component sizes */
     --font-xs: 0.6rem;
@@ -34,6 +38,14 @@ html {
 /* #endregion */
 
 /* #region Typography */
+body {
+    font-family: var(--font-family-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-family-heading);
+}
+
 h1 { font-size: var(--font-h1); }
 h2 { font-size: var(--font-h2); }
 h3 { font-size: var(--font-h3); }
@@ -41,7 +53,23 @@ h4 { font-size: var(--font-h4); }
 h5 { font-size: var(--font-h5); }
 h6 { font-size: var(--font-h6); }
 p  { font-size: var(--font-p); }
+
+.logo-font {
+    font-family: var(--font-family-heading);
+}
 /* #endregion */
+
+/* #region Text highlight block */
+.text-highlight {
+    background-color: var(--light-brown);
+    color: var(--light-cream);
+    padding: 0.05em 0.3em;
+    display: inline-block;
+    line-height: 1.1;
+    transform: rotate(-2deg);
+}
+/* #endregion */
+
 
 /* #region Layout */
 body {
@@ -115,6 +143,21 @@ body {
 .btn-milky:hover {
     background-color: var(--light-brown);
     color: white;
+    border: none;
+}
+
+.btn-milky-gold {
+    background-color: var(--gold);
+    color: var(--brown);
+    width: auto;
+    border: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-milky-gold:hover {
+    background-color: #d4920a;
+    color: var(--brown);
     border: none;
 }
 
@@ -248,6 +291,41 @@ textarea::placeholder {
     overflow-x: hidden;
 }
 
+/* #endregion */
+
+/* #region Product Card */
+.product-card {
+    cursor: pointer;
+}
+
+.product-card-inner {
+    position: relative;
+    border-radius: 1.5rem;
+    overflow: hidden;
+}
+
+.product-card-bg {
+    width: 100%;
+    display: block;
+}
+
+.product-card-gradient {
+    position: absolute;
+    inset: auto 0 0;
+    padding: 3rem 1.2rem 1.2rem;
+    background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5));
+}
+
+.product-card-objects,
+.product-card-can {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    transition: transform 0.15s ease-out;
+}
 /* #endregion */
 
 /* #region Product Detail Page */
