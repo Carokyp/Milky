@@ -24,21 +24,18 @@
     <div class="row">
         {% for product in products %}
         <div class="col-12 col-md-6 col-lg-3 mb-4 mt-4 text-center">
-            <h5 class="text-uppercase">{{ product.name }}</h5>
-
-            {% if product.product_image %}
-            <a href="{% url 'product_detail' product.id %}">
-                <img src="{{ product.product_image.url }}" class="img-fluid" alt="{{ product.name }}">
+            <a href="{% url 'product_detail' product.id %}" class="text-decoration-none">
+                <div class="product-card">
+                    <div class="product-card-inner">
+                        <img class="product-card-bg" src="/media/product_{{ product.id }}/background_{{ product.id }}.png" alt="">
+                        <img class="product-card-objects" src="/media/product_{{ product.id }}/objects_{{ product.id }}.png" alt="">
+                        <img class="product-card-can" src="/media/product_{{ product.id }}/can_{{ product.id }}.png" alt="{{ product.name }}">
+                        <div class="product-card-gradient">
+                            <h5 class="text-uppercase text-white mb-0">{{ product.name }}</h5>
+                        </div>
+                    </div>
+                </div>
             </a>
-            {% elif product.product_image_url %}
-            <a href="{% url 'product_detail' product.id %}">
-                <img src="{{ product.product_image_url }}" class="img-fluid" alt="{{ product.name }}">
-            </a>
-            {% else %}
-            <a href="{% url 'product_detail' product.id %}">
-                <img src="{% static 'images/no_image.png' %}" class="img-fluid" alt="{{ product.name }}">
-            </a>
-            {% endif %}
             <a href="{% url 'product_detail' product.id %}"
                 class="btn-milky btn rounded-pill text-uppercase px-4 py-2 mt-3 mb-3">View Details</a>
             {% if request.user.is_superuser %}

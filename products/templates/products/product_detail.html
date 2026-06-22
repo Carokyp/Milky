@@ -28,9 +28,13 @@
         <div class="col-12 col-md-6 col-lg-4 offset-lg-2">
             <div class="product-detail-image">
                 {% if product.product_image %}
-                <a href="{{ product.product_image.url }}" target="_blank">
-                    <img src="{{ product.product_image.url }}" class="img-fluid" alt="{{ product.name }}" />
-                </a>
+                <div class="product-card">
+                    <div class="product-card-inner">
+                        <img class="product-card-bg" src="/media/product_{{ product.id }}/background_{{ product.id }}.png" alt="">
+                        <img class="product-card-objects" src="/media/product_{{ product.id }}/objects_{{ product.id }}.png" alt="">
+                        <img class="product-card-can" src="/media/product_{{ product.id }}/can_{{ product.id }}.png" alt="{{ product.name }}">
+                    </div>
+                </div>
                 {% else %}
                 <img src="{% static 'images/no_image.png' %}" class="img-fluid" alt="{{ product.name }}" />
                 {% endif %}
