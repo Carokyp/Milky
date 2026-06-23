@@ -21,7 +21,6 @@ html {
     /* Typography — component sizes */
     --font-xs: 0.6rem;
     --font-sm: 0.8rem;
-    --font-base: 1rem;
     --font-lg: 1.2rem;
     --font-xl: 1.5rem;
 
@@ -78,6 +77,61 @@ body {
     margin: 0 auto;
 }
 
+/* #endregion */
+
+/* #region Benefits Section */
+.benefits-section {
+    background: white;
+}
+
+.bubble-text-wrapper {
+    position: relative;
+    min-height: 300px;
+}
+
+.bubble-text-wrapper img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bubble-text {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    padding-top: 3.5rem;
+}
+
+.single-bubble-overlap {
+    margin-top: -40px;
+    position: relative;
+    z-index: -1000;
+    transform: scale(1.3);
+}
+
+.benefits-stats {
+    background-color: var(--light-cream);
+    border-radius: 3rem;
+    max-width: 400px;
+}
+
+.benefits-label {
+    font-size: var(--font-sm);
+    color: var(--light-brown);
+}
+
+.benefits-value {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-p);
+    color: var(--brown);
+}
+
+.benefits-stat-divider {
+    border-left: 1px solid var(--light-brown);
+    border-right: 1px solid var(--light-brown);
+}
 /* #endregion */
 
 /* #region Navbar */
