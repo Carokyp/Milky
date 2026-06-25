@@ -27,9 +27,9 @@
             <a href="{% url 'product_detail' product.id %}" class="text-decoration-none">
                 <div class="product-card">
                     <div class="product-card-inner">
-                        <img class="product-card-bg" src="/media/product_{{ product.id }}/background_{{ product.id }}.png" alt="">
-                        <img class="product-card-objects" src="/media/product_{{ product.id }}/objects_{{ product.id }}.png" alt="">
-                        <img class="product-card-can" src="/media/product_{{ product.id }}/can_{{ product.id }}.png" alt="{{ product.name }}">
+                        <img class="product-card-bg" src="{{ product.background_image.url }}" alt="">
+                        <img class="product-card-objects" src="{{ product.objects_image.url }}" alt="">
+                        <img class="product-card-can" src="{{ product.can_image.url }}" alt="{{ product.name }}">
                         <div class="product-card-gradient">
                             <h5 class="text-uppercase text-white mb-0">{{ product.name }}</h5>
                         </div>
@@ -37,7 +37,7 @@
                 </div>
             </a>
             <a href="{% url 'product_detail' product.id %}"
-                class="btn-milky btn rounded-pill text-uppercase px-4 py-2 mt-3 mb-3">View Details</a>
+                class="btn-milky btn rounded-pill text-uppercase px-4 py-2 mt-3 mb-3">I Want This</a>
             {% if request.user.is_superuser %}
             <div class="d-flex justify-content-center gap-2">
                 <a href="{% url 'edit_product' product.id %}"
