@@ -8,8 +8,13 @@
             "description": "Summer in a can. Creamy vanilla meets juicy strawberry for a combo so good, you'll forget it's not homemade.",
             "product_image": "product_1.png",
             "product_image_url": null,
+            "background_image": "product_1/background_1.png",
+            "objects_image": "product_1/objects_1.png",
+            "can_image": "product_1/can_1.png",
             "stock": 50,
             "is_available": true,
+            "featured": true,
+            "display_order": 1,
             "sku": "MLK-001",
             "price": "3.99"
         }
@@ -23,8 +28,13 @@
             "description": "Fresh, cool and packed with chocolate chips. Like a breeze on a hot day, but way more delicious.",
             "product_image": "product_2.png",
             "product_image_url": null,
+            "background_image": "product_2/background_2.png",
+            "objects_image": "product_2/objects_2.png",
+            "can_image": "product_2/can_2.png",
             "stock": 50,
             "is_available": true,
+            "featured": true,
+            "display_order": 4,
             "sku": "MLK-008",
             "price": "3.99"
         }
@@ -36,10 +46,15 @@
             "name": "Salted Caramel & Pretzel",
             "flavor": "caramel",
             "description": "Sweet. Salty. Smooth. This one doesn't play by the rules and that's exactly why we love it.",
-            "product_image": "product_4.png",
+            "product_image": "product_3.png",
             "product_image_url": null,
+            "background_image": "product_3/background_3.png",
+            "objects_image": "product_3/objects_3.png",
+            "can_image": "product_3/can_3.png",
             "stock": 50,
             "is_available": true,
+            "featured": true,
+            "display_order": 2,
             "sku": "MLK-003",
             "price": "3.99"
         }
@@ -51,10 +66,15 @@
             "name": "Pistachio & Cream",
             "flavor": "nutty",
             "description": "Fancy? Yes. Worth it? Absolutely. Smooth pistachio cream that hits different every single time.",
-            "product_image": "product_7.png",
+            "product_image": "product_4.png",
             "product_image_url": null,
+            "background_image": "product_4/background_4.png",
+            "objects_image": "product_4/objects_4.png",
+            "can_image": "product_4/can_4.png",
             "stock": 50,
             "is_available": true,
+            "featured": false,
+            "display_order": 0,
             "sku": "MLK-004",
             "price": "3.99"
         }
@@ -68,8 +88,13 @@
             "description": "Thick, creamy, dangerously addictive. Peanut butter so thick, banana so ripe. This one hits hard and you will not see it coming.",
             "product_image": "product_5.png",
             "product_image_url": null,
+            "background_image": "product_5/background_5.png",
+            "objects_image": "product_5/objects_5.png",
+            "can_image": "product_5/can_5.png",
             "stock": 50,
             "is_available": true,
+            "featured": false,
+            "display_order": 0,
             "sku": "MLK-005",
             "price": "3.99"
         }
@@ -83,8 +108,13 @@
             "description": "Cake in a can. Bold, velvety and unapologetically extra. You deserve this one.",
             "product_image": "product_6.png",
             "product_image_url": null,
+            "background_image": "product_6/background_6.png",
+            "objects_image": "product_6/objects_6.png",
+            "can_image": "product_6/can_6.png",
             "stock": 50,
             "is_available": true,
+            "featured": true,
+            "display_order": 3,
             "sku": "MLK-006",
             "price": "3.99"
         }
@@ -96,10 +126,15 @@
             "name": "Vanilla & Marshmallow",
             "flavor": "vanilla",
             "description": "Cloud in a can. Soft vanilla with fluffy marshmallow, like a hug you can drink.",
-            "product_image": "product_3.png",
+            "product_image": "product_7.png",
             "product_image_url": null,
+            "background_image": "product_7/background_7.png",
+            "objects_image": "product_7/objects_7.png",
+            "can_image": "product_7/can_7.png",
             "stock": 50,
             "is_available": true,
+            "featured": false,
+            "display_order": 0,
             "sku": "MLK-007",
             "price": "3.99"
         }
@@ -113,8 +148,13 @@
             "description": "Dark, rich chocolate wrapped in golden caramel. One sip and you're done. No apologies.",
             "product_image": "product_8.png",
             "product_image_url": null,
+            "background_image": "product_8/background_8.png",
+            "objects_image": "product_8/objects_8.png",
+            "can_image": "product_8/can_8.png",
             "stock": 50,
             "is_available": true,
+            "featured": false,
+            "display_order": 0,
             "sku": "MLK-002",
             "price": "3.99"
         }
