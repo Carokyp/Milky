@@ -33,18 +33,25 @@ class Product(models.Model):
     description = models.TextField(max_length=500)
     price = models.DecimalField(max_digits=6, decimal_places=2)
 
-    # Media
-    product_image = models.ImageField(
-        upload_to="product_images/", null=True, blank=True
-    )
+    # Media — legacy single image (used in detail page, cart, etc.)
+    product_image = models.ImageField(upload_to="product_images/", null=True, blank=True)
     product_image_url = models.URLField(null=True, blank=True)
+
+    # Media — home page showcase (3 animated layers)
+    background_image = models.ImageField(upload_to="product_images/backgrounds/", null=True, blank=True)
+    objects_image = models.ImageField(upload_to="product_images/objects/", null=True, blank=True)
+    can_image = models.ImageField(upload_to="product_images/cans/", null=True, blank=True)
 
     # Stock
     stock = models.PositiveIntegerField(null=True, blank=True)
     is_available = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.name
+    # Home page display
+    featured = models.BooleanField(default=False, help_text="Show this product on the home page showcase")
+    display_order = models.PositiveIntegerField(default=0, help_text="Lower numbers appear first among featured products")
+
+    class Meta:
+        ordering = ["display_order", "name"]
 
 
 class Comment(models.Model):
