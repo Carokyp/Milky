@@ -26,15 +26,16 @@
 
 <!-- Products grid -->
 <div class="container my-5">
+    <h1 class="text-center mb-4">OUR FAVORITES</h1>
     <div class="row g-4">
         {% for product in products %}
-        <div class="col-12 col-md-6 col-lg-3">
+        <div class="col-12 col-sm-6 col-xl-3">
             <a href="{% url 'product_detail' product.id %}" class="text-decoration-none">
                 <div class="product-card">
                     <div class="product-card-inner">
-                        <img class="product-card-bg" src="/media/product_{{ product.id }}/background_{{ product.id }}.png" alt="">
-                        <img class="product-card-objects" src="/media/product_{{ product.id }}/objects_{{ product.id }}.png" alt="">
-                        <img class="product-card-can" src="/media/product_{{ product.id }}/can_{{ product.id }}.png" alt="">
+                        <img class="product-card-bg" src="{{ product.background_image.url }}" alt="">
+                        <img class="product-card-objects" src="{{ product.objects_image.url }}" alt="">
+                        <img class="product-card-can" src="{{ product.can_image.url }}" alt="">
                         <div class="product-card-gradient">
                             <h5 class="text-uppercase text-white mb-0">{{ product.name }}</h5>
                         </div>
@@ -56,6 +57,9 @@
         </div>
         {% endfor %}
     </div>
+    <div class="text-center mt-5">
+        <a href="{% url 'all_products' %}" class="btn-milky btn rounded-pill text-uppercase py-3 px-5">See All Flavors</a>
+    </div>
 </div>
 
 <!-- Benefits section -->
@@ -70,8 +74,10 @@
             <p class="mb-5">Milk contains a natural source of vitamins, minerals, and protein</p>
         </div>
     </div>
-    <div class="benefits-section py-4 px-3">
+    <div class="py-4 px-3">
+        <img src="{% static 'images/benefits_image.png' %}" alt="" class="img-fluid w-100">
         <div class="benefits-stats mx-auto mb-4">
+            <img src="{% static 'images/bubble.png' %}" alt="" class="bubble-bg img-fluid w-100">
             <div class="row g-0">
                 <div class="col-4 py-3 px-2">
                     <p class="benefits-label">Calcium</p>

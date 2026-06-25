@@ -6,7 +6,7 @@ from django.shortcuts import redirect
 
 def index(request):
     """View to return the index page"""
-    products = Product.objects.all()
+    products = Product.objects.filter(featured=True)
     return render(request, "home/index.html", {"products": products})
 
 
