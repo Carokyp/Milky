@@ -3,135 +3,116 @@
 
 {% block extra_title %}Cart - Milky{% endblock %}
 
-{% block page_header %}
-<div class="container header-container">
-    <div class="row">
-        <div class="col-sm-12">
-        </div>
-    </div>
-</div>
-{% endblock %}
+{% block page_header %}{% endblock %}
 
 {% block content %}
 <div class="container">
 
     <!-- Cart header -->
-    <div class="row mb-3 px-3">
-        <div class="col-10">
-            <h2 class="text-uppercase fw-bold">Cart</h2>
-        </div>
-        <div class="col-2 text-end">
-            <!-- X button → go back to products -->
-            <a href="{% url 'all_products' %}" class="text-dark">
-                <i class="fa-solid fa-xmark fa-xl"></i>
-            </a>
-        </div>
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="text-uppercase mb-0">My Cart</h1>
+        <a href="{% url 'all_products' %}" class="text-dark">
+            <i class="fa-solid fa-xmark fa-xl"></i>
+        </a>
     </div>
 
     {% if cart_items %}
+
     <!-- Cart items -->
-    {% for item in cart_items %}
-    <div class="row align-items-center mb-4">
+    <div class="bg-white rounded-4 shadow-sm px-3 mb-3">
+        {% for item in cart_items %}
+        <div class="d-flex align-items-center gap-3 py-3">
 
-        <!-- Product image -->
-        <div class="col-4 col-md-3 col-lg-2">
-            {% if item.product.product_image %}
-                <img src="{{ item.product.product_image.url }}" class="img-fluid rounded" alt="{{ item.product.name }}">
-            {% else %}
-                <img src="{% static 'images/no_image.png' %}" class="img-fluid" alt="{{ item.product.name }}">
-            {% endif %}
-        </div>
-
-        <!-- Product info -->
-        <div class="col-8 col-md-6 col-lg-5">
-            <p class="fw-bold text-uppercase mb-1 cart-product-name">{{ item.product.name }}</p>
-            <p class="mb-2 cart-product-price">${{ item.product.price }}</p>
-            <p class="mb-2 text-muted small item-subtotal">Subtotal: $<span class="item-subtotal-value">{{ item.subtotal }}</span></p>
-            <!-- Quantity + Delete -->
-            <div class="d-flex align-items-center gap-2">
-                <form method="POST" action="{% url 'update_cart' item.product_id %}">
-                    {% csrf_token %}
-                    <div class="btn-quantity-cart d-flex align-items-center gap-3 border rounded-pill px-3 py-1">
-                        <button type="button" class="btn-quantity-cart btn btn-sm p-0" data-action="decrease"
-                            data-product-id="{{ item.product_id }}" 
-                            {% if item.quantity == 1 %}disabled{% endif %}> -
-                        </button>
-                        <input type="number" name="quantity" class="quantity-input text-center border-0 bg-transparent p-0"
-                            value="{{ item.quantity }}" min="1" max="99">
-                        <button type="button" class="btn-quantity-cart btn btn-sm p-0" data-action="increase"
-                            data-product-id="{{ item.product_id }}" {% if item.quantity == 99 %}disabled{% endif %}> + </button>
-                    </div>
-                </form>
-
-                <!-- Delete button -->
-                <form method="POST" action="{% url 'remove_from_cart' item.product_id %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-milky delete-btn btn rounded-pill px-3 py-1">Delete</button>
-                </form>
+            <!-- Product image -->
+            <div class="flex-shrink-0" style="width: 80px;">
+                {% if item.product.product_image %}
+                    <img src="{{ item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                {% else %}
+                    <img src="{% static 'images/no_image.png' %}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                {% endif %}
             </div>
+
+            <!-- Product info -->
+            <div class="flex-grow-1 min-w-0">
+                <p class="logo-font text-uppercase mb-0 cart-product-name">{{ item.product.name }}</p>
+                <p class="mb-2 cart-product-price">${{ item.product.price }}</p>
+                <div class="d-flex align-items-center justify-content-between">
+                    <form method="POST" action="{% url 'update_cart' item.product_id %}">
+                        {% csrf_token %}
+                        <div class="btn-quantity-cart d-inline-flex align-items-center gap-3 border rounded-pill px-3 py-1">
+                            <button type="button" class="btn-quantity-cart btn btn-sm p-0" data-action="decrease"
+                                data-product-id="{{ item.product_id }}"
+                                {% if item.quantity == 1 %}disabled{% endif %}> -
+                            </button>
+                            <input type="number" name="quantity" class="quantity-input quantity-value-cart text-center border-0 bg-transparent p-0"
+                                value="{{ item.quantity }}" min="1" max="99">
+                            <button type="button" class="btn-quantity-cart btn btn-sm p-0" data-action="increase"
+                                data-product-id="{{ item.product_id }}" {% if item.quantity == 99 %}disabled{% endif %}> +
+                            </button>
+                        </div>
+                    </form>
+                    <form method="POST" action="{% url 'remove_from_cart' item.product_id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn cart-remove-btn">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
         </div>
+        {% if not forloop.last %}<hr class="my-0">{% endif %}
+        {% endfor %}
     </div>
-    <hr>
-    {% endfor %}
 
     {% if promo_discount %}
-    <div class="alert alert-success py-2 px-3 small mb-3">
-        You gifted a can to a friend — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied to this order.
+    <div class="bg-white rounded-4 shadow-sm p-3 mb-3 d-flex align-items-center gap-2">
+        <i class="fa-solid fa-tag text-success"></i>
+        <p class="mb-0 text-sm">Gift reward — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied to this order.</p>
     </div>
     {% endif %}
-
-    <!-- Total -->
-    <div class="row mt-3">
-        <div class="col-12 d-flex justify-content-between">
-            <p class="fw-bold">Total (Exc delivery):</p>
-            <p class="fw-bold cart-total">${{ total }}</p>
-        </div>
-        <div class="col-12 d-flex justify-content-between">
-            <p class="text-muted">Delivery:</p>
-            <p class="text-muted">
-                {% if delivery == 0 %}
-                Free
-                {% else %}
-                ${{ delivery }}
-                {% endif %}
-            </p>
-        </div>
-        {% if promo_discount %}
-        <div class="col-12 d-flex justify-content-between text-success">
-            <p>Gift reward</p>
-            <p>-{{ promo_discount|floatformat:0 }}%</p>
-        </div>
-        {% endif %}
-        <hr>
-        <div class="col-12 d-flex justify-content-between">
-            <p class="fw-bold">Grand Total:</p>
-            <p class="fw-bold cart-grand-total">${{ grand_total }}</p>
-        </div>
-    </div>
 
     <!-- Free delivery banner -->
     {% if remaining_for_free_delivery > 0 %}
-    <div id="free-delivery-banner" class="free-delivery-banner d-flex align-items-center justify-content-center gap-2 px-3 py-2 mt-2">
+    <div id="free-delivery-banner" class="free-delivery-banner d-flex align-items-center justify-content-center gap-2 px-3 py-2 mb-3">
         <i class="fa-solid fa-truck-fast free-delivery-banner-icon"></i>
-        <span class="free-delivery-banner-text">Add <strong>${{ remaining_for_free_delivery }}</strong> for free delivery</span>
+        <span class="free-delivery-banner-text">Add <strong>${{ remaining_for_free_delivery }}</strong> more for free delivery</span>
     </div>
     {% endif %}
 
-    <!-- Checkout button -->
-    <div class="row text-center mt-3 mb-5">
-        <div class="col-12 w-100">
-            <a href="{% url 'checkout' %}" class="btn-milky btn rounded-pill py-2 text-uppercase fs-6">Checkout</a>
+    <!-- Summary card -->
+    <div class="bg-white rounded-4 shadow-sm p-4 mt-3">
+        <div class="d-flex justify-content-between mb-2">
+            <p class="mb-0">Subtotal</p>
+            <p class="mb-0 cart-total">${{ total }}</p>
         </div>
+        <div class="d-flex justify-content-between mb-2">
+            <p class="mb-0 text-muted">Delivery</p>
+            <p class="mb-0 text-muted">{% if delivery == 0 %}Free{% else %}${{ delivery }}{% endif %}</p>
+        </div>
+        {% if promo_discount %}
+        <div class="d-flex justify-content-between mb-2 text-success">
+            <p class="mb-0">Gift discount</p>
+            <p class="mb-0">-{{ promo_discount|floatformat:0 }}%</p>
+        </div>
+        {% endif %}
+        <hr class="my-3">
+        <div class="d-flex justify-content-between mb-4">
+            <p class="fw-bold mb-0">Grand Total</p>
+            <p class="fw-bold mb-0 cart-grand-total">${{ grand_total }}</p>
+        </div>
+        <a href="{% url 'checkout' %}" class="btn-milky-gold btn rounded-pill py-3 text-uppercase w-100 fw-bold">
+            Checkout
+        </a>
     </div>
 
     {% else %}
     <!-- Empty cart -->
-    <div class="row mt-5">
-        <div class="col-12 text-center">
-            <p>Your cart is empty.</p>
-            <a href="{% url 'all_products' %}" class="btn-milky btn rounded-pill px-4 py-2 mt-3 fs-6">Shop
-                Now</a>
-        </div>
+    <div class="bg-white rounded-4 shadow-sm p-5 text-center mt-4">
+        <i class="fa-solid fa-cart-shopping fa-3x mb-4 text-light-brown"></i>
+        <h4 class="mb-2">Your cart is empty</h4>
+        <p class="text-muted mb-4">Looks like you haven't added anything yet.</p>
+        <a href="{% url 'all_products' %}" class="btn-milky-gold btn rounded-pill px-5 py-3 text-uppercase fw-bold">Shop Now</a>
     </div>
     {% endif %}
 

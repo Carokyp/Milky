@@ -51,15 +51,6 @@ function sendCartUpdate(form) {
     })
     .then(response => response.json())
     .then(data => {
-        // Update item subtotal
-        const pid = data.product_id;
-        if (pid) {
-            const btn = document.querySelector(`button[data-product-id="${pid}"]`);
-            if (btn) {
-                const subEl = btn.closest('.row').querySelector('.item-subtotal-value');
-                if (subEl) subEl.textContent = parseFloat(data.item_subtotal).toFixed(2);
-            }
-        }
         updateDOM(data);
     })
     .catch(err => console.error('Cart update failed', err));
