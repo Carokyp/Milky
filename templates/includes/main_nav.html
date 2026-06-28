@@ -2,17 +2,17 @@
 <div class="collapse navbar-collapse order-lg-2 flex-lg-grow-1 ms-lg-4" id="navbarNav">
     <ul class="navbar-nav me-auto">
         <li class="nav-item">
-            <a class="nav-link text-dark" href="{% url 'home' %}">Home</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" href="{% url 'all_products' %}">All Products</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'all_products' or request.resolver_match.url_name == 'product_detail' %}active{% endif %}" href="{% url 'all_products' %}">All Products</a>
         </li>
     </ul>
 
     <!-- Auth + Cart desktop -->
     <ul class="navbar-nav d-none d-lg-flex align-items-center gap-2">
         <li class="nav-item">
-            <a class="nav-link text-dark" href="{% url 'view_cart' %}">
+            <a class="nav-link {% if request.resolver_match.url_name == 'view_cart' %}active{% endif %}" href="{% url 'view_cart' %}">
                 <span class="position-relative">
                     <i class="fa-solid fa-cart-shopping"></i>
                     {% if product_count > 0 %}
@@ -26,13 +26,13 @@
         </li>
         {% if request.user.is_authenticated %}
         {% if request.user.is_superuser %}
-        <li><a href="{% url 'add_product' %}" class="dropdown-item text-dark">Products Management</a></li>
+        <li class="nav-item"><a href="{% url 'add_product' %}" class="nav-link {% if request.resolver_match.url_name == 'add_product' %}active{% endif %}">Products Management</a></li>
         {% endif %}
-        <li><a class="dropdown-item text-dark" href="{% url 'profile' %}">My Profile</a></li>
-        <li><a class="dropdown-item text-dark" href="{% url 'account_logout' %}">Logout</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">My Profile</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Logout</a></li>
         {% else %}
-        <li><a class="dropdown-item text-dark" href="{% url 'account_signup' %}">Register</a></li>
-        <li><a class="dropdown-item text-dark" href="{% url 'account_login' %}">Login</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'account_signup' %}active{% endif %}" href="{% url 'account_signup' %}">Register</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'account_login' %}active{% endif %}" href="{% url 'account_login' %}">Login</a></li>
         {% endif %}
     </ul>
 </div>
