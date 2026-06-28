@@ -16,11 +16,16 @@
         <input type="hidden" name="rating" id="rating-input" value="1" required>
     </div>
 
-    {{ comment_form.comment|as_crispy_field }}
+    <div class="mb-3">
+        <textarea name="comment" id="id_comment" class="form-control" rows="4"
+            placeholder="Share your thoughts about this product..."></textarea>
+    </div>
 
-    <button type="submit" class="btn-milky btn rounded-pill px-4 py-2 mt-3">
-        Submit Review
-    </button>
+    <div class="text-center mt-3">
+        <button type="submit" class="btn-milky-gold btn rounded-pill px-5 py-2 fw-bold text-uppercase">
+            Submit Review
+        </button>
+    </div>
 </form>
 
 <script src="{% static 'js/add_comment.js' %}"></script>
