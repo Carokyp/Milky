@@ -1,11 +1,4 @@
-/* ============================================================
-   BASE.CSS — Milky
-   Structure: Tokens → Base → Typography → Utilities
-              → Components → Pages
-   ============================================================ */
-
-
-/* #region Design Tokens */
+/* #region Design */
 
 :root {
     --site-max-width: 1800px;
@@ -84,6 +77,10 @@ p  { font-size: var(--font-p); }
     display: inline-block;
     line-height: 1.1;
     transform: rotate(-2deg);
+}
+
+.text-xs {
+    font-size: var(--font-xs);
 }
 
 /* #endregion */
@@ -283,6 +280,39 @@ p  { font-size: var(--font-p); }
     color: white;
 }
 
+.superuser-overlay {
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 0.25rem 0.4rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(4px);
+}
+
+.superuser-overlay-btn {
+    gap: 0.3rem;
+    padding: 0.15rem 0.45rem;
+    font-size: var(--font-sm);
+    font-weight: 600;
+    color: var(--brown);
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.superuser-overlay-btn:hover {
+    background: var(--brown);
+    color: white;
+}
+
+.superuser-overlay-btn-delete {
+    color: var(--danger);
+}
+
+.superuser-overlay-btn-delete:hover {
+    background: var(--danger);
+    color: white;
+}
+
 /* #endregion */
 
 /* #region Forms */
@@ -332,6 +362,11 @@ textarea::placeholder {
     display: none;
 }
 
+#id_remember {
+    width: 0.75rem;
+    height: 0.75rem;
+}
+
 /* #endregion */
 
 /* #region Toast */
@@ -360,6 +395,10 @@ textarea::placeholder {
 /* #endregion */
 
 /* #region Product Card */
+
+.product-card-wrapper {
+    position: relative;
+}
 
 .product-card {
     cursor: pointer;
@@ -512,13 +551,13 @@ textarea::placeholder {
 #comment-form .form-control {
     border: 1.5px solid rgba(82, 49, 34, 0.25);
     border-radius: 0.75rem;
-    background-color: var(--light-cream);
+    background-color: white;
     color: var(--brown);
 }
 
 #comment-form .form-control:focus {
     border-color: var(--light-brown);
-    box-shadow: 0 0 0 0.2rem rgba(139, 94, 74, 0.15);
+    box-shadow: 0 0 0 0.2rem rgba(131, 122, 118, 0.15);
 }
 
 /* #endregion */
@@ -550,6 +589,19 @@ textarea::placeholder {
 .btn-quantity-cart,
 .quantity-value-cart {
     font-size: var(--font-sm);
+}
+
+/* #endregion */
+
+/* #region Checkout */
+
+.links{
+    color: var(--brown);
+}
+
+.links:hover {
+    color: var(--brown);
+    font-weight: 600;
 }
 
 /* #endregion */
@@ -604,3 +656,5 @@ textarea::placeholder {
 
 /* #endregion */
 
+/* #region Media Queries */
+/* #endregion */
