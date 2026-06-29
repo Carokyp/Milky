@@ -18,7 +18,7 @@
 
     {% if cart_items %}
 
-    <!-- Cart items -->
+    <!-- Cart items + summary -->
     <div class="bg-white rounded-4 shadow-sm px-3 mb-3">
         {% for item in cart_items %}
         <div class="d-flex align-items-center gap-3 py-3">
@@ -63,47 +63,42 @@
         </div>
         {% if not forloop.last %}<hr class="my-0">{% endif %}
         {% endfor %}
-    </div>
 
-    {% if promo_discount %}
-    <div class="bg-white rounded-4 shadow-sm p-3 mb-3 d-flex align-items-center gap-2">
-        <i class="fa-solid fa-tag text-success"></i>
-        <p class="mb-0 text-sm">Gift reward — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied to this order.</p>
-    </div>
-    {% endif %}
-
-    <!-- Free delivery banner -->
-    {% if remaining_for_free_delivery > 0 %}
-    <div id="free-delivery-banner" class="free-delivery-banner d-flex align-items-center justify-content-center gap-2 px-3 py-2 mb-3">
-        <i class="fa-solid fa-truck-fast free-delivery-banner-icon"></i>
-        <span class="free-delivery-banner-text">Add <strong>${{ remaining_for_free_delivery }}</strong> more for free delivery</span>
-    </div>
-    {% endif %}
-
-    <!-- Summary card -->
-    <div class="bg-white rounded-4 shadow-sm p-4 mt-3">
-        <div class="d-flex justify-content-between mb-2">
-            <p class="mb-0">Subtotal</p>
-            <p class="mb-0 cart-total">${{ total }}</p>
+        <!-- Summary -->
+        <div class="pb-3 pt-3">
+            {% if promo_discount %}
+            <div class="d-flex align-items-center gap-2 mb-3 text-success text-sm">
+                <i class="fa-solid fa-tag"></i>
+                <span>Gift reward — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied.</span>
+            </div>
+            {% endif %}
+            <div id="free-delivery-banner" class="free-delivery-banner d-flex align-items-center justify-content-center gap-2 px-3 py-2 mt-3 mb-4 {% if remaining_for_free_delivery == 0 %} d-none{% endif %}">
+                <i class="fa-solid fa-truck-fast free-delivery-banner-icon"></i>
+                <span class="free-delivery-banner-text">Add <strong>${{ remaining_for_free_delivery }}</strong> more for free delivery</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <p class="mb-0">Subtotal</p>
+                <p class="mb-0 cart-total">${{ total }}</p>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <p class="mb-0 text-muted">Delivery</p>
+                <p class="mb-0 text-muted">{% if delivery == 0 %}Free{% else %}${{ delivery }}{% endif %}</p>
+            </div>
+            {% if promo_discount %}
+            <div class="d-flex justify-content-between mb-2 text-success">
+                <p class="mb-0">Gift discount</p>
+                <p class="mb-0">-{{ promo_discount|floatformat:0 }}%</p>
+            </div>
+            {% endif %}
+            <hr class="my-3">
+            <div class="d-flex justify-content-between mb-4">
+                <p class="fw-bold mb-0">Grand Total</p>
+                <p class="fw-bold mb-0 cart-grand-total">${{ grand_total }}</p>
+            </div>
+            <a href="{% url 'checkout' %}" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold">
+                Checkout
+            </a>
         </div>
-        <div class="d-flex justify-content-between mb-2">
-            <p class="mb-0 text-muted">Delivery</p>
-            <p class="mb-0 text-muted">{% if delivery == 0 %}Free{% else %}${{ delivery }}{% endif %}</p>
-        </div>
-        {% if promo_discount %}
-        <div class="d-flex justify-content-between mb-2 text-success">
-            <p class="mb-0">Gift discount</p>
-            <p class="mb-0">-{{ promo_discount|floatformat:0 }}%</p>
-        </div>
-        {% endif %}
-        <hr class="my-3">
-        <div class="d-flex justify-content-between mb-4">
-            <p class="fw-bold mb-0">Grand Total</p>
-            <p class="fw-bold mb-0 cart-grand-total">${{ grand_total }}</p>
-        </div>
-        <a href="{% url 'checkout' %}" class="btn-milky-gold btn rounded-pill py-3 text-uppercase w-100 fw-bold">
-            Checkout
-        </a>
     </div>
 
     {% else %}
@@ -112,7 +107,7 @@
         <i class="fa-solid fa-cart-shopping fa-3x mb-4 text-light-brown"></i>
         <h4 class="mb-2">Your cart is empty</h4>
         <p class="text-muted mb-4">Looks like you haven't added anything yet.</p>
-        <a href="{% url 'all_products' %}" class="btn-milky-gold btn rounded-pill px-5 py-3 text-uppercase fw-bold">Shop Now</a>
+        <a href="{% url 'all_products' %}" class="btn-milky-gold btn rounded-pill px-5 py-2 text-uppercase fw-bold">Shop Now</a>
     </div>
     {% endif %}
 

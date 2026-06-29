@@ -4,195 +4,158 @@
 
 {% block extra_title %}Checkout - Milky{% endblock %}
 
-{% block page_header %}
-<div class="container header-container">
-    <div class="row">
-        <div class="col-sm-12">
-        </div>
-    </div>
-</div>
-{% endblock %}
+{% block page_header %}{% endblock %}
 
 {% block content %}
 <div class="container">
 
-    <!-- Checkout header -->
-    <div class="row mb-3 px-3">
-        <div class="col-10">
-            <h2 class="text-uppercase fw-bold">Checkout</h2>
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="text-uppercase mb-0">Checkout</h1>
+        <a href="{% url 'view_cart' %}" class="text-dark">
+            <i class="fa-solid fa-xmark fa-xl"></i>
+        </a>
+    </div>
+
+    <!-- Order summary + price recap -->
+    <div class="bg-white rounded-4 shadow-sm px-3 mb-3">
+        {% for item in cart_items %}
+        <div class="d-flex align-items-center gap-3 py-3">
+            <div class="flex-shrink-0" style="width: 70px;">
+                {% if item.product.product_image %}
+                <img src="{{ item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                {% else %}
+                <img src="{% static 'images/no_image.png' %}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                {% endif %}
+            </div>
+            <div class="flex-grow-1 min-w-0">
+                <p class="logo-font text-uppercase mb-0 cart-product-name">{{ item.product.name }}</p>
+                <p class="mb-0 cart-product-price">Qty: {{ item.quantity }}</p>
+                <p class="mb-0 cart-product-price">Price: ${{ item.subtotal }}</p>
+            </div>
+        </div>
+        {% if not forloop.last %}<hr class="my-0">{% endif %}
+        {% endfor %}
+
+        <!-- Price recap -->
+        <div class="pt-5 pb-3">
+            {% if promo_discount %}
+            <div class="d-flex align-items-center gap-2 mb-3 text-success text-sm">
+                <i class="fa-solid fa-tag"></i>
+                <span>Gift reward — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied.</span>
+            </div>
+            {% endif %}
+            <div class="d-flex justify-content-between mb-2">
+                <p class="mb-0">Subtotal</p>
+                <p class="mb-0">${{ total }}</p>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <p class="mb-0 text-muted">Delivery</p>
+                <p class="mb-0 text-muted">{% if delivery == 0 %}Free{% else %}${{ delivery }}{% endif %}</p>
+            </div>
+            {% if promo_discount %}
+            <div class="d-flex justify-content-between mb-2 text-success">
+                <p class="mb-0">Gift discount</p>
+                <p class="mb-0">-{{ promo_discount|floatformat:0 }}%</p>
+            </div>
+            {% endif %}
+            <hr class="my-3">
+            <div class="d-flex justify-content-between">
+                <p class="fw-bold mb-0">Grand Total</p>
+                <p class="fw-bold mb-0">${{ grand_total|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <form action="{% url 'checkout' %}" method="POST" id="payment-form"
+        data-checkout-url="{% url 'checkout' %}"
+        data-cache-url="{% url 'cache_checkout_data' %}">
+        {% csrf_token %}
+
+        <!-- Details -->
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+            <h4 class="mb-3">Details</h4>
+            {{ form.delivery_name|as_crispy_field }}
+            {{ form.delivery_surname|as_crispy_field }}
+
+            {% if not user.is_authenticated %}
+                {{ form.email|as_crispy_field }}
+            {% endif %}
         </div>
 
-        <div class="col-2 text-end">
-            <!-- X button → go back to cart -->
-            <a href="{% url 'view_cart' %}" class="text-dark">
-                <i class="fa-solid fa-xmark fa-xl"></i>
+        <!-- Delivery -->
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+            <h4 class="mb-3">Delivery</h4>
+            {{ form.delivery_phone|as_crispy_field }}
+            {{ form.delivery_address|as_crispy_field }}
+            {{ form.delivery_city|as_crispy_field }}
+            {{ form.delivery_county|as_crispy_field }}
+            {{ form.delivery_postcode|as_crispy_field }}
+            {{ form.delivery_country|as_crispy_field }}
+            <div class="form-check mt-2 px-0">
+                {% if user.is_authenticated %}
+                <input class="form-check-input" type="checkbox" id="id-save-info" name="save-info" checked>
+                <label class="form-check-label text-sm" for="id-save-info">Save this delivery info to my profile</label>
+                {% else %}
+                <div class="text-start text-sm">
+                    <a class="links" href="{% url 'account_signup' %}">Create an account</a> or
+                    <a class="links" href="{% url 'account_login' %}">login</a> to save this information
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Invoice -->
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+            <h4 class="mb-3">Invoice</h4>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="same-as-delivery" name="same-as-delivery" checked>
+                <label class="form-check-label text-sm" for="same-as-delivery">Same as delivery address</label>
+            </div>
+            <div id="invoice-fields" style="display: none;">
+                {{ form.invoice_name|as_crispy_field }}
+                {{ form.invoice_surname|as_crispy_field }}
+                {{ form.invoice_phone|as_crispy_field }}
+                {{ form.invoice_address|as_crispy_field }}
+                {{ form.invoice_city|as_crispy_field }}
+                {{ form.invoice_county|as_crispy_field }}
+                {{ form.invoice_postcode|as_crispy_field }}
+                {{ form.invoice_country|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+            <h4 class="mb-3">Payment</h4>
+            <div id="payment-element"></div>
+            <p id="payment-status" class="text-sm text-danger text-center mt-2 mb-0">
+                Payment form not ready. Please wait a moment.
+            </p>
+            <div class="mb-0 text-danger" id="card-errors" role="alert"></div>
+            <p class="text-sm text-danger text-center mt-3 mb-0">
+                <i class="fas fa-exclamation-circle me-1"></i>
+                Your card will be charged <strong>${{ grand_total|floatformat:2 }}</strong>
+            </p>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex flex-column gap-2 mb-5">
+            <button id="submit-button" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold" disabled>
+                <span>Complete Order</span>
+            </button>
+            <a href="{% url 'view_cart' %}" class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center">
+                Adjust Cart
             </a>
         </div>
 
-        <div class="col-12">
-            <p>Order Summary ({{ cart_items|length }})</p>
-            <p>Items in your cart</p>
-        </div>
-        {% for item in cart_items %}
-        <div class="d-flex align-items-center my-4 gap-3">
+    </form>
 
-            <!-- Product image -->
-            <div class="col-5 col-md-3 col-lg-2">
-                {% if item.product.product_image %}
-                <img src="{{ item.product.product_image.url }}" class="img-fluid rounded" alt="{{ item.product.name }}">
-                {% else %}
-                <img src="{% static 'images/no_image.png' %}" class="img-fluid" alt="{{ item.product.name }}">
-                {% endif %}
-            </div>
-
-            <!-- Product info -->
-            <div class="col-7 col-md-6 col-lg-5">
-                <p class="fw-bold text-uppercase mb-1 small cart-product-name">{{ item.product.name }}</p>
-                <p class="mb-2 text-muted small">Qty: {{ item.quantity }}</p>
-                <p class="mb-2 text-muted small item-subtotal">Subtotal: $<span
-                        class="item-subtotal-value">{{item.subtotal }}</span></p>
-            </div>
-        </div>
-        <hr class="my-0">
-
-        {% endfor %}
-
-        <!-- Order totals -->
-        <div class="col-12 mt-3 small">
-            {% if promo_discount %}
-            <div class="alert alert-success py-2 px-3 small mb-3">
-                You gifted a can to a friend — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied to this order.
-            </div>
-            {% endif %}
-            <div class="d-flex justify-content-between">
-                <p>Subtotal</p>
-                <p>${{ total }}</p>
-            </div>
-            <div class="d-flex justify-content-between">
-                <p>Shipping cost</p>
-                <p>${{ delivery }}</p>
-            </div>
-            {% if promo_discount %}
-            <div class="d-flex justify-content-between text-success">
-                <p>Gift reward</p>
-                <p>-{{ promo_discount|floatformat:0 }}%</p>
-            </div>
-            {% endif %}
-            <hr>
-            <div class="d-flex justify-content-between fw-bold">
-                <p>Total</p>
-                <p>${{ grand_total|floatformat:2 }}</p>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="col-12">
-
-    </div>
-    <div class="col-12">
-        <p class="text-muted">Please fill out the form below to complete your order</p>
-        <form action="{% url 'checkout' %}" method="POST" id="payment-form" data-checkout-url="{% url 'checkout' %}"
-            data-cache-url="{% url 'cache_checkout_data' %}">
-            {% csrf_token %}
-            <fieldset class="rounded px-3 mb-2">
-                <legend class="fieldset-label small text-black px-2 w-auto">Details</legend>
-                {{ form.delivery_name|as_crispy_field }}
-                {{ form.delivery_surname|as_crispy_field }}
-            </fieldset>
-            <fieldset class="rounded px-3 mb-2">
-                <legend class="fieldset-label small text-black px-2 w-auto">Delivery</legend>
-                {{ form.delivery_phone|as_crispy_field }}
-                {{ form.delivery_address|as_crispy_field }}
-                {{ form.delivery_city|as_crispy_field }}
-                {{ form.delivery_county|as_crispy_field }}
-                {{ form.delivery_postcode|as_crispy_field }}
-                {{ form.delivery_country|as_crispy_field }}
-                <div class="form-check">
-                    {% if user.is_authenticated %}
-                    <label class="form-check-label" for="id-save-info">Save this delivery information to my
-                        profile</label>
-                    <input class="form-check-input ml-2 mr-0" type="checkbox" id="id-save-info" name="save-info"
-                        checked>
-                    {% else %}
-                    <label class="form-check-label" for="id-save-info">
-                        <a class="text-info" href="{% url 'account_signup' %}">Create an account</a> or
-                        <a class="text-info" href="{% url 'account_login' %}">login</a> to save this information
-                    </label>
-                    {% endif %}
-                </div>
-            </fieldset>
-
-            <fieldset class="rounded px-3 mb-2">
-                <legend class="fieldset-label small text-black px-2 w-auto">Invoice</legend>
-
-                <!-- Toggle checkbox -->
-                <div class="form-check mb-1">
-                    <input class="form-check-input" type="checkbox" id="same-as-delivery" name="same-as-delivery"
-                        checked>
-                    <label class="form-check-label" for="same-as-delivery">
-                        Same as delivery address
-                    </label>
-                </div>
-
-                <!-- Invoice fields - hidden by default -->
-                <div id="invoice-fields" style="display: none;">
-                    {{ form.invoice_name|as_crispy_field }}
-                    {{ form.invoice_surname|as_crispy_field }}
-                    {{ form.invoice_phone|as_crispy_field }}
-                    {{ form.invoice_address|as_crispy_field }}
-                    {{ form.invoice_city|as_crispy_field }}
-                    {{ form.invoice_county|as_crispy_field }}
-                    {{ form.invoice_postcode|as_crispy_field }}
-                    {{ form.invoice_country|as_crispy_field }}
-                </div>
-            </fieldset>
-
-            {% if not user.is_authenticated %}
-            <fieldset class="rounded px-3 mb-2">
-                <legend class="fieldset-label small text-black px-2 w-auto">Email</legend>
-                {{ form.email|as_crispy_field }}
-            </fieldset>
-            {% endif %}
-
-            <fieldset class="rounded px-3 mb-2"></fieldset>
-            <fieldset class="px-3">
-                <legend class="fieldset-label small text-black px-2 w-auto">Payment</legend>
-                <div class="card p-3 mb-3">
-                    <div id="payment-element">
-                        <!--Stripe.js injects the Payment Element-->
-                    </div>
-                    <p id="payment-status" class="small text-danger text-center mt-2 mb-0">
-                        Payment form not ready. Please wait a moment.
-                    </p>
-                    <!-- Card errors OUTSIDE payment-element -->
-                    <div class="mb-3 text-danger" id="card-errors" role="alert"></div>
-                    <p class="small text-danger text-center my-3">
-                        <span class="icon">
-                            <i class="fas fa-exclamation-circle"></i>
-                        </span>
-                        <span>Your card will be charged <strong>${{ grand_total|floatformat:2 }}</strong></span>
-                    </p>
-                </div>
-            </fieldset>
-            <div class="submit-button mb-2 text-center">
-                <a href="{% url 'view_cart' %}" class="btn-milky btn rounded-pill px-4 py-2 mt-3 fs-6">
-                    <p class="mb-0">Adjust Bag</p>
-                </a>
-                <button id="submit-button" class="btn-milky btn rounded-pill px-4 py-2 mt-3 fs-6" disabled>
-                    <span class="mb-0">Complete Order</span>
-                </button>
-            </div>
-        </form>
-
-    </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-
 {{ stripe_public_key|json_script:"id_stripe_public_key" }}
 {{ client_secret|json_script:"id_client_secret" }}
-
 <script src="{% static 'js/checkout.js' %}"></script>
 {% endblock %}
