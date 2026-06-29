@@ -55,8 +55,6 @@ class OrderForm(forms.ModelForm):
         if user_authenticated:
             self.fields["email"].required = False
 
-        self.fields["delivery_name"].widget.attrs["autofocus"] = True
-
         for field in self.fields:
             if field in ("delivery_county", "invoice_county"):
                 self.fields[field].widget.attrs["class"] = "form-control county-field"

@@ -20,8 +20,16 @@ let elements;
 // Disable button until Stripe is ready
 submitButton.disabled = true;
 
-initialize();
 document.querySelector("#payment-form").addEventListener("submit", handleSubmit);
+
+// Initialize Stripe only when the payment section enters the viewport
+const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+        observer.disconnect();
+        initialize();
+    }
+}, { threshold: 0.1 });
+observer.observe(document.getElementById('payment-element'));
 
 async function initialize() {
     const appearance = {
@@ -34,12 +42,13 @@ async function initialize() {
     elements = stripe.elements({ appearance, clientSecret });
 
     const paymentElement = elements.create("payment");
+    document.documentElement.style.overflow = 'hidden';
     paymentElement.mount("#payment-element");
 
-    // Enable button when Stripe is ready
     paymentElement.on('ready', function () {
         submitButton.disabled = false;
         paymentStatus.style.display = "none";
+        document.documentElement.style.overflow = '';
     });
 }
 
