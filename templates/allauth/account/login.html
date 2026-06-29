@@ -1,49 +1,49 @@
 {% extends "account/base.html" %}
-
 {% load i18n %}
-{% load account socialaccount %}
+{% load account %}
+{% load crispy_forms_tags %}
 
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block inner_content %}
 
-<h2 class="logo-font mb-4 text-uppercase">{% trans "Sign In" %}</h2>
-
-{% get_providers as socialaccount_providers %}
-
-{% if socialaccount_providers %}
-<p>{% blocktrans with site.name as site_name %}Please sign in with one
-of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
-for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
-
-<div class="socialaccount_ballot">
-
-  <ul class="socialaccount_providers">
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  </ul>
-
-  <div class="login-or">{% trans 'or' %}</div>
-
-</div>
-
-{% include "socialaccount/snippets/login_extra.html" %}
-
-{% else %}
-<p>{% blocktrans %}If you have not created an account yet, then please
-<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
-{% endif %}
+<h1 class="logo-font text-uppercase mb-1">{% trans "Sign In" %}</h1>
+<p class="text-muted text-sm mb-4">Welcome back, we missed you.</p>
 
 <form class="login" method="POST" action="{% url 'account_login' %}">
-  {% csrf_token %}
-  {{ form|crispy }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button class="btn-milky btn rounded-pill mb-2" type="submit">{% trans "Sign In" %}</button>
-  <a class="btn-milky btn rounded-pill" href="{% url 'home' %}">Home</a>
-  <p class="mt-2">
-    <a class="" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-  </p>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="text-danger text-sm mb-3">
+        {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+    {{ form.login|as_crispy_field }}
+    <div class="mb-3">
+        <input type="password"
+               name="{{ form.password.html_name }}"
+               id="{{ form.password.id_for_label }}"
+               class="form-control{% if form.password.errors %} is-invalid{% endif %}"
+               placeholder="Password"
+               autocomplete="current-password">
+        {% if form.password.errors %}
+        <div class="invalid-feedback">{{ form.password.errors|join:", " }}</div>
+        {% endif %}
+    </div>
+    <div class="d-flex align-items-center justify-content-between mb-5">
+        <div class="d-flex align-items-center gap-1 mb-0">
+            {{ form.remember }}
+            <label class="form-check-label text-sm mb-0" for="{{ form.remember.id_for_label }}">{{ form.remember.label }}</label>
+        </div>
+        <a class="links text-xs text-nowrap" href="{% url 'account_reset_password' %}">{% trans "Forgot your password?" %}</a>
+    </div>
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <div class="text-center text-sm mb-4">
+        <span>Don't have an account? </span><a class="links" href="{{ signup_url }}">{% trans "Create one" %}</a>
+    </div>
+    <button class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold mb-2" type="submit">{% trans "Sign In" %}</button>
+    <a class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center d-block" href="{% url 'home' %}">{% trans "Back to Shop" %}</a>
 </form>
 
 {% endblock %}
