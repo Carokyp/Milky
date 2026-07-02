@@ -1,27 +1,26 @@
 {% if widget.is_initial %}
-<p>{{ widget.initial_text }}:</p>
-<a href="{{ widget.value.url }}">
-    <img width="96" height="96" src="{{ widget.value.url }}" alt="product image">
+<p class="text-muted text-sm mb-1 mt-0">{{ widget.initial_text }}:</p>
+<a href="{{ widget.value.url }}" class="d-inline-block mb-2">
+    <img class="widget-preview-img" src="{{ widget.value.url }}" alt="product image">
 </a>
 {% if not widget.required %}
-<div class="form-check mt-2">
+<div class="form-check mb-2">
     <input class="form-check-input" type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
     <label class="form-check-label" for="{{ widget.checkbox_id }}">
         {{ widget.clear_checkbox_label }}
     </label>
 </div>
 {% endif %}
-<br>
 {% endif %}
 
 <button type="button"
-        class="btn btn-milky rounded-pill px-3 py-2"
+        class="btn btn-milky rounded-pill px-3 py-1 w-auto text-sm"
         onclick="document.getElementById('{{ widget.attrs.id }}').click()">
-    {{ widget.input_text }} Select Image
+    <i class="fa-solid fa-arrow-up-from-bracket me-2"></i>{{ widget.input_text }} Select Image
 </button>
-
 <input id="{{ widget.attrs.id }}"
        type="{{ widget.type }}"
        name="{{ widget.name }}"
+       data-filename-target="filename-{{ widget.attrs.id }}"
        style="display: none;">
-<p id="filename" class="small mt-1"></p>
+<p id="filename-{{ widget.attrs.id }}" class="text-sm text-muted mt-1 mb-0"></p>

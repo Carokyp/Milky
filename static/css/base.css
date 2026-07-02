@@ -286,12 +286,14 @@ p  { font-size: var(--font-p); }
     padding: 0.25rem 0.4rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
     backdrop-filter: blur(4px);
+    pointer-events: none;
 }
 
 .superuser-overlay-btn {
     gap: 0.3rem;
     padding: 0.15rem 0.45rem;
     font-size: var(--font-sm);
+    pointer-events: auto;
     font-weight: 600;
     color: var(--brown);
     white-space: nowrap;
@@ -316,6 +318,10 @@ p  { font-size: var(--font-p); }
 /* #endregion */
 
 /* #region Forms */
+
+.form-text {
+    font-size: var(--font-sm);
+}
 
 select:invalid,
 select option[value=""] {
@@ -365,6 +371,21 @@ textarea::placeholder {
 #id_remember {
     width: 0.75rem;
     height: 0.75rem;
+}
+
+/* Add and Edit Product form */
+
+.widget-preview-img {
+    max-width: 96px;
+    height: auto;
+}
+
+.image-field-row {
+    background: #f9f4f0;
+    border: 1px solid rgba(82, 49, 34, 0.1);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
 }
 
 /* #endregion */
