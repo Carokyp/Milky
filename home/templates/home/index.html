@@ -123,25 +123,5 @@
     <img src="{% static 'images/single_bubble.png' %}" class="img-fluid w-100 d-block single-bubble-overlap" alt="">
 </section>
 
-{% block extra_js %}
-<script>
-    document.querySelectorAll('.product-card').forEach(card => {
-        const objects = card.querySelector('.product-card-objects');
-        const can = card.querySelector('.product-card-can');
-
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = (e.clientX - rect.left) / rect.width - 0.5;
-            const y = (e.clientY - rect.top) / rect.height - 0.5;
-            objects.style.transform = `translate(${x * 25}px, ${y * 25}px)`;
-            can.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            objects.style.transform = 'translate(0, 0)';
-            can.style.transform = 'translate(0, 0)';
-        });
-    });
-</script>
 {% endblock %}
-{% endblock %}
+
