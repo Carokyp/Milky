@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path("", views.index, name="home"),
+    
     # TODO: Remove test URL before deployment
     path("test-success/", views.test_success, name="test_success"),
     path("test-warning/", views.test_warning, name="test_warning"),
