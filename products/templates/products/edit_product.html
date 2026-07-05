@@ -11,13 +11,12 @@
     <div class="row justify-content-center">
         <div class="col-12 col-md-9 col-lg-7">
 
-            <div class="d-flex align-items-center justify-content-between mb-1">
-                <h1 class="logo-font text-uppercase mb-0">Edit Product</h1>
-                <a href="{% url 'all_products' %}" class="text-dark">
-                    <i class="fa-solid fa-xmark fa-xl"></i>
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <a href="{% url 'all_products' %}" class="back-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
                 </a>
+                <h1 class="logo-font text-uppercase mb-0">Edit Product</h1>
             </div>
-            <p class="text-muted text-sm mb-4">{{ product.name }}</p>
 
             <form method="POST" enctype="multipart/form-data" action="{% url 'edit_product' product.id %}">
                 {% csrf_token %}
