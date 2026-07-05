@@ -27,8 +27,9 @@
                             <a href="{% url 'edit_product' product.id %}" class="superuser-overlay-btn d-flex align-items-center rounded-pill">
                                 <i class="fa-solid fa-pen-to-square"></i> Edit
                             </a>
-                            <a href="{% url 'delete_product' product.id %}" class="superuser-overlay-btn superuser-overlay-btn-delete d-flex align-items-center rounded-pill"
-                                onclick="return confirm('Delete this product?')">
+                            <a href="{% url 'delete_product' product.id %}"
+                                class="superuser-overlay-btn superuser-overlay-btn-delete d-flex align-items-center rounded-pill delete-product-btn"
+                                data-product-name="{{ product.name }}">
                                 <i class="fa-solid fa-trash"></i> Delete
                             </a>
                         </div>
@@ -193,6 +194,8 @@
 {% if user.is_authenticated %}
 {% include 'products/gift_a_can.html' with product=product contacts=contacts form=gift_form %}
 {% endif %}
+
+{% include 'includes/delete_product_modal.html' %}
 
 {% endblock %}
 

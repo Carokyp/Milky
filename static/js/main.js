@@ -11,6 +11,16 @@ document.addEventListener('click', function (e) {
     if (!e.target.closest('header')) closeNavbar();
 });
 
+document.querySelectorAll('.delete-product-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('deleteProductModalText').innerHTML =
+            'Are you sure you want to delete <strong>' + this.dataset.productName + '</strong>? This cannot be undone.';
+        document.getElementById('deleteProductConfirmBtn').href = this.href;
+        new bootstrap.Modal(document.getElementById('deleteProductModal')).show();
+    });
+});
+
 document.querySelectorAll('input[data-filename-target]').forEach(function(input) {
     input.addEventListener('change', function() {
         var file = this.files[0];

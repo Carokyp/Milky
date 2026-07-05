@@ -57,8 +57,9 @@
                         <a href="{% url 'edit_product' product.id %}" class="superuser-overlay-btn d-flex align-items-center rounded-pill">
                             <i class="fa-solid fa-pen-to-square"></i> Edit
                         </a>
-                        <a href="{% url 'delete_product' product.id %}" class="superuser-overlay-btn superuser-overlay-btn-delete d-flex align-items-center rounded-pill"
-                            onclick="return confirm('Delete this product?')">
+                        <a href="{% url 'delete_product' product.id %}"
+                            class="superuser-overlay-btn superuser-overlay-btn-delete d-flex align-items-center rounded-pill delete-product-btn"
+                            data-product-name="{{ product.name }}">
                             <i class="fa-solid fa-trash"></i> Delete
                         </a>
                     </div>
@@ -123,5 +124,6 @@
     <img src="{% static 'images/single_bubble.png' %}" class="img-fluid w-100 d-block single-bubble-overlap" alt="">
 </section>
 
-{% endblock %}
+{% include 'includes/delete_product_modal.html' %}
 
+{% endblock %}
