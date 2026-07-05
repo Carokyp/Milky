@@ -66,6 +66,19 @@ h5 { font-size: var(--font-h5); }
 h6 { font-size: var(--font-h6); }
 p  { font-size: var(--font-p); }
 
+.text-xs {
+    font-size: var(--font-xs);
+}
+.text-sm {
+    font-size: var(--font-sm);
+}
+.text-lg {
+    font-size: var(--font-lg);
+}
+.text-xl {
+    font-size: var(--font-xl);
+}
+
 .logo-font {
     font-family: var(--font-family-heading);
 }
@@ -77,10 +90,6 @@ p  { font-size: var(--font-p); }
     display: inline-block;
     line-height: 1.1;
     transform: rotate(-2deg);
-}
-
-.text-xs {
-    font-size: var(--font-xs);
 }
 
 /* #endregion */
@@ -98,7 +107,8 @@ p  { font-size: var(--font-p); }
 }
 
 /* Font size — custom scale, use instead of Bootstrap .small */
-.text-sm {
+.text-sm,
+.text-sm p {
     font-size: var(--font-sm);
 }
 
@@ -247,6 +257,25 @@ p  { font-size: var(--font-p); }
     font-size: var(--font-sm);
 }
 
+.back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgb(255, 255, 255);
+    color: var(--brown);
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+.back-btn:hover {
+    background: rgba(201, 142, 80, 0.23);
+    color: var(--brown);
+}
+
 .cart-remove-btn {
     color: var(--light-brown);
     background: none;
@@ -393,14 +422,43 @@ textarea::placeholder {
 /* #region Toast */
 
 .toast {
-    max-width: 300px;
+    max-width: 320px;
     z-index: 9999;
     border: none;
-    box-shadow: none;
+}
+
+.site-toast {
+    box-shadow: 0 8px 32px rgba(82, 49, 34, 0.22), 0 2px 8px rgba(82, 49, 34, 0.1);
+}
+
+.site-toast-header {
+    background-color: var(--brown);
+    color: white;
+}
+
+.site-toast-header--error {
+    background-color: var(--danger);
+}
+
+.site-toast-header--warning {
+    background-color: var(--gold);
+    color: var(--brown);
+}
+
+.site-toast-header--info {
+    background-color: var(--light-brown);
+}
+
+.site-toast-body {
+    background-color: var(--light-cream);
+}
+
+.site-toast-body hr {
+    border-color: rgba(60, 36, 22, 1) !important;
 }
 
 .bag-preview-wrapper {
-    height: 300px;
+    max-height: 280px;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -603,7 +661,7 @@ textarea::placeholder {
 }
 
 .cart-product-name {
-    font-size: var(--font-p);
+    font-size: var(--font-h4);
 }
 
 .cart-product-price,
