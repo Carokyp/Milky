@@ -20,7 +20,7 @@ def profile_view(request):
             form.save()
             if not user_customers:
                 UserCustomer.objects.create(user=request.user, customer=form.instance)
-            messages.success(request, "Your profile has been updated successfully.")
+            messages.success(request, "Your profile has been updated successfully.", extra_tags="profile")
             return redirect("profile")
     else:
         form = CustomerForm(instance=customer)
@@ -66,7 +66,7 @@ def add_contact_view(request):
             contact.customer = customer
             contact.ip_address = request.META.get('REMOTE_ADDR', '')
             contact.save()
-            messages.success(request, 'Contact added successfully.')
+            messages.success(request, 'Contact added successfully.', extra_tags="contact")
             request.session['profile_active_tab'] = 'contacts'
             return redirect('profile')
         else:
@@ -86,7 +86,7 @@ def edit_contact_view(request, contact_id):
         form = GiftACanForm(request.POST, instance=contact)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Contact updated successfully.')
+            messages.success(request, 'Contact updated successfully.', extra_tags="contact")
             request.session['profile_active_tab'] = 'contacts'
             return redirect('profile')
         else:
@@ -102,6 +102,6 @@ def edit_contact_view(request, contact_id):
 def delete_contact_view(request, contact_id): 
     contact = get_object_or_404(Contact, id=contact_id, customer__usercustomer__user=request.user)
     contact.delete()
-    messages.success(request, "Contact deleted successfully.")
+    messages.success(request, "Contact deleted successfully.", extra_tags="contact")
     request.session['profile_active_tab'] = 'contacts'
     return redirect('profile')

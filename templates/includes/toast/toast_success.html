@@ -3,7 +3,18 @@
 <div class="toast site-toast rounded-4 overflow-hidden" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="toast-header site-toast-header border-0 py-3 px-3">
     <i class="fa-solid fa-circle-check me-2"></i>
-    <strong class="me-auto text-uppercase">Added to cart</strong>
+    <strong class="me-auto text-uppercase">
+      {% if 'cart-update' in message.tags %}Cart updated
+      {% elif 'cart-remove' in message.tags %}Item removed
+      {% elif 'cart' in message.tags %}Added to cart
+      {% elif 'product' in message.tags %}Product
+      {% elif 'review' in message.tags %}Review added
+      {% elif 'gift' in message.tags %}Gift sent!
+      {% elif 'order' in message.tags %}Order confirmed
+      {% elif 'profile' in message.tags %}Profile saved
+      {% elif 'contact' in message.tags %}Contact
+      {% else %}Success{% endif %}
+    </strong>
     <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
   </div>
 

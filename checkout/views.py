@@ -265,6 +265,7 @@ def checkout_success(request):
     messages.success(
         request,
         f"Order {order.reference_code} placed successfully! You will receive a confirmation email at {order.email} shortly.",
+        extra_tags="order",
     )
     return redirect(reverse("order_confirmation", args=[order.reference_code]))
 
