@@ -3,7 +3,10 @@ Hello {{ contact.name }},
 {{ customer.name }} {{ customer.surname }} has gifted you a can of {{ product.name|safe }} from Milky!
 
 Product: {{ product.name|safe }}
-
+{% if personal_message %}
+{{ customer.name }} left you a message:
+"{{ personal_message }}"
+{% endif %}
 We hope you enjoy it!
 
 The Milky Team

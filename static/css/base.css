@@ -581,6 +581,111 @@ textarea::placeholder {
 
 /* #endregion */
 
+/* #region Gift Page */
+
+.gift-promo-badge {
+    background-color: var(--gold);
+    color: var(--brown);
+    font-size: var(--font-sm);
+}
+
+/* Custom product dropdown */
+.gift-product-trigger {
+    width: 100%;
+    background: var(--card-background);
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    transition: border-color 0.2s ease;
+}
+
+.gift-dropdown-chevron {
+    transition: transform 0.2s ease;
+    color: #6c757d;
+}
+
+.gift-product-trigger.open .gift-dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+.gift-product-options {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    border: 1px solid rgba(82, 49, 34, 0.15);
+    box-shadow: 0 8px 24px rgba(82, 49, 34, 0.12);
+    z-index: 100;
+    overflow: hidden;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.gift-product-options.open {
+    display: block;
+}
+
+.gift-product-option {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    color: var(--brown);
+    transition: background 0.15s ease;
+}
+
+.gift-product-option:hover {
+    background: rgba(251, 203, 98, 0.2);
+}
+
+.gift-product-option.selected {
+    background: rgba(251, 203, 98, 0.35);
+    font-weight: 600;
+}
+
+.gift-option-img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.gift-trigger-placeholder {
+    color: var(--placeholder-color);
+}
+
+.gift-step-number {
+    font-size: 3.5rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.gift-step-label {
+    color: var(--brown);
+}
+
+.gift-contact-label {
+    letter-spacing: 0.05em;
+}
+
+.bubble-text-gift {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    padding-top: 1.5rem;
+}
+
+.gift-bubble-back {
+    position: absolute;
+    top: -1rem;
+    left: 1rem;
+    z-index: 1;
+}
+
+/* #endregion */
+
 /* #region Product Detail */
 
 .product-detail-card {

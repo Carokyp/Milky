@@ -4,6 +4,7 @@
         <i class="fa-regular fa-circle-user fa-lg"></i>
     </a>
     <ul class="dropdown-menu dropdown-menu-end">
+        <li><a class="dropdown-item" href="{% url 'gift_page' %}">Gift a Can</a></li>
         {% if request.user.is_authenticated %}
         {% if request.user.is_superuser %}
         <li><a href="{% url 'add_product' %}" class="dropdown-item">Products Management</a></li>

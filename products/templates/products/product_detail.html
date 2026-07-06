@@ -64,10 +64,6 @@
                             {% else %}
                             <button class="btn-milky-gold btn rounded-pill text-uppercase py-3 w-100">Add to Cart</button>
                             {% endif %}
-                            {% if user.is_authenticated %}
-                            <button type="button" class="btn-milky btn rounded-pill text-uppercase py-3 w-100"
-                                data-bs-toggle="modal" data-bs-target="#giftModal">Gift a Can</button>
-                            {% endif %}
                         </div>
                     </form>
                 </div>
@@ -190,10 +186,6 @@
         </div>
     </div>
 </section>
-
-{% if user.is_authenticated %}
-{% include 'products/gift_a_can.html' with product=product contacts=contacts form=gift_form %}
-{% endif %}
 
 {% include 'includes/delete_product_modal.html' %}
 

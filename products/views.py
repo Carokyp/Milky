@@ -32,22 +32,74 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     comment_form = CommentForm()
     comments = product.comments.all()  # type: ignore
-    gift_form = GiftACanForm()
-    contacts = []
-
-    if request.user.is_authenticated:
-        user_customer = UserCustomer.objects.filter(user=request.user).first()
-        if user_customer:
-            contacts = user_customer.customer.contact_set.all()  # type: ignore
 
     context = {
         "product": product,
         "comment_form": comment_form,
         "comments": comments,
-        "gift_form": gift_form,
-        "contacts": contacts,
     }
     return render(request, "products/product_detail.html", context)
+
+
+def gift_page_view(request):
+    """Standalone gift a can page."""
+    products = Product.objects.filter(is_available=True)
+    contacts = []
+    customer = None
+
+    if request.user.is_authenticated:
+        user_customer = UserCustomer.objects.filter(user=request.user).first()
+        customer = user_customer.customer if user_customer else None
+        if customer:
+            contacts = customer.contact_set.all()  # type: ignore
+
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect(reverse('account_login'))
+
+        if not customer:
+            messages.warning(request, 'Please complete your profile before gifting a can.')
+            return redirect(reverse('profile'))
+
+        product_id = request.POST.get('product_id')
+        product = get_object_or_404(Product, pk=product_id)
+        personal_message = request.POST.get('personal_message', '').strip()
+        existing_contact_id = request.POST.get('existing_contact')
+        form = GiftACanForm(request.POST)
+
+        if existing_contact_id:
+            contact = get_object_or_404(Contact, pk=existing_contact_id, customer=customer)
+        elif form.is_valid():
+            contact = form.save(commit=False)
+            contact.customer = customer
+            contact.ip_address = request.META.get('REMOTE_ADDR', '')
+            contact.save()
+        else:
+            messages.error(request, 'Failed to gift a can. Please check the form.')
+            return render(request, 'products/gift_page.html', {
+                'products': products,
+                'contacts': contacts,
+                'form': form,
+                'customer': customer,
+            })
+
+        customer.promo_discount = Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE))
+        customer.save()
+
+        subject = render_to_string('products/gift_email_subject.txt', {'product': product, 'customer': customer})
+        body = render_to_string('products/gift_email_body.txt', {'product': product, 'customer': customer, 'contact': contact, 'personal_message': personal_message})
+        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [contact.email])
+
+        messages.success(request, 'You gifted a can! You get 10% off your next order!', extra_tags="gift")
+        return redirect(reverse('gift_page'))
+
+    form = GiftACanForm()
+    return render(request, 'products/gift_page.html', {
+        'products': products,
+        'contacts': contacts,
+        'form': form,
+        'customer': customer,
+    })
 
 
 @login_required
@@ -60,7 +112,7 @@ def add_product(request):
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save()  # ← stocke le produit
-            messages.success(request, 'Product added successfully!')
+            messages.success(request, 'Product added successfully!', extra_tags="product")
             return redirect(reverse('product_detail', args=[product.id]))
         else:
             messages.error(request, 'Failed to add product. Please check the form.')
@@ -82,7 +134,7 @@ def edit_product(request, product_id):
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Product updated successfully!')
+            messages.success(request, 'Product updated successfully!', extra_tags="product")
             return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
         else:
             messages.error(request, 'Failed to update product.')
@@ -101,7 +153,7 @@ def delete_product(request, product_id):
 
     product = get_object_or_404(Product, pk=product_id)
     product.delete()
-    messages.success(request, 'Product deleted successfully!')
+    messages.success(request, 'Product deleted successfully!', extra_tags="product")
     return redirect(reverse('all_products'))
 
 
@@ -130,7 +182,7 @@ def add_comment(request, product_id):
                 order = Order.objects.filter(customer=customer, items__product=product).last()
                 comment.order = order
             comment.save()
-            messages.success(request, 'Comment added successfully!')
+            messages.success(request, 'Comment added successfully!', extra_tags="review")
             return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
         else:
             messages.error(request, 'Failed to add comment. Please check the form.')
@@ -140,67 +192,3 @@ def add_comment(request, product_id):
     return render(request, 'products/add_comment.html', {'form': form, 'product': product})
 
 
-@login_required
-def gift_a_can_view(request, product_id):
-    """View for gifting a can to a friend."""
-    product = get_object_or_404(Product, pk=product_id)
-
-    user_customer = UserCustomer.objects.filter(user=request.user).first()
-    customer = user_customer.customer if user_customer else None
-
-    if not customer:
-        messages.warning(request, 'Please complete your profile before gifting a can.')
-        return redirect(reverse('profile'))
-
-    contacts = customer.contact_set.all()  # type: ignore
-
-    if request.method == "POST":
-        existing_contact_id = request.POST.get("existing_contact")
-        form = GiftACanForm(request.POST)
-
-        if existing_contact_id:
-            contact = get_object_or_404(
-                Contact,
-                pk=existing_contact_id,
-                customer=customer,
-            )
-        elif form.is_valid():
-            contact = form.save(commit=False)
-            contact.customer = customer
-            contact.ip_address = request.META.get('REMOTE_ADDR', '')
-            contact.save()
-        else:
-            messages.error(request, 'Failed to gift a can. Please check the form.')
-            return render(request, 'products/gift_a_can.html', {
-                'form': form,
-                'product': product,
-                'contacts': contacts,
-            })
-
-        customer.promo_discount = Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE))
-        customer.save()
-
-        subject = render_to_string(
-            'products/gift_email_subject.txt',
-            {'product': product, 'customer': customer}
-        )
-        body = render_to_string(
-            'products/gift_email_body.txt',
-            {'product': product, 'customer': customer, 'contact': contact}
-        )
-        send_mail(
-            subject,
-            body,
-            settings.DEFAULT_FROM_EMAIL,
-            [contact.email]
-        )
-        messages.success(request, 'You gifted a can! You get 10% off your next order!')
-        return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
-    else:
-        form = GiftACanForm()
-
-    return render(request, 'products/gift_a_can.html', {
-        'form': form,
-        'product': product,
-        'contacts': contacts,
-    })
