@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_title %}{% block page_title %}Error{% endblock %} - Milky{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="text-center">
+        <div class="error-stack mb-4">
+
+            <!-- Base image: changes per breakpoint -->
+            <img src="{% static 'images/error_mobile.png' %}" alt="" class="d-md-none w-100 error-stack-item">
+            <img src="{% static 'images/error_desktop.png' %}" alt="" class="d-none d-md-block w-100 error-stack-item">
+
+            <!-- Banner overlaid on base image: top-width mobile → right, full-height desktop -->
+            <div class="error-banner-wrap error-stack-item">
+                <img src="{% static 'images/error_banner_mobile.png' %}" alt="" class="d-md-none w-100">
+                <img src="{% static 'images/error_banner_desktop.png' %}" alt=""
+                    class="d-none d-md-block error-banner-desktop-img">
+                <div class="error-banner-text d-flex flex-column justify-content-center align-items-center px-3">
+                    <h1 class="text-logo error-code mb-0">{% block error_code %}{% endblock %}</h1>
+                    <h2 class="text-uppercase text-lg mb-1">{% block error_title %}{% endblock %}</h2>
+                    <p class="text-sm text-muted mb-0">{% block error_message %}{% endblock %}</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pb-4">
+            <a href="{% url 'home' %}" class="btn-milky btn rounded-pill px-4 py-2 w-auto">
+                <i class="fa-solid fa-house me-2"></i> Back to Home
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

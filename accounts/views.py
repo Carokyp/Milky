@@ -105,3 +105,19 @@ def delete_contact_view(request, contact_id):
     messages.success(request, "Contact deleted successfully.", extra_tags="contact")
     request.session['profile_active_tab'] = 'contacts'
     return redirect('profile')
+
+
+def handler404(request, exception):
+    return render(request, 'errors/404.html', status=404)
+
+
+def handler403(request, exception):
+    return render(request, 'errors/403.html', status=403)
+
+
+def handler405(request, exception):
+    return render(request, 'errors/405.html', status=405)
+
+
+def handler500(request):
+    return render(request, 'errors/500.html', status=500)
