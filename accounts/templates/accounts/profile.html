@@ -13,15 +13,14 @@
                 <a href="{% url 'home' %}" class="back-btn">
                     <i class="fa-solid fa-chevron-left"></i>
                 </a>
-                <h1 class="logo-font text-uppercase mb-0">My Profile</h1>
+                <h1 class="text-uppercase mb-0">My Profile</h1>
             </div>
 
-            <div class="card border-0 p-4">
+            <div class="bg-white rounded-4 shadow-sm p-4">
 
                 <!-- Avatar + name -->
                 <div class="d-flex align-items-center gap-3 mb-4">
-                    <div
-                        class="profile-avatar align-items-center justify-content-center d-flex flex-shrink-0 rounded-circle text-uppercase fw-bold">
+                    <div class="profile-avatar align-items-center justify-content-center d-flex flex-shrink-0 rounded-circle text-uppercase fw-bold">
                         {% if customer.name %}
                         {{ customer.name|first|upper }}{{ customer.surname|first|upper }}
                         {% else %}
@@ -34,15 +33,14 @@
                         {% else %}
                         <p class="mb-0 fw-bold">{{ request.user.username }}</p>
                         {% endif %}
-                        <p class="mb-0 small text-muted profile-email">{{ request.user.email }}</p>
+                        <p class="mb-0 profile-email text-muted">{{ request.user.email }}</p>
                     </div>
                 </div>
 
                 <!-- Tabs navigation -->
-                <ul class="nav nav-tabs mb-4">
+                <ul class="nav profile-tabs rounded-pill p-1 w-100 flex-nowrap justify-content-between mb-4">
                     <li class="nav-item">
-                        <button class="nav-link {% if active_tab == 'profile' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#profile-tab"
-                            type="button">
+                        <button class="nav-link {% if active_tab == 'profile' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#profile-tab" type="button">
                             My Profile
                         </button>
                     </li>
@@ -87,30 +85,30 @@
                     <div class="tab-pane fade {% if active_tab == 'orders' %}show active{% endif %}" id="orders-tab">
                         {% if orders %}
                         {% for order in orders %}
-                        <div class="border-bottom py-3">
+                        <div class="bg-white rounded-4 shadow-sm p-3 mb-2">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <div>
-                                    <p class="mb-0 fw-bold small">{{ order.reference_code }}</p>
-                                    <p class="mb-0 small text-muted">{{ order.created_at|date:"d M Y" }}</p>
-                                    <p class="mb-0 small text-muted">{{ order.items.count }} item{% if order.items.count > 1 %}s{% endif %}</p>
+                                    <p class="mb-0 fw-bold text-sm">{{ order.reference_code }}</p>
+                                    <p class="mb-0 text-sm text-muted">{{ order.created_at|date:"d M Y" }}</p>
+                                    <p class="mb-0 text-sm text-muted">{{ order.items.count }} item{% if order.items.count > 1 %}s{% endif %}</p>
                                 </div>
                                 <div class="text-end">
-                                    <p class="mb-0 small fw-bold">${{ order.grand_total }}</p>
-                                    <span class="badge rounded-pill 
-                                            {% if order.status == 1 %}bg-success
-                                            {% elif order.status == 2 %}bg-danger
-                                            {% else %}bg-warning text-dark{% endif %}">
+                                    <p class="mb-0 text-sm fw-bold">${{ order.grand_total }}</p>
+                                    <span class="badge rounded-pill
+                                        {% if order.status == 1 %}bg-success
+                                        {% elif order.status == 2 %}bg-danger
+                                        {% else %}bg-warning text-dark{% endif %}">
                                         {{ order.get_status_display }}
                                     </span>
                                 </div>
                             </div>
-                            <a href="{% url 'order_history' order.reference_code %}" class="small text-muted">
-                                View details →
+                            <a href="{% url 'order_history' order.reference_code %}" class="text-sm text-light-brown">
+                                View details <i class="fa-solid fa-arrow-right fa-xs"></i>
                             </a>
                         </div>
                         {% endfor %}
                         {% else %}
-                        <p class="mb-0 small text-muted text-center">No orders found yet.</p>
+                        <p class="text-sm text-muted text-center mb-0">No orders found yet.</p>
                         {% endif %}
                     </div>
 
@@ -119,27 +117,25 @@
 
                         {% if contacts %}
                         {% for contact in contacts %}
-                        <div class="border-bottom py-3" id="contact-card-{{ contact.id }}">
+                        <div class="bg-white rounded-4 shadow-sm p-3 mb-2" id="contact-card-{{ contact.id }}">
 
                             <div class="d-flex align-items-center gap-3" id="contact-view-{{ contact.id }}">
-                                <div class="profile-avatar align-items-center justify-content-center d-flex flex-shrink-0 rounded-circle text-uppercase fw-bold"
-                                    style="width: 36px; height: 36px; font-size: 12px;">
+                                <div class="profile-avatar-sm align-items-center justify-content-center d-flex flex-shrink-0 rounded-circle text-uppercase fw-bold">
                                     {{ contact.name|first|upper }}{{ contact.surname|first|upper }}
                                 </div>
-                                <div class="flex-grow-1">
-                                    <p class="mb-0 fw-bold small">{{ contact.name }} {{ contact.surname }}</p>
-                                    <p class="mb-0 small text-muted">{{ contact.email }}</p>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="mb-0 fw-bold text-sm">{{ contact.name }} {{ contact.surname }}</p>
+                                    <p class="mb-0 text-sm text-muted text-truncate">{{ contact.email }}</p>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <button type="button" onclick="toggleEditContact({{ contact.id }})"
-                                        style="font-size: 12px; color: #9c7a5e; background: none; border: none; padding: 0;">
+                                    <button type="button" class="contact-edit-btn" data-contact-id="{{ contact.id }}">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
-                                    <a href="{% url 'delete_contact' contact.id %}"
-                                        style="font-size: 12px; color: #dc3545; text-decoration: none;"
-                                        onclick="return confirm('Delete this contact?')">
+                                    <button type="button" class="contact-delete-btn"
+                                        data-delete-url="{% url 'delete_contact' contact.id %}"
+                                        data-contact-name="{{ contact.name }} {{ contact.surname }}">
                                         <i class="fa-solid fa-trash"></i>
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
 
@@ -162,7 +158,7 @@
                                     </div>
                                     <div class="d-flex gap-2 mt-2">
                                         <button type="submit" class="btn btn-sm btn-milky rounded-pill px-3">Save</button>
-                                        <button type="button" onclick="toggleEditContact({{ contact.id }})" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Cancel</button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 contact-cancel-btn" data-contact-id="{{ contact.id }}">Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -170,7 +166,7 @@
                         </div>
                         {% endfor %}
                         {% else %}
-                        <p class="mb-0 small text-muted text-center mb-3">No friends yet.</p>
+                        <p class="text-sm text-muted text-center mb-0">No friends yet.</p>
                         {% endif %}
 
                         <!-- Add contact form -->
@@ -193,6 +189,21 @@
             </div>
         </div>
     </div>
+<div class="modal fade" id="deleteContactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-body text-center p-4 p-md-5">
+                <i class="fa-solid fa-trash fa-2x text-danger d-block mb-3"></i>
+                <h2 class="text-uppercase mb-1">Delete Contact</h2>
+                <p class="text-muted mb-4" id="deleteContactModalText"></p>
+                <div class="d-grid gap-2 col-10 mx-auto">
+                    <a id="deleteContactConfirmBtn" href="#" class="btn btn-danger rounded-pill py-2 fw-bold text-uppercase">Delete</a>
+                    <button type="button" class="btn btn-secondary rounded-pill py-2 text-uppercase fw-bold" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 {% endblock %}
 
