@@ -1,9 +1,9 @@
-/* Styles for emails only — kept separate from static/css/base.css
-   because email clients need every rule inlined/embedded in the message itself,
-   they can't fetch an external stylesheet or read CSS custom properties reliably.
-   Sections below follow the top-to-bottom order of confirmation_email_body.html.
-   Classes reused across several sections (utilities, shared components) are
-   grouped near the top instead of repeated where each one happens to appear. */
+/* Styles for emails only — kept separate from static/css/base.css because
+   email clients need every rule inlined/embedded in the message itself, they
+   can't fetch an external stylesheet or read CSS custom properties reliably. 
+*/
+
+/* #region Common to both emails templates */
 
 /* Resets — email clients add their own default spacing to tables/cells */
 body, table, td { margin: 0; padding: 0; }
@@ -43,10 +43,10 @@ body {
 }
 
 /* Colors */
-.bg-brown { background-color: #523122; } 
-.bg-brown-light { background-color: #8c5e4a; } 
+.bg-brown { background-color: #523122; }
+.bg-brown-light { background-color: #8c5e4a; }
 .text-brown { color: #523122; }
-.text-muted { color: #797a7a; }
+.text-muted { color: #4c4d4d; }
 .text-cream { color: #faeade; }
 
 /* Type utilities */
@@ -57,8 +57,9 @@ body {
 .break-word { word-break: break-word; }
 .no-margin { margin: 0; }
 
-/* Used on the reference/date boxes,
-   "Items ordered" and "Delivery to" */
+/* Small uppercase caption above a value — used on the reference/date boxes
+   and "Items ordered" in the confirmation email, and "Your gift" /
+   "A message from..." in the gift email */
 .section-label {
     font-size: 13px;
     text-transform: uppercase;
@@ -66,25 +67,16 @@ body {
     font-weight: 600;
 }
 
-/* Light cream panel — used by the reference/date boxes and the delivery
-   address box */
+/* Light cream panel — used by the reference/date boxes and delivery address
+   box in the confirmation email, and the personal message box in the gift
+   email */
 .info-box {
-    background-color: #faeade; 
+    background-color: #faeade;
     border-radius: 8px;
 }
 
 .box-content {
     padding: 16px 18px;
-}
-
-/* Shared side/top padding for most content sections in the card */
-.greeting,
-.info-row-first,
-.items-section,
-.totals-section,
-.address-section,
-.contact-section {
-    padding: 30px 40px 0 40px;
 }
 
 /* Page background behind the card */
@@ -109,22 +101,44 @@ body {
     font-weight: 700;
 }
 
-/* Greeting ("Thank you, {name}!") */
+/* Greeting ("Thank you, {name}!" / "Hello, {name}!") */
+.greeting {
+    padding: 30px 40px 0 40px;
+}
+
 .greeting-text {
     margin: 12px 0 0 0;
 }
 
-/* Reference / date info boxes: side by side on tablet+, stacked on narrow
-   phones via the media query at the bottom of this file */
-.info-col {
-    vertical-align: top;
+/* Items / product section wrapper ("Items ordered" / "Your gift") */
+.items-section {
+    padding: 30px 40px 0 40px;
 }
 
-/* Items ordered */
 .items-label {
     margin: 0 0 12px 0;
 }
 
+/* Footer */
+.footer {
+    padding: 22px 24px;
+}
+
+/* #endregion */
+
+/* #region Order confirmation email */
+
+/* Reference / date info boxes: side by side on tablet+, stacked on narrow
+   phones via the media query at the bottom of this file */
+.info-row-first {
+    padding: 30px 40px 0 40px;
+}
+
+.info-col {
+    vertical-align: top;
+}
+
+/* Items ordered — per-item row */
 .item-row td {
     padding-top: 12px;
     padding-bottom: 12px;
@@ -138,7 +152,7 @@ body {
 
 .item-image {
     width: 70px;
-    height: auto; 
+    height: auto;
     border-radius: 8px;
     display: block;
 }
@@ -153,6 +167,10 @@ body {
 }
 
 /* Totals */
+.totals-section {
+    padding: 30px 40px 0 40px;
+}
+
 .totals-row td {
     padding: 6px 0;
 }
@@ -163,28 +181,73 @@ body {
 }
 
 /* Delivery address */
+.address-section {
+    padding: 30px 40px 0 40px;
+}
+
 .address-label {
     margin: 0 0 10px 0;
 }
 
 /* Contact */
+.contact-section {
+    padding: 30px 40px 0 40px;
+}
+
 .contact-link {
     color: #8c5e4a;
     font-weight: 600;
     text-decoration: none;
 }
 
-/* Footer */
-.footer {
-    padding: 22px 24px;
+/* #endregion */
+
+/* #region Gift-a-can email */
+
+/* Product spotlight card — one centered image + name, same at every screen
+   size (no column split, so there's no empty side to fill with a single
+   product) */
+.gift-product-card {
+    padding: 28px 20px;
 }
 
-/* Media query for tablet and above */
+.gift-product-image {
+    height: auto;
+    border-radius: 8px;
+    display: block;
+}
+
+.gift-product-image-spotlight {
+    margin: 0 auto 16px auto;
+}
+
+.gift-product-title {
+    font-size: 22px;
+}
+
+/* Personal message */
+.message-section {
+    padding: 40px 20px 20px 20px;
+}
+
+.message-label {
+    margin: 0 0 10px 0;
+}
+
+/* #endregion */
+
+/* #region Media query */
 @media screen and (max-width: 600px) {
+    /* Common to both emails templates */
     .email-wrapper { width: 100% !important; }
     .greeting,
+    .items-section {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    /* Confirmation email only */
     .info-row-first,
-    .items-section,
     .totals-section,
     .address-section,
     .contact-section {
@@ -201,3 +264,5 @@ body {
         height: 10px !important;
     }
 }
+
+/* #endregion */
