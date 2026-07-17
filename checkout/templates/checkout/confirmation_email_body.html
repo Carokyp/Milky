@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Milky - Order Confirmation</title>
+<style>
+{# _email_styles.css lives in its own file for readability, but its content
+   has to end up inlined in this single <style> tag — mail clients don't
+   fetch external stylesheets #}
+{% include "checkout/_email_styles.css" %}
+</style>
+</head>
+<body>
+<!-- Outer table: full-width page background behind the card, since some
+     mail clients ignore styles on <body> itself -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-bg">
+<tr>
+<td align="center" class="email-pad">
+
+    <table role="presentation" class="email-wrapper card" width="600" cellpadding="0" cellspacing="0">
+
+        <!-- Header / logo text -->
+        <tr>
+            <td align="center" class="bg-brown header">
+                <span class="logo-font text-cream text-uppercase logo-text">Order Confirmation</span>
+            </td>
+        </tr>
+
+        <!-- Greeting -->
+        <tr>
+            <td class="greeting text-center">
+                <h1 class="logo-font text-brown no-margin">Thank you, {{ order.delivery_name }}!</h1>
+                <p class="text-muted greeting-text">Your order has landed safely. Here's a summary of what's on its way! </p>
+            </td>
+        </tr>
+
+        <!-- Reference / date info boxes -->
+        <tr>
+            <td class="info-row-first">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td class="info-col" width="50%">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="info-box">
+                                <tr>
+                                    <td class="box-content text-center">
+                                        <p class="section-label no-margin">Order reference</p>
+                                        <p class="text-brown fw-bold no-margin break-word">{{ order.reference_code }}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td class="info-col-gap" width="12">&nbsp;</td>
+                        <td class="info-col" width="50%">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="info-box">
+                                <tr>
+                                    <td class="box-content text-center">
+                                        <p class="section-label no-margin">Date</p>
+                                        <p class="text-brown fw-bold no-margin">{{ order.created_at|date:"d M Y" }}</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <!-- Items ordered -->
+        <tr>
+            <td class="items-section">
+                <p class="section-label items-label">Items ordered</p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    {% for entry in items %}
+                    <tr class="item-row">
+                        <td width="70">
+                            <img src="{{ entry.image_url }}" width="70" alt="{{ entry.item.product.name }}" class="item-image">
+                        </td>
+                        <td class="item-details">
+                            <p class="logo-font text-uppercase text-brown item-name">{{ entry.item.product.name }}</p>
+                            <p class="text-sm text-muted no-margin">Qty: {{ entry.item.quantity }}</p>
+                            <p class="text-sm text-muted no-margin">Price: ${{ entry.item.total_price }}</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </td>
+        </tr>
+
+        <!-- Totals -->
+        <tr>
+            <td class="totals-section">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr class="totals-row">
+                        <td class="text-muted">Order total</td>
+                        <td align="right" class="text-brown">${{ order.order_total }}</td>
+                    </tr>
+                    <tr class="totals-row">
+                        <td class="text-muted">Delivery</td>
+                        <td align="right" class="text-brown">${{ order.delivery_cost }}</td>
+                    </tr>
+                    <tr class="grandtotal-row">
+                        <td class="text-brown fw-bold text-uppercase">Grand total</td>
+                        <td align="right">
+                            <span class="text-brown fw-bold">${{ order.grand_total }}</span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <!-- Delivery address -->
+        <tr>
+            <td class="address-section">
+                <p class="section-label address-label">Delivery to</p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="info-box">
+                    <tr>
+                        <td class="text-brown box-content">
+                            <p class="fw-bold">{{ order.delivery_name }} {{ order.delivery_surname }}</p>
+                            <p>{{ order.delivery_address }}, {{ order.delivery_city }}, {{ order.delivery_country }}</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <!-- Contact -->
+        <tr>
+            <td class="text-center contact-section">
+                <p class="text-muted text-sm">
+                    If you have any questions, contact us at
+                    <a href="mailto:{{ contact_email }}" class="contact-link">{{ contact_email }}</a>.
+                </p>
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td align="center" class="bg-brown-light footer">
+                <p class="text-cream text-sm no-margin">Thank you for choosing Milky!</p>
+            </td>
+        </tr>
+
+    </table>
+
+</td>
+</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,203 @@
+/* Styles for emails only — kept separate from static/css/base.css
+   because email clients need every rule inlined/embedded in the message itself,
+   they can't fetch an external stylesheet or read CSS custom properties reliably.
+   Sections below follow the top-to-bottom order of confirmation_email_body.html.
+   Classes reused across several sections (utilities, shared components) are
+   grouped near the top instead of repeated where each one happens to appear. */
+
+/* Resets — email clients add their own default spacing to tables/cells */
+body, table, td { margin: 0; padding: 0; }
+img { border: 0; line-height: 100%; outline: none; text-decoration: none; }
+table { border-collapse: collapse; }
+
+/* Fonts — self-hosted so the recipient's mail client isn't asked to fetch a
+   third-party CDN. Support is inconsistent across email clients (Outlook
+   desktop ignores @font-face entirely), so every rule below still falls back
+   to a system-font stack — clients that don't support this just render the
+   fallback, nothing breaks. */
+@font-face {
+    font-family: 'Bebas Neue';
+    src: url('{{ font_bebas_url }}') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('{{ font_poppins_regular_url }}') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Poppins';
+    src: url('{{ font_poppins_bold_url }}') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Poppins', 'Segoe UI', Helvetica, Arial, sans-serif; /* --font-family-body */
+}
+
+.logo-font {
+    font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif; /* --font-family-heading */
+}
+
+/* Colors */
+.bg-brown { background-color: #523122; } 
+.bg-brown-light { background-color: #8c5e4a; } 
+.text-brown { color: #523122; }
+.text-muted { color: #797a7a; }
+.text-cream { color: #faeade; }
+
+/* Type utilities */
+.text-sm { font-size: 13px; }
+.text-uppercase { text-transform: uppercase; }
+.text-center { text-align: center; }
+.fw-bold { font-weight: 700; }
+.break-word { word-break: break-word; }
+.no-margin { margin: 0; }
+
+/* Used on the reference/date boxes,
+   "Items ordered" and "Delivery to" */
+.section-label {
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #8c5e4a;
+    font-weight: 600;
+}
+
+/* Light cream panel — used by the reference/date boxes and the delivery
+   address box */
+.info-box {
+    background-color: #faeade; 
+    border-radius: 8px;
+}
+
+.box-content {
+    padding: 16px 18px;
+}
+
+/* Shared side/top padding for most content sections in the card */
+.greeting,
+.info-row-first,
+.items-section,
+.totals-section,
+.address-section,
+.contact-section {
+    padding: 30px 40px 0 40px;
+}
+
+/* Page background behind the card */
+.email-bg { background-color: #faeade; } /* --light-cream */
+.email-pad { padding: 32px 16px; }
+
+/* Card — the white box that holds the whole email */
+.card {
+    background-color: #fafafa; /* --card-background */
+    border-radius: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.075);
+    overflow: hidden;
+}
+
+/* Header band + logo text */
+.header {
+    padding: 28px 24px;
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* Greeting ("Thank you, {name}!") */
+.greeting-text {
+    margin: 12px 0 0 0;
+}
+
+/* Reference / date info boxes: side by side on tablet+, stacked on narrow
+   phones via the media query at the bottom of this file */
+.info-col {
+    vertical-align: top;
+}
+
+/* Items ordered */
+.items-label {
+    margin: 0 0 12px 0;
+}
+
+.item-row td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    vertical-align: top;
+}
+
+.item-row:last-child td {
+    border-bottom: none;
+}
+
+.item-image {
+    width: 70px;
+    height: auto; 
+    border-radius: 8px;
+    display: block;
+}
+
+.item-details {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.item-name {
+    margin: 0 0 4px 0;
+}
+
+/* Totals */
+.totals-row td {
+    padding: 6px 0;
+}
+
+.grandtotal-row td {
+    border-top: 2px solid #523122;
+    padding-top: 12px;
+}
+
+/* Delivery address */
+.address-label {
+    margin: 0 0 10px 0;
+}
+
+/* Contact */
+.contact-link {
+    color: #8c5e4a;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Footer */
+.footer {
+    padding: 22px 24px;
+}
+
+/* Media query for tablet and above */
+@media screen and (max-width: 600px) {
+    .email-wrapper { width: 100% !important; }
+    .greeting,
+    .info-row-first,
+    .items-section,
+    .totals-section,
+    .address-section,
+    .contact-section {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    .info-col {
+        display: block !important;
+        width: 100% !important;
+    }
+    .info-col-gap {
+        display: block !important;
+        width: 100% !important;
+        height: 10px !important;
+    }
+}

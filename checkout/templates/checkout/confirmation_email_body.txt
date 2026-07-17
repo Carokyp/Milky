@@ -1,6 +1,6 @@
-Hello {{ order.delivery_name }},
+Thank you, {{ order.delivery_name }}!
 
-Thank you for your order! Here are your order details:
+Your order has landed safely. Here's a summary of what's on its way:
 
 Order reference: {{ order.reference_code }}
 Date: {{ order.created_at|date:"d M Y" }}

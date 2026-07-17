@@ -11,5 +11,10 @@ urlpatterns = [
         name="order_confirmation",
     ),
     path("webhook/", webhook, name="webhook"),
+    path(
+        "preview/confirmation-email/",
+        views.preview_confirmation_email,
+        name="preview_confirmation_email",
+    ),
     path("cache_checkout_data/", views.cache_checkout_data, name="cache_checkout_data"),
 ]

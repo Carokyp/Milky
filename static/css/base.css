@@ -117,7 +117,7 @@ p  { font-size: var(--font-p); }
 
 /* Section backgrounds */
 .section-brown {
-    background-color: var(--light-brown);
+    background-color: #f7dfa8;
 }
 
 /* #endregion */
@@ -911,8 +911,7 @@ textarea::placeholder {
     line-height: 1;
 }
 
-/* Stacks base image + banner in the same cell so the banner can be
-   sized (height: 100%) against the base image's rendered height. */
+/* Stacks base image + banner */
 .error-stack {
     display: grid;
 }

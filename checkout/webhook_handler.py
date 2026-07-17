@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import User
 from accounts.models import UserCustomer
 from .models import Order, OrderItem
+from .email_utils import build_confirmation_email_context
 from products.models import Product
 
 
@@ -23,15 +24,17 @@ class StripeWHHandler:
             'checkout/confirmation_email_subject.txt',
             {'order': order}
         )
-        body = render_to_string(
-            'checkout/confirmation_email_body.txt',
-            {'order': order, 'contact_email': settings.DEFAULT_FROM_EMAIL}
+        context = build_confirmation_email_context(
+            self.request, order, settings.DEFAULT_FROM_EMAIL
         )
+        body = render_to_string('checkout/confirmation_email_body.txt', context)
+        html_body = render_to_string('checkout/confirmation_email_body.html', context)
         send_mail(
             subject,
             body,
             settings.DEFAULT_FROM_EMAIL,
-            [customer_email]
+            [customer_email],
+            html_message=html_body,
         )
 
     def handle_event(self, event):

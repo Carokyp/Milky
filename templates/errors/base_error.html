@@ -18,7 +18,7 @@
                 <img src="{% static 'images/error_banner_mobile.png' %}" alt="" class="d-md-none w-100">
                 <img src="{% static 'images/error_banner_desktop.png' %}" alt=""
                     class="d-none d-md-block error-banner-desktop-img">
-                <div class="error-banner-text d-flex flex-column justify-content-center align-items-center px-3">
+                <div class="error-banner-text d-flex flex-column justify-content-center align-items-center px-3 pb-5 pb-md-0">
                     <h1 class="text-logo error-code mb-0">{% block error_code %}{% endblock %}</h1>
                     <h2 class="text-uppercase text-lg mb-1">{% block error_title %}{% endblock %}</h2>
                     <p class="text-sm text-muted mb-0">{% block error_message %}{% endblock %}</p>
