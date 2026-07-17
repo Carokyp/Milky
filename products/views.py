@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.template.loader import render_to_string
@@ -10,6 +11,7 @@ from decimal import Decimal
 from .models import Product
 from accounts.models import UserCustomer, Contact
 from checkout.models import Order
+from .email_utils import build_gift_email_context
 from .forms import CommentForm, ProductForm
 from accounts.forms import GiftACanForm
 
@@ -87,8 +89,15 @@ def gift_page_view(request):
         customer.save()
 
         subject = render_to_string('products/gift_email_subject.txt', {'product': product, 'customer': customer})
-        body = render_to_string('products/gift_email_body.txt', {'product': product, 'customer': customer, 'contact': contact, 'personal_message': personal_message})
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [contact.email])
+        body = render_to_string(
+            'products/gift_email_body.txt',
+            {'product': product, 'customer': customer, 'contact': contact, 'personal_message': personal_message},
+        )
+        html_body = render_to_string(
+            'products/gift_email_body.html',
+            build_gift_email_context(request, product, customer, contact, personal_message),
+        )
+        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [contact.email], html_message=html_body)
 
         messages.success(request, 'You gifted a can! You get 10% off your next order!', extra_tags="gift")
         return redirect(reverse('gift_page'))
@@ -100,6 +109,27 @@ def gift_page_view(request):
         'form': form,
         'customer': customer,
     })
+
+
+@login_required
+def preview_gift_email(request):
+    """Render the real gift-a-can email in the browser, for styling work.
+    Store-owner only — shows real contact/customer data from the most recent gift."""
+    if not request.user.is_superuser:
+        messages.error(request, 'Sorry, only store owners can do that.')
+        return redirect(reverse('home'))
+
+    contact = Contact.objects.order_by('-id').first()
+    product = Product.objects.filter(is_available=True).first()
+    if not contact or not product:
+        return HttpResponse("No gift in the database yet — gift a can first.")
+
+    context = build_gift_email_context(
+        request, product, contact.customer, contact,
+        "Enjoy this can, you deserve it!"
+    )
+    html_body = render_to_string('products/gift_email_body.html', context)
+    return HttpResponse(html_body)
 
 
 @login_required
@@ -190,5 +220,4 @@ def add_comment(request, product_id):
         form = CommentForm()
 
     return render(request, 'products/add_comment.html', {'form': form, 'product': product})
-
 

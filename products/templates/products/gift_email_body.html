@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Milky - You've Been Gifted a Can!</title>
+<style>
+{% comment %}
+Same shared stylesheet as the order confirmation email — see
+templates/emails/_email_styles.css and checkout/email_utils.py for why
+this has to be included rather than linked
+{% endcomment %}
+{% include "emails/_email_styles.css" %}
+</style>
+</head>
+<body>
+<!-- Outer table: full-width page background behind the card, since some
+     mail clients ignore styles on <body> itself -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-bg">
+<tr>
+<td align="center" class="email-pad">
+
+    <!-- The actual email: fixed 600px on desktop, fluid on mobile (see the
+         media query at the bottom of _email_styles.css) -->
+    <table role="presentation" class="email-wrapper card" width="600" cellpadding="0" cellspacing="0">
+
+        <!-- Header / logo text -->
+        <tr>
+            <td align="center" class="bg-brown header">
+                <span class="logo-font text-cream text-uppercase logo-text">You've Been Gifted!</span>
+            </td>
+        </tr>
+
+        <!-- Greeting -->
+        <tr>
+            <td class="greeting text-center">
+                <h1 class="logo-font text-brown no-margin">Hello, {{ contact.name }}!</h1>
+                <p class="text-muted greeting-text">{{ customer.name }} {{ customer.surname }} has gifted you a can of Milky!</p>
+            </td>
+        </tr>
+
+        <!-- Product spotlight: one centered card (image + name), same width
+             at every screen size — no column split, so there's no empty side
+             to fill when there's only a single product to show -->
+        <tr>
+            <td class="items-section">
+                <p class="section-label items-label text-center">Your gift</p>
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="info-box">
+                    <tr>
+                        <td class="text-center gift-product-card">
+                            <img src="{{ product_image_url }}" width="140" alt="{{ product.name }}" class="gift-product-image gift-product-image-spotlight">
+                            <p class="logo-font text-uppercase text-brown gift-product-title no-margin">{{ product.name }}</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        {% if personal_message %}
+        <!-- Personal message -->
+        <tr>
+            <td class="message-section">
+                <p class="section-label message-label">A message from {{ customer.name }}</p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="info-box">
+                    <tr>
+                        <td class=" text-center text-brown box-content">
+                            "{{ personal_message }}"
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        {% endif %}
+
+        <!-- Footer -->
+        <tr>
+            <td align="center" class="bg-brown-light footer">
+                <p class="text-cream text-sm no-margin">We hope you enjoy it!</p>
+                <p class="text-cream text-sm no-margin"> The Milky Team </p>
+            </td>
+        </tr>
+
+    </table>
+
+</td>
+</tr>
+</table>
+</body>
+</html>
