@@ -15,7 +15,12 @@
 {% block content %}
 
 <!-- Hero -->
-<section class="hero-section text-center px-3 pt-4 pb-5">
+<section class="hero-section text-center px-3 pb-5">
+    <div class="hero-visual position-relative overflow-hidden mb-5">
+        <img src="{% static 'images/home_background.png' %}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="">
+        <img src="{% static 'images/brand_name.png' %}" class="hero-brand-name position-absolute top-50 start-50 translate-middle opacity-50" alt="Milky">
+        <div id="can-viewer" class="position-relative w-100 h-100" data-model-url="{% static 'models/Milky_Can.glb' %}"></div>
+    </div>
     <h1 class="mb-1">FREAKING DELICIOUS!</h1>
     <div class="text-highlight mb-4">
         <h1 class="mb-0">CRACK. SIP. SMILE.</h1>
@@ -126,4 +131,16 @@
 
 {% include 'includes/delete_product_modal.html' %}
 
+{% endblock %}
+
+{% block extra_js %}
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+    }
+}
+</script>
+<script type="module" src="{% static 'js/can-3d.js' %}"></script>
 {% endblock %}

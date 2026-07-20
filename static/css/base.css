@@ -176,6 +176,37 @@ p  { font-size: var(--font-p); }
 
 /* #endregion */
 
+/* #region 3D Can */
+.hero-visual {
+    height: 300px;
+    /* Overrides the parent .hero-section's px-3 so the background bleeds to the edges. */
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.hero-brand-name {
+    width: 95%;
+    max-width: 600px;
+}
+
+#can-viewer {
+    background: radial-gradient(circle 160px at center, rgba(251, 215, 138, 0.55), rgba(251, 203, 98, 0) 100%);
+}
+
+/* "Instagram-style" filter applied directly to the rendered canvas — tweak these
+   like a filter preset (brightness/contrast/saturate, or add sepia/hue-rotate for a warmer tone). */
+#can-viewer canvas {
+    filter: brightness(1.15) contrast(1.05) saturate(1.15);
+}
+
+@media (min-width: 768px) {
+    .hero-visual {
+        height: 420px;
+    }
+}
+/* #endregion */
+
 /* #region Dropdown */
 
 .dropdown-menu {
@@ -962,3 +993,4 @@ textarea::placeholder {
 
 /* #region Media Queries */
 /* #endregion */
+
