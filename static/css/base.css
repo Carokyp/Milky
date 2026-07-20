@@ -124,6 +124,17 @@ p  { font-size: var(--font-p); }
 
 /* #region Navbar */
 
+.navbar-logo {
+    height: 28px;
+    width: auto;
+}
+
+@media (min-width: 768px) {
+    .navbar-logo {
+        height: 36px;
+    }
+}
+
 .navbar>.container-fluid {
     max-width: var(--site-max-width);
     margin: 0 auto;
