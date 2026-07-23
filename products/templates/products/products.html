@@ -4,13 +4,13 @@
 {% block extra_title %}Products - Milky{% endblock %}
 
 {% block content %}
-    <div class="bubble-text-wrapper text-center">
-        <img src="{% static 'images/bubble.png' %}" alt="">
-        <div class="d-flex flex-column align-items-center justify-content-center bubble-text">
+    <div class="bubble-text-wrapper position-relative text-center">
+        <img src="{% static 'images/bubble.png' %}" alt="" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text p-3">
             <div class="text-highlight mb-4">
                 <h1 class="mb-0">FULL COLLECTION</h1>
             </div>
-            <p class="mb-5">Browse all our delicious and fun flavours ready to sweeten up your day. Discover your
+            <p class="mb-5 text-lg">Browse all our delicious and fun flavours ready to sweeten up your day. Discover your
                 favourite today!</p>
         </div>
     </div>

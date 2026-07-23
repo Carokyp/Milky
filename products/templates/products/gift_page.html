@@ -6,8 +6,8 @@
 {% block content %}
 
 <!-- Tagline in bubble -->
-<div class="bubble-text-wrapper text-center mb-4">
-    <img src="{% static 'images/bubble.png' %}" alt="">
+<div class="bubble-text-wrapper position-relative text-center mb-4">
+    <img src="{% static 'images/bubble.png' %}" alt="" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
     {% if user.is_authenticated %}
     <a href="{% url 'home' %}" class="back-btn gift-bubble-back">
         <i class="fa-solid fa-chevron-left"></i>
@@ -18,7 +18,7 @@
         <div class="text-highlight mb-4">
             <h1 class="logo-font text-uppercase mb-0">Gift a Can</h1>
         </div>
-        <p class="mb-0">Because good things are better shared.</p>
+        <p class="mb-0 text-lg">Because good things are better shared.</p>
     </div>
 </div>
 
@@ -110,7 +110,7 @@
             <div class="text-center pb-5">
 
                 <!-- Image -->
-                <img src="{% static 'images/gift_a_can.png' %}" alt="Gift a Can"
+                <img src="{% static 'images/gift-a-can.png' %}" alt="Gift a Can"
                     class="img-fluid mb-4 rounded-4 shadow-sm">
 
                 <!-- How it works -->
