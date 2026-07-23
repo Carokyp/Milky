@@ -26,7 +26,7 @@
                 {% if item.product.product_image %}
                     <img src="{{ item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
                 {% else %}
-                    <img src="{% static 'images/no_image.png' %}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                    <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
                 {% endif %}
             </div>
 

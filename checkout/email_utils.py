@@ -10,7 +10,7 @@ def build_confirmation_email_context(request, order, contact_email):
             'item': item,
             'image_url': request.build_absolute_uri(
                 item.product.product_image.url if item.product.product_image
-                else static('images/no_image.png')
+                else static('images/no-image.png')
             ),
         }
         for item in order.items.all()

@@ -12,7 +12,7 @@ def build_gift_email_context(request, product, customer, contact, personal_messa
         'personal_message': personal_message,
         'product_image_url': request.build_absolute_uri(
             product.product_image.url if product.product_image
-            else static('images/no_image.png')
+            else static('images/no-image.png')
         ),
         **build_email_font_urls(request),
     }
