@@ -141,11 +141,6 @@ p {
     font-size: var(--font-sm);
 }
 
-/* Section backgrounds */
-.section-yellow {
-    background-color: #f7dfa8;
-}
-
 /* #endregion */
 
 /* #region Navbar */
@@ -153,12 +148,6 @@ p {
 .navbar-logo {
     height: 28px;
     width: auto;
-}
-
-@media (min-width: 768px) {
-    .navbar-logo {
-        height: 36px;
-    }
 }
 
 .navbar>.container-fluid {
@@ -203,7 +192,9 @@ p {
 
 /* #endregion */
 
-/* #region 3D Can */
+/* #region Home Page */
+
+/* 3D Can */
 .hero-visual {
     height: 300px;
     /* Overrides the parent .hero-section's px-3 so the background bleeds to the edges. */
@@ -221,16 +212,121 @@ p {
     background: radial-gradient(circle 160px at center, rgba(251, 215, 138, 0.55), rgba(251, 203, 98, 0) 100%);
 }
 
-/* "Instagram-style" filter applied directly to the rendered canvas — tweak these
-   like a filter preset (brightness/contrast/saturate, or add sepia/hue-rotate for a warmer tone). */
+/* Filter applied directly to the rendered canvas */
 #can-viewer canvas {
     filter: brightness(1.15) contrast(1.05) saturate(1.15);
 }
 
-@media (min-width: 768px) {
-    .hero-visual {
-        height: 420px;
-    }
+.bubble-text-wrapper {
+    min-height: 400px;
+}
+
+.bubble-text {
+    padding-top: 2.5rem;
+}
+
+/* Full-bleed ignores ancestor padding */
+.bubble-text-wrapper {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+}
+
+/* Lifestyle bubble a bit bigger on mobile/tablet only. */
+.lifestyle-text-col .bubble-text-wrapper {
+    min-height: 480px;
+}
+
+/* Our Favorites background */
+.bubble-text-wrapper.bubble-favorites{
+    max-width: 1800px;
+    min-height: 500px;
+    width: 100%;
+}
+
+.bubble-benefits {
+    max-width: 1800px;
+    min-height: 350px;
+    width: 100%;
+    transform: translateY(-55px);
+    margin-top: 8rem;
+}
+
+.bubble-text-favorites,
+.bubble-text-benefits {
+    height: auto !important;
+    justify-content: flex-start !important;
+    padding-top: 85px !important;
+}
+
+.favorites-grid {
+    position: relative;
+    z-index: 1;
+    margin-top: -280px;
+}
+
+/* Section backgrounds */
+.section-yellow {
+    background-color: #f7dfa8;
+}
+
+/* Cream wave at the bottom of the hero visual */
+.hero-wave-bottom {
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    pointer-events: none;
+}
+
+.hero-wave-bottom svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-wave-bottom path {
+    fill: var(--light-cream);
+}
+
+.benefits-stats {
+    max-width: 800px;
+}
+
+.benefits-label {
+    font-size: var(--font-md);
+    color: var(--light-brown);
+}
+
+.benefits-value {
+    font-family: var(--font-family-heading);
+    color: var(--brown);
+}
+
+.benefits-stat-divider {
+    border-left: 1px solid var(--light-brown);
+    border-right: 1px solid var(--light-brown);
+}
+
+.lifestyle-photo-frame {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 500px;
+    z-index: 10;
+    margin-top: -90px;
+    margin-left: auto;
+    margin-right: auto;
+    transform: rotate(6deg);
+}
+
+.lifestyle-photo {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    border-radius: 1.5rem;
+    border: 10px solid white;
+    box-shadow: 0 8px 24px rgba(82, 49, 34, 0.18);
 }
 /* #endregion */
 
@@ -613,73 +709,6 @@ textarea::placeholder {
 
 /* #endregion */
 
-/* #region Home */
-
-.bubble-text-wrapper {
-    position: relative;
-    min-height: 300px;
-}
-
-.bubble-text-wrapper img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.bubble-text {
-    position: absolute;
-    inset: 0;
-    padding: 1rem;
-    padding-top: 3.5rem;
-}
-
-.single-bubble-overlap {
-    margin-top: -60px;
-    position: relative;
-    z-index: -1000;
-    transform: scale(1.3);
-}
-
-.benefits-stats {
-    max-width: 400px;
-    margin-top: -1rem;
-    position: relative;
-}
-
-.benefits-stats .bubble-bg {
-    width: 100%;
-    display: block;
-    transform: scale(1.4);
-}
-
-.benefits-stats .row {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-}
-
-.benefits-label {
-    font-size: var(--font-sm);
-    color: var(--light-brown);
-}
-
-.benefits-value {
-    font-family: var(--font-family-heading);
-    font-size: var(--font-p);
-    color: var(--brown);
-}
-
-.benefits-stat-divider {
-    border-left: 1px solid var(--light-brown);
-    border-right: 1px solid var(--light-brown);
-}
-
-/* #endregion */
-
 /* #region Gift Page */
 
 .gift-promo-badge {
@@ -954,6 +983,11 @@ textarea::placeholder {
     background-color: var(--footer-background);
 }
 
+/* Cream wave visible against the footer. */
+.lifestyle-wave-bottom {
+    bottom: -60px;
+}
+
 .footer-images {
     position: relative;
     height: 200px;
@@ -1020,8 +1054,96 @@ textarea::placeholder {
     position: absolute;
     inset: 0;
 }
+/* #endregion */
 
+/* #region Media Queries */
+
+/* Large mobile/ tablet*/
 @media (min-width: 768px) {
+
+    /* -- Font scale -- */
+    :root {
+        --font-lg: 1.35rem;
+        --font-xl: 1.9rem;
+        --font-h1: 3.5rem;
+        --font-h4: 1.7rem;
+        --font-p: 1.05rem;
+    }
+
+    /* -- Navbar -- */
+    .navbar-logo {
+        height: 36px;
+    }
+
+    .nav-icons i {
+        font-size: 1.7rem;
+    }
+
+    .navbar-toggler-icon {
+        font-size: 1.7rem;
+    }
+
+    /* -- Home: Hero -- */
+    .hero-visual {
+        height: 520px;
+    }
+
+    .hero-brand-name {
+        max-width: 650px;
+    }
+
+    .hero-section .btn,
+    .favorites-section .btn {
+        padding: 0.9rem 2.5rem;
+    }
+
+    /* -- Home: Favorites bubble tagline -- */
+    /* Cloud shape is a fixed 774x521 image — cap the wrapper width so it
+       isn't cropped down to a thin band when the section goes full-bleed. */
+    .bubble-text-wrapper {
+        max-width: 700px;
+        min-height: 480px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .bubble-text {
+        padding: 3rem;
+    }
+
+    .hero-wave-bottom {
+        height: 100px;
+    }
+
+    .lifestyle-wave-bottom {
+        bottom: -90px;
+    }
+
+    /* -- Home: Benefits -- */
+    .product-icon {
+        width: 72px;
+        height: 72px;
+    }
+
+    .benefits-label {
+        font-size: var(--font-lg);
+    }
+
+    .benefits-value {
+        font-size: var(--font-xl);
+    }
+
+    .footer-images {
+        position: relative;
+        height: 200px;
+    }
+
+    .footer-img {
+        width: 140px;
+        position: absolute;
+    }
+
+    /* -- Error pages -- */
     .error-banner-wrap {
         width: auto;
         height: 0;
@@ -1036,8 +1158,195 @@ textarea::placeholder {
         width: auto;
     }
 }
-/* #endregion */
+/* Tablet/small desktop */
+@media (min-width: 1024px) {
+    :root {
+        --font-lg: 1.45rem;
+        --font-xl: 2.3rem;
+        --font-h1: 4rem;
+        --font-h4: 2.1rem;
+        --font-p: 1.1rem;
+    }
 
-/* #region Media Queries */
+    .hero-brand-name {
+        max-width: 700px;
+    }
+
+    .hero-section .btn,
+    .favorites-section .btn {
+        padding: 1rem 3rem;
+    }
+
+    .bubble-text-wrapper.bubble-favorites {
+        min-height: 800px;
+    }
+
+    .favorites-grid {
+        margin-top: -450px;
+    }
+
+    .bubble-text-favorites {
+        padding-top: 150px !important;
+    }
+
+    .benefits-label {
+        font-size: var(--font-lg);
+    }
+
+    .bubble-text-benefits {
+        padding-top: 11rem!important;
+    }
+
+    .lifestyle-text-col .bubble-text-wrapper {
+        width: auto;
+        max-width: 480px;
+        min-height: 320px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .lifestyle-text-col .bubble-text-wrapper img {
+        transform: rotate(1deg) scale(1.6);
+    }
+
+    .lifestyle-photo-frame {
+        margin-top: 0;
+        max-width: 450px;
+        transform: rotate(6deg);
+    }
+
+    /* Fluid scaling instead of a hard jump per breakpoint */
+    .bubble-text-lifestyle {
+        transform: translateX(clamp(50px, calc(50px + (100vw - 1024px) * 0.1933), 200px)) translateY(8px);
+    }
+
+    .lifestyle-text-col .bubble-lifestyle img {
+        transform: rotate(1deg) scale(1.7) translateX(clamp(25px, calc(25px + (100vw - 1024px) * 0.0966), 100px));
+    }
+
+    .lifestyle-photo {
+        transform: translateX(clamp(-90px, calc(10px + (100vw - 1024px) * -0.1289), 10px));
+    }
+
+}
+/* Tweaks that only apply between 1024-1439px, don't carry over to 1440px+ */
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+    .lifestyle-text-col .bubble-lifestyle img {
+        transform: rotate(1deg) scale(1.5) translateX(clamp(25px, calc(25px + (100vw - 1024px) * 0.0966), 100px));
+    }
+
+    .favorites-grid {
+        max-width: 1550px;
+    }
+
+    .bubble-benefits {
+        min-height: 470px;
+        transform: translateY(-75px);
+        margin-top: 9rem;
+    }
+
+    .bubble-text-benefits {
+        padding-top: 11rem!important;
+    }
+
+}
+/* Desktop */
+@media (min-width: 1440px) {
+    :root {
+        --font-lg: 1.55rem;
+        --font-xl: 1.8rem;
+        --font-h1: 4.1rem;
+        --font-h4: 2.15rem;
+        --font-p: 1.125rem;
+    }
+
+    .hero-visual {
+        height: 620px;
+    }
+
+    .hero-brand-name {
+        max-width: 820px;
+    }
+
+    .hero-wave-bottom {
+        height: 140px;
+    }
+
+    .lifestyle-wave-bottom {
+        height: 100px;
+        bottom: -90px;
+    }
+
+    .hero-section .btn,
+    .favorites-section .btn {
+        padding: 1.1rem 3.5rem;
+    }
+
+    .bubble-text-wrapper {
+        max-width: 700px;
+        min-height: 440px;
+    }
+
+    .bubble-text {
+        padding-top: 4rem;
+    }
+
+    .lifestyle-photo-frame {
+        max-width: 550px;
+        transform: rotate(6deg);
+    }
+
+    .favorites-grid {
+        max-width: 1650px;
+    }
+
+    .bubble-benefits {
+        min-height: 580px;
+        transform: translateY(-95px);
+        margin-top: 10rem;
+    }
+}
+/* Large desktop */
+@media (min-width: 1800px) {
+    :root {
+        --font-lg: 1.65rem;
+        --font-xl: 1.9rem;
+        --font-h1: 4.2rem;
+        --font-h4: 2.3rem;
+        --font-p: 1.125rem;
+    }
+
+    .hero-visual {
+        height: 700px;
+    }
+
+    .hero-brand-name {
+        max-width: 900px;
+    }
+
+    .hero-section .btn,
+    .favorites-section .btn {
+        padding: 1.25rem 4rem;
+    }
+
+    .bubble-text-favorites {
+        padding-top: 160px !important;
+    }
+
+    .bubble-favorites {
+        min-height: 800px;
+    }
+
+    .bubble-text-wrapper {
+        max-width: 950px;
+        min-height: 600px;
+    }
+
+    .bubble-text {
+        padding-top: 4.5rem;
+    }
+
+
+}
 /* #endregion */
 

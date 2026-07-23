@@ -3,44 +3,41 @@
 
 {% block extra_title %}Home- Milky{% endblock %}
 
-{% block page_header %}
-<div class="container header-container">
-    <div class="row">
-        <div class="col-sm-12">
+{% block content %}
+<!-- Hero -->
+<section class="hero-section text-center px-3 pb-4">
+    <div class="hero-visual position-relative overflow-hidden mb-5">
+        <img src="{% static 'images/home-background.png' %}"
+            class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="Abstract cream and gold wave pattern">
+        <img src="{% static 'images/brand-name.png' %}"
+            class="hero-brand-name position-absolute top-50 start-50 translate-middle opacity-50" alt="Milky">
+        <div id="can-viewer" class="position-relative w-100 h-100" data-model-url="{% static 'models/Milky_Can.glb' %}">
+        </div>
+        <div class="hero-wave-bottom" aria-hidden="true">
+            <svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="#faeade" fill-opacity="1" d="M0,192L21.8,197.3C43.6,203,87,213,131,229.3C174.5,245,218,267,262,240C305.5,213,349,139,393,144C436.4,149,480,235,524,256C567.3,277,611,235,655,229.3C698.2,224,742,256,785,250.7C829.1,245,873,203,916,202.7C960,203,1004,245,1047,224C1090.9,203,1135,117,1178,90.7C1221.8,64,1265,96,1309,128C1352.7,160,1396,192,1418,208L1440,224L1440,320L1418.2,320C1396.4,320,1353,320,1309,320C1265.5,320,1222,320,1178,320C1134.5,320,1091,320,1047,320C1003.6,320,960,320,916,320C872.7,320,829,320,785,320C741.8,320,698,320,655,320C610.9,320,567,320,524,320C480,320,436,320,393,320C349.1,320,305,320,262,320C218.2,320,175,320,131,320C87.3,320,44,320,22,320L0,320Z"></path></svg>
         </div>
     </div>
-</div>
-{% endblock %}
-
-{% block content %}
-
-<!-- Hero -->
-<section class="hero-section text-center px-3 pb-5">
-    <div class="hero-visual position-relative overflow-hidden mb-5">
-        <img src="{% static 'images/home_background.png' %}" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="">
-        <img src="{% static 'images/brand_name.png' %}" class="hero-brand-name position-absolute top-50 start-50 translate-middle opacity-50" alt="Milky">
-        <div id="can-viewer" class="position-relative w-100 h-100" data-model-url="{% static 'models/Milky_Can.glb' %}"></div>
-    </div>
     <h1 class="mb-1">FREAKING DELICIOUS!</h1>
-    <div class="text-highlight mb-4">
+    <div class="text-highlight mb-5">
         <h1 class="mb-0">CRACK. SIP. SMILE.</h1>
     </div>
-    <p class="mb-5">Soft, indulgent and perfectly balanced, it's your little moment of sweetness in a can.</p>
-    <a href="{% url 'all_products' %}" class="btn-milky-gold btn rounded-pill text-uppercase py-3 px-5">Shop Now</a>
+    <p class="mb-5 text-lg">Soft, indulgent and perfectly balanced, it's your little moment of sweetness in a can.</p>
+    <a href="{% url 'all_products' %}" class="btn-milky-gold btn rounded-pill text-uppercase text-lg py-3 px-5">Shop
+        Now</a>
 </section>
 
 <!-- Products grid -->
-<section>
-    <div class="bubble-text-wrapper text-center">
-        <img src="{% static 'images/bubble.png' %}" alt="">
-        <div class="d-flex flex-column align-items-center justify-content-center bubble-text">
+<section class="favorites-section">
+    <div class="bubble-text-wrapper bubble-favorites position-relative text-center">
+        <img src="{% static 'images/our-favorite-image.png' %}" alt="Decorative background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text bubble-text-favorites p-3">
             <div class="text-highlight mb-4">
                 <h1 class="mb-0">OUR FAVORITES</h1>
             </div>
-            <p class="mb-5">The ones everyone keeps coming back for.</p>
+            <p class="mb-4 text-lg">The ones everyone keeps coming back for.</p>
         </div>
     </div>
-    <div class="container text-center">
+    <div class="container text-center favorites-grid">
         <div class="row g-4">
             {% for product in products %}
             <div class="col-12 col-sm-6 col-xl-3 {% if request.user.is_superuser %}pt-4{% endif %}">
@@ -48,11 +45,11 @@
                     <a href="{% url 'product_detail' product.id %}" class="text-decoration-none d-block">
                         <div class="product-card">
                             <div class="product-card-inner">
-                                <img class="product-card-bg" src="{{ product.background_image.url }}" alt="">
-                                <img class="product-card-objects" src="{{ product.objects_image.url }}" alt="">
-                                <img class="product-card-can" src="{{ product.can_image.url }}" alt="">
+                                <img class="product-card-bg" src="{{ product.background_image.url }}" alt="Decorative background for {{ product.name }}">
+                                <img class="product-card-objects" src="{{ product.objects_image.url }}" alt="Decorative elements floating around {{ product.name }}">
+                                <img class="product-card-can" src="{{ product.can_image.url }}" alt="{{ product.name }} can">
                                 <div class="product-card-gradient">
-                                    <h5 class="text-uppercase text-white mb-0">{{ product.name }}</h5>
+                                    <h4 class="text-uppercase text-white mb-0">{{ product.name }}</h4>
                                 </div>
                             </div>
                         </div>
@@ -74,40 +71,46 @@
             {% endfor %}
         </div>
         <div class="text-center mt-5 mb-5">
-            <a href="{% url 'all_products' %}" class="btn-milky-gold btn rounded-pill text-uppercase py-3 px-5">See All
+            <a href="{% url 'all_products' %}" class="btn-milky-gold btn rounded-pill text-uppercase text-lg py-3 px-5">See All
                 Flavors</a>
         </div>
     </div>
 </section>
 
 <!-- Benefits section -->
-<section class="section-yellow text-center py-5">
-    <div class="bubble-text-wrapper">
-        <img src="{% static 'images/bubble.png' %}" alt="">
-        <div class="d-flex flex-column align-items-center justify-content-center bubble-text">
-            <h1 class="mb-1">AND IT'S STILL</h1>
+<section class="section-yellow text-center position-relative pt-0 pb-4 pb-md-5 pb-lg-0">
+    <div class="bubble-benefits position-relative">
+        <img src="{% static 'images/benefits-background.png' %}" alt="Decorative gradient background blending into the yellow section" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text bubble-text-benefits p-3">
+            <h1 class="mb-1">IT'S STILL</h1>
             <div class="text-highlight mb-4">
                 <h1 class="mb-0">GOOD FOR YOU</h1>
             </div>
-            <p class="mb-5">Milk contains a natural source of vitamins, minerals, and protein</p>
+            <p class="mb-4 text-lg">Milk contains a natural source of vitamins, minerals, and protein</p>
         </div>
     </div>
-    <div class="py-4 px-3">
-        <img src="{% static 'images/benefits_image.png' %}" alt="" class="img-fluid w-100">
-        <div class="benefits-stats mx-auto mb-4">
-            <img src="{% static 'images/bubble.png' %}" alt="" class="bubble-bg img-fluid w-100">
-            <div class="row g-0">
-                <div class="col-4 py-3 px-2">
-                    <p class="benefits-label">Calcium</p>
-                    <p class="benefits-value">380mg</p>
-                </div>
-                <div class="col-4 py-3 px-2 benefits-stat-divider">
-                    <p class="benefits-label">Protein</p>
-                    <p class="benefits-value">9.2g</p>
-                </div>
-                <div class="col-4 py-3 px-2">
-                    <p class="benefits-label">Vitamin D</p>
-                    <p class="benefits-value">2.5mcg</p>
+    <div class="row align-items-center px-3 benefits-row">
+        <div class="col-12 col-lg-6">
+            <img src="{% static 'images/benefits-image.png' %}" alt="Milky Vanilla Marshmallow can surrounded by marshmallows and ice cream cones" class="img-fluid w-100">
+        </div>
+        <div class="col-12 col-lg-6 mt-0">
+            <div class="benefits-stats bg-white rounded-4 shadow-sm py-4 px-2 mx-auto mb-3 mb-md-0">
+                <div class="row g-3">
+                    <div class="col-4 py-3 py-lg-4 py-xxl-5 px-2">
+                        <img src="{% static 'images/calcium.png' %}" alt="Calcium icon" class="product-icon mb-3">
+                        <p class="benefits-label">Calcium</p>
+                        <p class="benefits-value">380mg</p>
+                    </div>
+                    <div class="col-4 py-3 py-lg-4 py-xxl-5 px-2 benefits-stat-divider">
+                        <img src="{% static 'images/protein.png' %}" alt="Protein icon" class="product-icon mb-3">
+                        <p class="benefits-label">Protein</p>
+                        <p class="benefits-value">9.2g</p>
+                    </div>
+                    <div class="col-4 py-3 py-lg-4 py-xxl-5 px-2">
+                        <img src="{% static 'images/vitamin-d.png' %}" alt="Vitamin D icon" class="product-icon mb-3">
+                        <p class="benefits-label">Vitamin D</p>
+                        <p class="benefits-value">2.5mcg</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,18 +118,31 @@
 </section>
 
 <!-- Lifestyle section -->
-<section class="text-center py-5">
-    <div class="px-3">
-        <h1 class="mb-1">MOMENTS THAT</h1>
-        <div class="text-highlight mb-4">
-            <h1 class="mb-0">TASTE BETTER</h1>
+<section class="text-center position-relative">
+    <div class="row align-items-center px-3 py-4 pt-lg-5">
+        <div class="col-12 col-lg-6 lifestyle-text-col">
+            <div class="bubble-text-wrapper bubble-lifestyle position-relative">
+                <img src="{% static 'images/bubble.png' %}" alt="Decorative white cloud-shaped background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text bubble-text-lifestyle p-3">
+                    <h1 class="mb-1">MOMENTS THAT</h1>
+                    <div class="text-highlight mb-4">
+                        <h1 class="mb-0">TASTE BETTER</h1>
+                    </div>
+                    <p class="mb-4 text-lg">Whether it's a chill night in or a hangout with friends, Milky is always there to make it
+                        sweeter.</p>
+                </div>
+            </div>
         </div>
-        <p class="mb-4">Whether it's a chill night in or a hangout with friends, Milky is always there to make it
-            sweeter.</p>
+        <div class="col-12 col-lg-6">
+            <div class="lifestyle-photo-frame py-4">
+                <img src="{% static 'images/group-enjoying-drinks.png' %}" class="lifestyle-photo img-fluid w-100 object-fit-cover d-block"
+                    alt="Group of friends enjoying Milky">
+            </div>
+        </div>
     </div>
-    <img src="{% static 'images/group_enjoying_drinks.png' %}" class="img-fluid w-100 d-block"
-        alt="Group of friends enjoying Milky">
-    <img src="{% static 'images/single_bubble.png' %}" class="img-fluid w-100 d-block single-bubble-overlap" alt="">
+    <div class="hero-wave-bottom lifestyle-wave-bottom" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="#faeade" fill-opacity="1" d="M0,192L21.8,197.3C43.6,203,87,213,131,229.3C174.5,245,218,267,262,240C305.5,213,349,139,393,144C436.4,149,480,235,524,256C567.3,277,611,235,655,229.3C698.2,224,742,256,785,250.7C829.1,245,873,203,916,202.7C960,203,1004,245,1047,224C1090.9,203,1135,117,1178,90.7C1221.8,64,1265,96,1309,128C1352.7,160,1396,192,1418,208L1440,224L1440,0L1418.2,0C1396.4,0,1353,0,1309,0C1265.5,0,1222,0,1178,0C1134.5,0,1091,0,1047,0C1003.6,0,960,0,916,0C872.7,0,829,0,785,0C741.8,0,698,0,655,0C610.9,0,567,0,524,0C480,0,436,0,393,0C349.1,0,305,0,262,0C218.2,0,175,0,131,0C87.3,0,44,0,22,0L0,0Z"></path></svg>
+    </div>
 </section>
 
 {% include 'includes/delete_product_modal.html' %}
