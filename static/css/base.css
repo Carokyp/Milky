@@ -11,6 +11,7 @@
     --danger: #dc3545;
     --gold: #fbcb62;
     --card-background: #fafafa;
+    --footer-background: #e9cfb7;
 
     /* Font families */
     --font-family-body: 'Poppins', sans-serif;
@@ -19,17 +20,18 @@
     /* Font scale — utility sizes */
     --font-xs: 0.6rem;
     --font-sm: 0.8rem;
+    --font-md: 1rem;
     --font-lg: 1.2rem;
     --font-xl: 1.5rem;
 
     /* Font scale — heading sizes */
     --font-logo: 2.5rem;
-    --font-h1: 2rem;
-    --font-h2: 1.75rem;
-    --font-h3: 1.5rem;
-    --font-h4: 1.25rem;
-    --font-h5: 1.1rem;
-    --font-h6: 1rem;
+    --font-h1: 2.75rem;
+    --font-h2: 2.25rem;
+    --font-h3: 1.85rem;
+    --font-h4: 1.5rem;
+    --font-h5: 1.3rem;
+    --font-h6: 1.15rem;
     --font-p: 1rem;
 }
 
@@ -58,26 +60,50 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-family-heading);
 }
 
-h1 { font-size: var(--font-h1); }
-h2 { font-size: var(--font-h2); }
-h3 { font-size: var(--font-h3); }
-h4 { font-size: var(--font-h4); }
-h5 { font-size: var(--font-h5); }
-h6 { font-size: var(--font-h6); }
-p  { font-size: var(--font-p); }
+h1 {
+    font-size: var(--font-h1);
+}
+
+h2 {
+    font-size: var(--font-h2);
+}
+
+h3 {
+    font-size: var(--font-h3);
+}
+
+h4 {
+    font-size: var(--font-h4);
+}
+
+h5 {
+    font-size: var(--font-h5);
+}
+
+h6 {
+    font-size: var(--font-h6);
+}
+
+p {
+    font-size: var(--font-p);
+}
 
 .text-xs {
     font-size: var(--font-xs);
 }
+
 .text-sm {
     font-size: var(--font-sm);
 }
+
 .text-lg {
     font-size: var(--font-lg);
 }
+
 .text-xl {
     font-size: var(--font-xl);
 }
+
 .text-logo {
     font-size: var(--font-logo);
 }
@@ -147,6 +173,7 @@ p  { font-size: var(--font-p); }
 
 .navbar-nav .nav-link {
     color: var(--brown);
+    font-size: var(--font-p);
     font-weight: 500;
     border-radius: 50px;
     padding: 0.3rem 1rem !important;
@@ -221,7 +248,7 @@ p  { font-size: var(--font-p); }
 .dropdown-item {
     color: var(--brown);
     font-family: var(--font-family-body);
-    font-size: var(--font-sm);
+    font-size: var(--font-p);
     font-weight: 500;
     border-radius: 1rem;
     padding: 0.5rem 1rem;
@@ -923,6 +950,10 @@ textarea::placeholder {
 
 /* #region Footer */
 
+.footer-background {
+    background-color: var(--footer-background);
+}
+
 .footer-images {
     position: relative;
     height: 200px;
@@ -936,13 +967,29 @@ textarea::placeholder {
 .footer-img-left {
     transform: rotate(-10deg);
     left: calc(50% - 120px);
-    top: 20px;
+    top: 30px;
 }
 
 .footer-img-right {
     transform: rotate(8deg);
     left: calc(50% - 20px);
-    top: 80px;
+    top: 90px;
+}
+
+.footer-social-icon {
+    width: 44px;
+    height: 44px;
+    background-color: white;
+    color: var(--brown);
+    font-size: var(--font-lg);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-social-icon:hover {
+    background-color: var(--brown);
+    color: white;
+    transform: translateY(-3px);
 }
 
 /* #endregion */
