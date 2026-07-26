@@ -294,6 +294,19 @@ p {
     max-width: 800px;
 }
 
+.comma-icon {
+    width: 24px;
+    height: auto;
+}
+
+.comma-left {
+    transform: scaleX(-1);
+}
+
+.comma-right {
+    transform: scaleX(1);
+}
+
 .benefits-label {
     font-size: var(--font-md);
     color: var(--light-brown);
@@ -1040,6 +1053,20 @@ textarea::placeholder {
     transform: translateY(-3px);
 }
 
+.footer-comma {
+    margin-top: -2rem;
+    width: 25px;
+    height: 25px;
+}
+
+.footer-comma.comma-left {
+    margin-right: -1.5rem;
+}
+
+.footer-comma.comma-right {
+    margin-left: -1.5rem;
+}
+
 /* #endregion */
 
 /* #region Error Pages */
@@ -1145,6 +1172,10 @@ textarea::placeholder {
 
     .benefits-value {
         font-size: var(--font-xl);
+    }
+
+    .comma-icon {
+        width: 50px;
     }
 
     /* -- Error pages -- */
@@ -1328,6 +1359,10 @@ textarea::placeholder {
         min-height: 580px;
         transform: translateY(-95px);
         margin-top: 10rem;
+    }
+
+    .comma-icon {
+        width: 60px;
     }
 }
 /* Large desktop */
