@@ -6,7 +6,7 @@
 {% block content %}
 <!-- Hero -->
 <section class="hero-section text-center px-3 pb-4">
-    <div class="hero-visual position-relative overflow-hidden mb-5">
+    <div class="hero-visual position-relative mb-5">
         <img src="{% static 'images/home-background.png' %}"
             class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="Abstract cream and gold wave pattern">
         <img src="{% static 'images/brand-name.png' %}"
@@ -30,18 +30,18 @@
 <section class="favorites-section">
     <div class="bubble-text-wrapper bubble-favorites position-relative text-center">
         <img src="{% static 'images/our-favorite-image.png' %}" alt="Decorative background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
-        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text bubble-text-favorites p-3">
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text-favorites p-3">
             <div class="text-highlight mb-4">
                 <h1 class="mb-0">OUR FAVORITES</h1>
             </div>
-            <p class="mb-4 text-lg">The ones everyone keeps coming back for.</p>
+            <p class="mb-4 text-lg">The ones everyone keeps coming back for, the flavors that made Milky a habit, not just a craving.</p>
         </div>
     </div>
     <div class="container text-center favorites-grid">
         <div class="row g-4">
             {% for product in products %}
             <div class="col-12 col-sm-6 col-xl-3 {% if request.user.is_superuser %}pt-4{% endif %}">
-                <div class="product-card-wrapper">
+                <article class="product-card-wrapper">
                     <a href="{% url 'product_detail' product.id %}" class="text-decoration-none d-block">
                         <div class="product-card">
                             <div class="product-card-inner">
@@ -49,7 +49,7 @@
                                 <img class="product-card-objects" src="{{ product.objects_image.url }}" alt="Decorative elements floating around {{ product.name }}">
                                 <img class="product-card-can" src="{{ product.can_image.url }}" alt="{{ product.name }} can">
                                 <div class="product-card-gradient">
-                                    <h4 class="text-uppercase text-white mb-0">{{ product.name }}</h4>
+                                    <h2 class="text-uppercase text-white text-xl mb-0">{{ product.name }}</h2>
                                 </div>
                             </div>
                         </div>
@@ -66,7 +66,7 @@
                         </a>
                     </div>
                     {% endif %}
-                </div>
+                </article>
             </div>
             {% endfor %}
         </div>
@@ -81,17 +81,17 @@
 <section class="section-yellow text-center position-relative pt-0 pb-4 pb-md-5 pb-lg-0">
     <div class="bubble-benefits position-relative">
         <img src="{% static 'images/benefits-background.png' %}" alt="Decorative gradient background blending into the yellow section" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
-        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text bubble-text-benefits p-3">
+        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text-benefits p-3">
             <h1 class="mb-1">IT'S STILL</h1>
-            <div class="text-highlight mb-4">
+            <div class="text-highlight mb-4 mb-md-5">
                 <h1 class="mb-0">GOOD FOR YOU</h1>
             </div>
-            <p class="mb-4 text-lg">Milk contains a natural source of vitamins, minerals, and protein</p>
+            <p class="mb-4 py-md-2 text-lg">Real milk means a natural source of vitamins, minerals, and protein <br> every can so you can enjoy the sweetness without the guilt.</p>
         </div>
     </div>
-    <div class="row align-items-center px-3 benefits-row">
+    <div class="row align-items-center px-3 py-4 gap-4 gap-md-5 gap-lg-0 benefits-row">
         <div class="col-12 col-lg-6">
-            <img src="{% static 'images/benefits-image.png' %}" alt="Milky Vanilla Marshmallow can surrounded by marshmallows and ice cream cones" class="img-fluid w-100">
+            <img src="{% static 'images/benefits-image.png' %}" alt="Milky Vanilla Marshmallow can surrounded by marshmallows and ice cream cones" class="img-fluid">
         </div>
         <div class="col-12 col-lg-6 mt-0">
             <div class="d-flex align-items-center justify-content-center gap-2">
@@ -123,12 +123,12 @@
 </section>
 
 <!-- Lifestyle section -->
-<section class="text-center position-relative">
-    <div class="row align-items-center px-3 py-4 pt-lg-5">
+<section class="text-center">
+    <div class="row align-items-center px-3 py-5">
         <div class="col-12 col-lg-6 lifestyle-text-col">
             <div class="bubble-text-wrapper bubble-lifestyle position-relative">
                 <img src="{% static 'images/bubble.png' %}" alt="Decorative white cloud-shaped background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
-                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text bubble-text-lifestyle p-3">
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text bubble-text-lifestyle p-3 px-md-5 px-lg-3 px-xl-0">
                     <h1 class="mb-1">MOMENTS THAT</h1>
                     <div class="text-highlight mb-4">
                         <h1 class="mb-0">TASTE BETTER</h1>
@@ -144,9 +144,6 @@
                     alt="Group of friends enjoying Milky">
             </div>
         </div>
-    </div>
-    <div class="hero-wave-bottom lifestyle-wave-bottom" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="#faeade" fill-opacity="1" d="M0,192L21.8,197.3C43.6,203,87,213,131,229.3C174.5,245,218,267,262,240C305.5,213,349,139,393,144C436.4,149,480,235,524,256C567.3,277,611,235,655,229.3C698.2,224,742,256,785,250.7C829.1,245,873,203,916,202.7C960,203,1004,245,1047,224C1090.9,203,1135,117,1178,90.7C1221.8,64,1265,96,1309,128C1352.7,160,1396,192,1418,208L1440,224L1440,0L1418.2,0C1396.4,0,1353,0,1309,0C1265.5,0,1222,0,1178,0C1134.5,0,1091,0,1047,0C1003.6,0,960,0,916,0C872.7,0,829,0,785,0C741.8,0,698,0,655,0C610.9,0,567,0,524,0C480,0,436,0,393,0C349.1,0,305,0,262,0C218.2,0,175,0,131,0C87.3,0,44,0,22,0L0,0Z"></path></svg>
     </div>
 </section>
 
