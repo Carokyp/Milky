@@ -75,9 +75,11 @@
     <footer class="text-center py-5 footer-background">
 
         <!-- Tilted images -->
-        <div class="d-flex justify-content-center align-items-center my-5 footer-images">
-            <img src="{% static 'images/can-kitchen.png' %}" alt="Milky can" class="footer-img footer-img-left rounded">
-            <img src="{% static 'images/can-kitchen-2.png' %}" alt="Milky cans" class="footer-img footer-img-right rounded">
+        <div class="d-flex justify-content-center align-items-center my-5 position-relative footer-images">
+            <img src="{% static 'images/can-kitchen.png' %}" alt="Milky can" class="position-absolute footer-img footer-img-left bg-white">
+            <img src="{% static 'images/can-kitchen-2.png' %}" alt="Milky cans" class="position-absolute footer-img footer-img-right bg-white">
+            <img src="{% static 'images/comma.png' %}" alt="" class="position-absolute footer-comma-image">
+            <img src="{% static 'images/arrow-3.png' %}" alt="" class="position-absolute footer-arrow">
         </div>
 
         <!-- Text -->

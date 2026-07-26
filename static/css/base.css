@@ -989,25 +989,39 @@ textarea::placeholder {
 }
 
 .footer-images {
-    position: relative;
     height: 200px;
 }
 
 .footer-img {
     width: 140px;
-    position: absolute;
+    padding: 0.3rem 0.3rem 2rem;
 }
 
 .footer-img-left {
-    transform: rotate(-10deg);
-    left: calc(50% - 120px);
     top: 30px;
+    left: calc(50% - 120px);
+    transform: rotate(-10deg);
 }
 
 .footer-img-right {
-    transform: rotate(8deg);
-    left: calc(50% - 20px);
     top: 90px;
+    left: calc(50% - 20px);
+    transform: rotate(8deg);
+}
+
+.footer-comma-image {
+    top: 4.5rem;
+    left: calc(50% + 120px);
+    width: 30px;
+}
+
+.footer-arrow {
+    top: 15rem;
+    left: calc(50% + 70px);
+    width: 50px;
+    height: 50px;
+    transform: rotate(80deg);
+    pointer-events: none;
 }
 
 .footer-social-icon {
@@ -1133,16 +1147,6 @@ textarea::placeholder {
         font-size: var(--font-xl);
     }
 
-    .footer-images {
-        position: relative;
-        height: 200px;
-    }
-
-    .footer-img {
-        width: 140px;
-        position: absolute;
-    }
-
     /* -- Error pages -- */
     .error-banner-wrap {
         width: auto;
@@ -1228,6 +1232,26 @@ textarea::placeholder {
         transform: translateX(clamp(-90px, calc(10px + (100vw - 1024px) * -0.1289), 10px));
     }
 
+    .footer-images {
+        height: 300px;
+    }
+
+    .footer-img {
+        width: 200px;
+    }
+
+    .footer-comma-image {
+        top: 3.5rem;
+        left: calc(50% + 180px);
+        width: 50px;
+    }
+
+    .footer-arrow {
+        top: 19rem;
+        left: calc(50% + 120px);
+        width: 80px;
+        height: 80px;
+    }
 }
 /* Tweaks that only apply between 1024-1439px, don't carry over to 1440px+ */
 @media (min-width: 1024px) and (max-width: 1439.98px) {
