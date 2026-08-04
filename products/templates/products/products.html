@@ -4,35 +4,38 @@
 {% block extra_title %}Products - Milky{% endblock %}
 
 {% block content %}
-    <div class="bubble-text-wrapper position-relative text-center">
-        <img src="{% static 'images/bubble.png' %}" alt="" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
-        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text p-3">
-            <div class="text-highlight mb-4">
-                <h1 class="mb-0">FULL COLLECTION</h1>
-            </div>
-            <p class="mb-5 text-lg">Browse all our delicious and fun flavours ready to sweeten up your day. Discover your
-                favourite today!</p>
+<!-- Full Collection banner -->
+<div class="bubble-text-wrapper bubble-favorites position-relative text-center">
+    <img src="{% static 'images/gradient-cream-background.png' %}" alt="Decorative background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+    <div class="position-absolute top-0 start-0 w-100 d-flex flex-column align-items-center bubble-text-collection p-3">
+        <div class="text-highlight mb-4">
+            <h1 class="mb-0">FULL COLLECTION</h1>
         </div>
+        <p class="mb-4 text-lg">Browse all our delicious and fun flavours ready to sweeten up your day. Discover your
+            favourite today!</p>
     </div>
-<div class="container">
-    <div class="row g-2">
+</div>
+
+<!-- Products grid -->
+<div class="container text-center collection-grid">
+    <div class="row g-4">
         {% for product in products %}
-        <div class="col-12 col-md-6 col-lg-3 text-center {% if request.user.is_superuser %}pt-5{% endif %}">
-            <div class="product-card-wrapper">
+        <div class="col-12 col-sm-6 col-xl-3 {% if request.user.is_superuser %}pt-4{% endif %}">
+            <article class="product-card-wrapper position-relative">
                 <a href="{% url 'product_detail' product.id %}" class="text-decoration-none d-block">
                     <div class="product-card">
-                        <div class="product-card-inner">
-                            <img class="product-card-bg" src="{{ product.background_image.url }}" alt="">
-                            <img class="product-card-objects" src="{{ product.objects_image.url }}" alt="">
-                            <img class="product-card-can" src="{{ product.can_image.url }}" alt="{{ product.name }}">
-                            <div class="product-card-gradient text-start">
-                                <h5 class="text-uppercase text-white mb-0">{{ product.name }}</h5>
+                        <div class="product-card-inner position-relative overflow-hidden">
+                            <img class="product-card-bg w-100 d-block" src="{{ product.background_image.url }}" alt="Decorative background for {{ product.name }}">
+                            <img class="product-card-objects position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.objects_image.url }}" alt="Decorative elements floating around {{ product.name }}">
+                            <img class="product-card-can position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.can_image.url }}" alt="{{ product.name }} can">
+                            <div class="product-card-gradient position-absolute bottom-0 start-0 end-0">
+                                <h2 class="text-uppercase text-white text-xl mb-0">{{ product.name }}</h2>
                             </div>
                         </div>
                     </div>
                 </a>
                 {% if request.user.is_superuser %}
-                <div class="superuser-overlay d-flex rounded-pill position-absolute top-0 start-50 translate-middle-x mt-0">
+                <div class="superuser-overlay d-flex rounded-pill position-absolute top-0 start-50 translate-middle-x">
                     <a href="{% url 'edit_product' product.id %}" class="superuser-overlay-btn d-flex align-items-center rounded-pill">
                         <i class="fa-solid fa-pen-to-square"></i> Edit
                     </a>
@@ -43,7 +46,7 @@
                     </a>
                 </div>
                 {% endif %}
-            </div>
+            </article>
             <a href="{% url 'product_detail' product.id %}"
                 class="btn-milky-gold btn rounded-pill text-uppercase py-2 px-5 mt-3 mb-3">I Want This</a>
         </div>
