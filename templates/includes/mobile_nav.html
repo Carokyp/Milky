@@ -1,6 +1,6 @@
 <!-- Account dropdown -->
 <div class="dropdown">
-    <a href="#" class="text-dark" data-bs-toggle="dropdown" aria-expanded="false">
+    <a href="#" class="mobile-nav-icon" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fa-regular fa-circle-user fa-lg"></i>
     </a>
     <ul class="dropdown-menu dropdown-menu-end">
@@ -18,7 +18,7 @@
 </div>
 
 <!-- Cart -->
-<a href="{% url 'view_cart' %}" class="text-dark nav-link position-relative">
+<a href="{% url 'view_cart' %}" class="mobile-nav-icon nav-link position-relative">
     <i class="fa-solid fa-cart-shopping fa-lg"></i>
     {% if product_count > 0 %}
     <span class="position-absolute top-0 translate-middle badge cart-badge rounded-pill">
