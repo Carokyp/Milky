@@ -8,20 +8,21 @@
 <!-- Hero -->
 <section>
     <div class="container">
-        <div class="rounded-4 shadow-sm overflow-hidden">
+        <div class="rounded-4 overflow-hidden">
             <div class="row g-0 align-items-stretch">
-                <div class="col-12 col-md-6">
+                <!-- Keeps the image glued to the bottom so it lines up with the price/button side -->
+                <div class="col-12 col-lg-6 d-flex flex-column justify-content-end">
                     {% if product.background_image %}
-                    <div class="product-card-wrapper">
+                    <div class="product-card-wrapper position-relative">
                         <div class="product-card">
-                            <div class="product-card-inner rounded-0">
-                                <img class="product-card-bg" src="{{ product.background_image.url }}" alt="{{ product.name }} background">
-                                <img class="product-card-objects" src="{{ product.objects_image.url }}" alt="{{ product.name }} ingredients">
-                                <img class="product-card-can" src="{{ product.can_image.url }}" alt="{{ product.name }}">
+                            <div class="product-card-inner position-relative overflow-hidden rounded-0">
+                                <img class="product-card-bg w-100 d-block" src="{{ product.background_image.url }}" alt="{{ product.name }} background">
+                                <img class="product-card-objects position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.objects_image.url }}" alt="{{ product.name }} ingredients">
+                                <img class="product-card-can position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.can_image.url }}" alt="{{ product.name }}">
                             </div>
                         </div>
                         {% if request.user.is_superuser %}
-                        <div class="superuser-overlay d-flex rounded-pill position-absolute top-0 start-50 translate-middle-x mt-0">
+                        <div class="superuser-overlay d-flex rounded-pill position-absolute top-0 start-50 translate-middle-x">
                             <a href="{% url 'edit_product' product.id %}" class="superuser-overlay-btn d-flex align-items-center rounded-pill">
                                 <i class="fa-solid fa-pen-to-square"></i> Edit
                             </a>
@@ -34,11 +35,11 @@
                         {% endif %}
                     </div>
                     {% else %}
-                    <img src="{% static 'images/no-image.png' %}" class="img-fluid w-100 h-100 object-fit-cover" alt="{{ product.name }}" />
+                    <img src="{% static 'images/no-image.png' %}" class="w-100 h-100 object-fit-cover" alt="{{ product.name }}" />
                     {% endif %}
                 </div>
-                <div class="col-12 col-md-6 d-flex flex-column justify-content-center p-4 p-md-5 text-center bg-white">
-                    <h1 class="logo-font text-uppercase mb-1">{{ product.name }}</h1>
+                <div class="col-12 col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5 text-center bg-white">
+                    <h1 class="logo-font text-uppercase text-xxl mb-1">{{ product.name }}</h1>
                     <p class="fw-bold mb-3">${{ product.price }} / per can (330ml)</p>
                     <p class="mb-4">{{ product.description }}</p>
 
@@ -71,9 +72,9 @@
 </section>
 
 <!-- Tagline + Icons -->
-<section class="text-center pt-5">
+<div class="text-center pt-5">
     <div class="container">
-        <p>Soft, indulgent and perfectly balanced, it's your little moment of sweetness in a can</p>
+        <p class="lead mb-5 ">Soft, indulgent and perfectly balanced, it's your little moment of sweetness in a can!</p>
         <div class="row g-3 justify-content-center">
             <div class="col-6 col-md-4">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
@@ -89,17 +90,17 @@
             </div>
             <div class="col-6 col-md-4">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
-                    <img src="{% static 'images/no-artificial-flavors.png' %}" alt="No artificial flavors" class="product-icon mb-3">
+                    <img src="{% static 'images/no-artificial-flavors.png' %}" alt="No artificial flavors" class="product-icon product-icon-zoom mb-3">
                     <p class="text-uppercase fw-bold mb-0 benefit-label">No Artificial Flavors</p>
                 </div>
             </div>
-            <div class="col-6 col-md-8">
+            <div class="col-6 col-md-6">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
                     <img src="{% static 'images/agave.png' %}" alt="Natural sweetness" class="product-icon mb-3">
                     <p class="text-uppercase fw-bold mb-0 benefit-label">Natural Sweetness</p>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
                     <img src="{% static 'images/yummy.png' %}" alt="Dangerously delicious" class="product-icon mb-3">
                     <p class="text-uppercase fw-bold mb-0 benefit-label">Dangerously Delicious</p>
@@ -107,70 +108,49 @@
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- Nutrition -->
-<section class="pt-5">
+<!-- Nutrition + Reviews -->
+<section class="py-5">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8 col-lg-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Nutrient</th>
-                            <th>Per 100ml</th>
-                            <th>Per 330ml</th>
-                        </tr>
-                    </thead>
-                    <tbody class="table-group-divider">
-                        <tr><td>Energy</td><td>72 kcal</td><td>238 kcal</td></tr>
-                        <tr><td>Fat</td><td>2.5 g</td><td>8.3 g</td></tr>
-                        <tr><td>of which saturates</td><td>1.6 g</td><td>5.3 g</td></tr>
-                        <tr><td>Carbohydrates</td><td>10.5 g</td><td>34.7 g</td></tr>
-                        <tr><td>of which sugars</td><td>9.8 g</td><td>32.3 g</td></tr>
-                        <tr><td>Protein</td><td>2.8 g</td><td>9.2 g</td></tr>
-                        <tr><td>Salt</td><td>0.10 g</td><td>0.33 g</td></tr>
-                    </tbody>
-                </table>
+        <div class="row justify-content-center align-items-start g-4">
+            <div class="col-12 col-lg-5 mx-auto mx-lg-0">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nutrient</th>
+                                <th>Per 100ml</th>
+                                <th>Per 330ml</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-group-divider">
+                            <tr><td>Energy</td><td>72 kcal</td><td>238 kcal</td></tr>
+                            <tr><td>Fat</td><td>2.5 g</td><td>8.3 g</td></tr>
+                            <tr><td>of which saturates</td><td>1.6 g</td><td>5.3 g</td></tr>
+                            <tr><td>Carbohydrates</td><td>10.5 g</td><td>34.7 g</td></tr>
+                            <tr><td>of which sugars</td><td>9.8 g</td><td>32.3 g</td></tr>
+                            <tr><td>Protein</td><td>2.8 g</td><td>9.2 g</td></tr>
+                            <tr><td>Salt</td><td>0.10 g</td><td>0.33 g</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
 
-<!-- Reviews -->
-<section class="pt-4">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-12 col-md-8">
-                <h4 class="text-uppercase fw-bold mb-2">Reviews</h4>
+            <div id="reviews" class="col-12 col-lg-7 mx-auto mx-lg-0">
+                <h2 class="text-uppercase fw-bold mb-2">Reviews</h2>
 
-                {% if comments %}
-                {% for comment in comments %}
-                <div class="bg-white rounded-4 shadow-sm comment-item p-4 mb-2">
-                    <p class="fw-bold mb-0">{{ comment.name }}{% if comment.surname %} {{ comment.surname }}{% endif %}</p>
-                    <p class="small mb-2">
-                        {% for i in "12345" %}
-                        {% if forloop.counter <= comment.rating %}<i class="fa-solid fa-star star"></i>{% else %}<i class="fa-regular fa-star star"></i>{% endif %}
-                        {% endfor %}
-                        ({{ comment.rating }}/5)
-                    </p>
-                    {% if comment.comment %}<p class="mb-0 text-sm">{{ comment.comment }}</p>{% endif %}
+                <div id="reviews-list">
+                    {% include 'products/reviews_list.html' %}
                 </div>
-                {% endfor %}
-                {% else %}
-                <div class="bg-white rounded-4 p-4 text-center shadow-sm mb-4">
-                    <p class="fw-bold mb-1">No reviews yet</p>
-                    <p class="text-muted small mb-0">Be the first to share your thoughts!</p>
-                </div>
-                {% endif %}
 
                 {% if user.is_authenticated %}
                 <div class="bg-white rounded-4 p-4 shadow-sm mt-4">
-                    <h4 class="mb-3">Leave a Review</h4>
-                    {% include 'products/add_comment.html' with form=comment_form %}
+                    <h3 class="text-xl mb-3">Leave a Review</h3>
+                    {% include 'products/add_review.html' with form=review_form %}
                 </div>
                 {% else %}
-                <p class="text-muted small mt-3">
+                <p class=" small mt-3">
                     <a href="{% url 'account_login' %}" class="btn-milky-gold btn btn-sm rounded-pill px-3 py-1 fw-bold text-uppercase me-1">Login</a> to leave a review.
                 </p>
                 {% endif %}
@@ -190,5 +170,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/product_detail.js' %}"></script>
+<script src="{% static 'js/product-detail.js' %}"></script>
 {% endblock %}
