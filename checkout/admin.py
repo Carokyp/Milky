@@ -122,7 +122,7 @@ class OrderAdmin(admin.ModelAdmin):
 
     # custom JavaScript to show/hide invoice fields based on "same as delivery" checkbox
     class Media:
-        js = ("js/admin_invoice.js",)
+        js = ("js/admin-invoice.js",)
 
 
 admin.site.register(Order, OrderAdmin)
