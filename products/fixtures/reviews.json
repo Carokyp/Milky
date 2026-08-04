@@ -1,0 +1,314 @@
+[
+    {
+        "model": "products.review",
+        "pk": 1,
+        "fields": {
+            "order": null,
+            "product": 1,
+            "name": "Emma",
+            "surname": "Clarke",
+            "rating": 5,
+            "comment": "Tastes exactly like a strawberry milkshake but in a can. My new favourite."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 2,
+        "fields": {
+            "order": null,
+            "product": 1,
+            "name": "Liam",
+            "surname": "Osei",
+            "rating": 4,
+            "comment": "Really creamy and not too sweet. Would love a bigger can option."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 3,
+        "fields": {
+            "order": null,
+            "product": 2,
+            "name": "Sophie",
+            "surname": "Bennett",
+            "rating": 5,
+            "comment": "So refreshing! The chocolate chips give it a nice bit of texture."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 4,
+        "fields": {
+            "order": null,
+            "product": 2,
+            "name": "Noah",
+            "surname": "Fitzgerald",
+            "rating": 4,
+            "comment": "Great mint flavour, cools you right down. Perfect after the gym."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 17,
+        "fields": {
+            "order": null,
+            "product": 2,
+            "name": "Harper",
+            "surname": "Quinn",
+            "rating": 5,
+            "comment": "Best mint choc chip drink I've had, tastes like a proper milkshake."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 18,
+        "fields": {
+            "order": null,
+            "product": 2,
+            "name": "Leo",
+            "surname": "Bianchi",
+            "rating": 3,
+            "comment": "Nice but the mint is a bit strong for me personally."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 19,
+        "fields": {
+            "order": null,
+            "product": 2,
+            "name": "Amelia",
+            "surname": "Ferreira",
+            "rating": 5,
+            "comment": "So cooling and refreshing, perfect summer drink."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 22,
+        "fields": {
+            "order": null,
+            "product": 1,
+            "name": "Aisha",
+            "surname": "Rahman",
+            "rating": 5,
+            "comment": "Such a treat, the strawberry flavour is so natural tasting."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 23,
+        "fields": {
+            "order": null,
+            "product": 1,
+            "name": "Tom",
+            "surname": "Whitmore",
+            "rating": 4,
+            "comment": "Great texture, will definitely buy again."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 5,
+        "fields": {
+            "order": null,
+            "product": 3,
+            "name": "Isabelle",
+            "surname": "Moreau",
+            "rating": 5,
+            "comment": "The salty pretzel crunch you get from the aftertaste is unreal. Addictive."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 6,
+        "fields": {
+            "order": null,
+            "product": 3,
+            "name": "James",
+            "surname": "O'Sullivan",
+            "rating": 3,
+            "comment": "Good but a little too sweet for my taste. Still finished the can though."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 24,
+        "fields": {
+            "order": null,
+            "product": 3,
+            "name": "Priya",
+            "surname": "Sharma",
+            "rating": 5,
+            "comment": "The sweet and salty combo is spot on, my favourite of the range."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 25,
+        "fields": {
+            "order": null,
+            "product": 3,
+            "name": "Marcus",
+            "surname": "Webb",
+            "rating": 4,
+            "comment": "Really moreish, the pretzel bits give it a nice crunch note."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 9,
+        "fields": {
+            "order": null,
+            "product": 5,
+            "name": "Chloe",
+            "surname": "Whitfield",
+            "rating": 5,
+            "comment": "Banana and peanut butter together is genius. Tastes like dessert in a can."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 10,
+        "fields": {
+            "order": null,
+            "product": 5,
+            "name": "Ethan",
+            "surname": "Marsh",
+            "rating": 4,
+            "comment": "Thick and filling, great as a snack replacement. Shake it well first!"
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 26,
+        "fields": {
+            "order": null,
+            "product": 5,
+            "name": "Sofia",
+            "surname": "Alves",
+            "rating": 5,
+            "comment": "Tastes like a peanut butter banana smoothie, so good."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 27,
+        "fields": {
+            "order": null,
+            "product": 5,
+            "name": "Jack",
+            "surname": "Donovan",
+            "rating": 3,
+            "comment": "Tasty but very rich, one can is definitely enough."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 28,
+        "fields": {
+            "order": null,
+            "product": 5,
+            "name": "Nadia",
+            "surname": "Petrov",
+            "rating": 5,
+            "comment": "My go-to post-workout treat now, love the flavour balance."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 13,
+        "fields": {
+            "order": null,
+            "product": 7,
+            "name": "Mia",
+            "surname": "Lindqvist",
+            "rating": 5,
+            "comment": "Vanilla and marshmallow is so cosy, tastes like a cup of hot cocoa."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 14,
+        "fields": {
+            "order": null,
+            "product": 7,
+            "name": "Benjamin",
+            "surname": "Cross",
+            "rating": 4,
+            "comment": "Sweet without being sickly. Great one to keep in the fridge for guests."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 20,
+        "fields": {
+            "order": null,
+            "product": 7,
+            "name": "Freya",
+            "surname": "Nilsson",
+            "rating": 5,
+            "comment": "Tastes like a toasted marshmallow campfire treat. Lovely and sweet."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 21,
+        "fields": {
+            "order": null,
+            "product": 7,
+            "name": "Owen",
+            "surname": "Blackwood",
+            "rating": 4,
+            "comment": "Comforting flavour, great with a splash of coffee too."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 15,
+        "fields": {
+            "order": null,
+            "product": 8,
+            "name": "Zoe",
+            "surname": "Harrington",
+            "rating": 5,
+            "comment": "Rich chocolate with a caramel finish, honestly better than a milkshake."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 16,
+        "fields": {
+            "order": null,
+            "product": 8,
+            "name": "Daniel",
+            "surname": "Kowalski",
+            "rating": 5,
+            "comment": "My favourite of the whole range. Dangerously easy to finish in one sitting."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 29,
+        "fields": {
+            "order": null,
+            "product": 8,
+            "name": "Ruby",
+            "surname": "Sinclair",
+            "rating": 5,
+            "comment": "Chocolate and caramel is a classic combo and this nails it perfectly."
+        }
+    },
+    {
+        "model": "products.review",
+        "pk": 30,
+        "fields": {
+            "order": null,
+            "product": 8,
+            "name": "Felix",
+            "surname": "Grant",
+            "rating": 4,
+            "comment": "Rich and indulgent, great as an evening treat."
+        }
+    }
+]

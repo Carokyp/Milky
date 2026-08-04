@@ -1,12 +1,11 @@
-{% load crispy_forms_tags %}
 {% load static %}
 
-<form method="POST" action="{% url 'add_comment' product.id %}" id="comment-form">
+<form method="POST" action="{% url 'add_review' product.id %}" id="review-form">
     {% csrf_token %}
-    
+
     <!-- Star rating selector -->
     <div class="mb-3">
-        <label class="form-label fw-bold">Rating</label>
+        <label class="form-label fw-bold rating">Rating</label>
         <div id="star-rating" class="d-flex gap-1 fs-4">
             {% for i in "12345" %}
             <i class="fa-regular fa-star star star-btn"
@@ -28,4 +27,4 @@
     </div>
 </form>
 
-<script src="{% static 'js/add_comment.js' %}"></script>
+<script src="{% static 'js/add-review.js' %}"></script>

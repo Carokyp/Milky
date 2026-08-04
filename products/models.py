@@ -53,10 +53,13 @@ class Product(models.Model):
     class Meta:
         ordering = ["display_order", "name"]
 
+    def __str__(self):
+        return self.name
 
-class Comment(models.Model):
+
+class Review(models.Model):
     order = models.ForeignKey("checkout.Order", on_delete=models.SET_NULL, null=True, blank=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="comments")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
     rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])

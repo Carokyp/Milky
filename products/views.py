@@ -1,18 +1,19 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
+from django.core.paginator import Paginator
 from django.conf import settings
 from decimal import Decimal
 from .models import Product
 from accounts.models import UserCustomer, Contact
 from checkout.models import Order
 from .email_utils import build_gift_email_context
-from .forms import CommentForm, ProductForm
+from .forms import ReviewForm, ProductForm
 from accounts.forms import GiftACanForm
 
 
@@ -28,17 +29,28 @@ def all_products(request):
     return render(request, "products/products.html", context)
 
 
+REVIEWS_PER_PAGE = 3
+
+
 def product_detail(request, product_id):
     """View to display a single product."""
 
     product = get_object_or_404(Product, pk=product_id)
-    comment_form = CommentForm()
-    comments = product.comments.all()  # type: ignore
+    review_form = ReviewForm()
+    reviews_list = product.reviews.order_by("-id")  # type: ignore
+    paginator = Paginator(reviews_list, REVIEWS_PER_PAGE)
+    reviews = paginator.get_page(request.GET.get("page"))
+
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        html = render_to_string(
+            "products/reviews_list.html", {"reviews": reviews}, request=request
+        )
+        return JsonResponse({"html": html})
 
     context = {
         "product": product,
-        "comment_form": comment_form,
-        "comments": comments,
+        "review_form": review_form,
+        "reviews": reviews,
     }
     return render(request, "products/product_detail.html", context)
 
@@ -188,36 +200,35 @@ def delete_product(request, product_id):
 
 
 @login_required
-def add_comment(request, product_id):
+def add_review(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
 
     if request.method == 'POST':
-        form = CommentForm(request.POST)
+        form = ReviewForm(request.POST)
         if form.is_valid():
-            comment = form.save(commit=False)
+            review = form.save(commit=False)
 
             user_customer = UserCustomer.objects.filter(user=request.user).first()
             customer = user_customer.customer if user_customer else None
 
             # display_name overrides name/surname if set
             if customer and customer.display_name:
-                comment.name = customer.display_name  # type: ignore
-                comment.surname = ''  # type: ignore
+                review.name = customer.display_name  # type: ignore
+                review.surname = ''  # type: ignore
             else:
-                comment.name = (customer.name if customer and customer.name else request.user.username)  # type: ignore
-                comment.surname = (customer.surname if customer and customer.surname else '')  # type: ignore
+                review.name = (customer.name if customer and customer.name else request.user.username)  # type: ignore
+                review.surname = (customer.surname if customer and customer.surname else '')  # type: ignore
 
-            comment.product = product
+            review.product = product
             if customer:
                 order = Order.objects.filter(customer=customer, items__product=product).last()
-                comment.order = order
-            comment.save()
-            messages.success(request, 'Comment added successfully!', extra_tags="review")
+                review.order = order
+            review.save()
+            messages.success(request, 'Review added successfully!', extra_tags="review")
             return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
         else:
-            messages.error(request, 'Failed to add comment. Please check the form.')
+            messages.error(request, 'Failed to add review. Please check the form.')
     else:
-        form = CommentForm()
+        form = ReviewForm()
 
-    return render(request, 'products/add_comment.html', {'form': form, 'product': product})
-
+    return render(request, 'products/add_review.html', {'form': form, 'product': product})

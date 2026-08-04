@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Comment
+from .models import Product, Review
 from accounts.models import UserCustomer
 
 
@@ -9,7 +9,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ("is_available", "flavor")
 
 
-class CommentAdmin(admin.ModelAdmin):
+class ReviewAdmin(admin.ModelAdmin):
     list_display = ("name", "surname", "get_username", "product", "star_display", "short_comment")
     ordering = ("-rating",)
     list_filter = ("rating", "product")
@@ -37,4 +37,4 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Comment, CommentAdmin)
+admin.site.register(Review, ReviewAdmin)

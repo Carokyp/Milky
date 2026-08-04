@@ -1,6 +1,6 @@
 from django import forms
 from .models import Product
-from .models import Comment
+from .models import Review
 from .widgets import CustomClearableFileInput
 
 
@@ -56,9 +56,9 @@ class ProductForm(forms.ModelForm):
             })
 
 
-class CommentForm(forms.ModelForm):
+class ReviewForm(forms.ModelForm):
     class Meta:
-        model = Comment
+        model = Review
         fields = ['rating', 'comment']
         widgets = {
             'rating': forms.NumberInput(attrs={'class': 'form-control', 'min': 1, 'max': 5}),
