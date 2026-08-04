@@ -11,7 +11,7 @@
             class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="Abstract cream and gold wave pattern">
         <img src="{% static 'images/brand-name.png' %}"
             class="hero-brand-name position-absolute top-50 start-50 translate-middle opacity-50" alt="Milky">
-        <div id="can-viewer" class="position-relative w-100 h-100" data-model-url="{% static 'models/Milky_Can.glb' %}">
+        <div id="can-viewer" class="position-relative w-100 h-100" data-model-url="{% static 'models/milky-can.glb' %}">
         </div>
         <div class="hero-wave-bottom" aria-hidden="true">
             <svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="#faeade" fill-opacity="1" d="M0,192L21.8,197.3C43.6,203,87,213,131,229.3C174.5,245,218,267,262,240C305.5,213,349,139,393,144C436.4,149,480,235,524,256C567.3,277,611,235,655,229.3C698.2,224,742,256,785,250.7C829.1,245,873,203,916,202.7C960,203,1004,245,1047,224C1090.9,203,1135,117,1178,90.7C1221.8,64,1265,96,1309,128C1352.7,160,1396,192,1418,208L1440,224L1440,320L1418.2,320C1396.4,320,1353,320,1309,320C1265.5,320,1222,320,1178,320C1134.5,320,1091,320,1047,320C1003.6,320,960,320,916,320C872.7,320,829,320,785,320C741.8,320,698,320,655,320C610.9,320,567,320,524,320C480,320,436,320,393,320C349.1,320,305,320,262,320C218.2,320,175,320,131,320C87.3,320,44,320,22,320L0,320Z"></path></svg>
@@ -29,7 +29,7 @@
 <!-- Products grid -->
 <section class="favorites-section">
     <div class="bubble-text-wrapper bubble-favorites position-relative text-center">
-        <img src="{% static 'images/our-favorite-image.png' %}" alt="Decorative background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        <img src="{% static 'images/gradient-cream-background.png' %}" alt="Decorative background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
         <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text-favorites p-3">
             <div class="text-highlight mb-4">
                 <h1 class="mb-0">OUR FAVORITES</h1>
@@ -41,14 +41,14 @@
         <div class="row g-4">
             {% for product in products %}
             <div class="col-12 col-sm-6 col-xl-3 {% if request.user.is_superuser %}pt-4{% endif %}">
-                <article class="product-card-wrapper">
+                <article class="product-card-wrapper position-relative">
                     <a href="{% url 'product_detail' product.id %}" class="text-decoration-none d-block">
                         <div class="product-card">
-                            <div class="product-card-inner">
-                                <img class="product-card-bg" src="{{ product.background_image.url }}" alt="Decorative background for {{ product.name }}">
-                                <img class="product-card-objects" src="{{ product.objects_image.url }}" alt="Decorative elements floating around {{ product.name }}">
-                                <img class="product-card-can" src="{{ product.can_image.url }}" alt="{{ product.name }} can">
-                                <div class="product-card-gradient">
+                            <div class="product-card-inner position-relative overflow-hidden">
+                                <img class="product-card-bg w-100 d-block" src="{{ product.background_image.url }}" alt="Decorative background for {{ product.name }}">
+                                <img class="product-card-objects position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.objects_image.url }}" alt="Decorative elements floating around {{ product.name }}">
+                                <img class="product-card-can position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.can_image.url }}" alt="{{ product.name }} can">
+                                <div class="product-card-gradient position-absolute bottom-0 start-0 end-0">
                                     <h2 class="text-uppercase text-white text-xl mb-0">{{ product.name }}</h2>
                                 </div>
                             </div>
