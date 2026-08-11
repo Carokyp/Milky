@@ -12,6 +12,7 @@
     --placeholder-color: #aab7c4;
     --danger: #dc3545;
     --gold: #fbcb62;
+    --green: #198754;
     --card-background: #fafafa;
     --footer-background: #e9cfb7;
 
@@ -53,7 +54,6 @@ body {
     background-color: var(--light-cream);
     max-width: var(--site-max-width);
     margin: 0 auto;
-    overflow-x: hidden;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -131,7 +131,7 @@ p {
     font-size: var(--font-xl);
 }
 
-.text-xxl{
+.text-xxl {
     font-size: var(--font-xxl);
 }
 
@@ -165,9 +165,30 @@ p {
     background-color: var(--card-background) !important;
 }
 
+hr {
+    color: var(--light-brown);
+}
+
+dt {
+    font-weight: normal;
+    color: var(--brown);
+}
+
+dd {
+    color: var(--brown);
+}
+
 /* Color utilities */
 .text-light-brown {
     color: var(--light-brown) !important;
+}
+
+.text-brown {
+    color: var(--brown) !important;
+}
+
+.text-green {
+    color: var(--green) !important;
 }
 
 /* #endregion */
@@ -310,10 +331,11 @@ p {
     margin-top: -220px;
 }
 
-/* Shared bubble text sizing for Favorites, Benefits & Collection */
+/* Shared bubble text sizing for Favorites, Benefits, Collection & Gift */
 .bubble-text-favorites,
 .bubble-text-benefits,
-.bubble-text-collection {
+.bubble-text-collection,
+.bubble-text-gift {
     height: auto !important;
     justify-content: flex-start !important;
     padding-top: 85px !important;
@@ -414,6 +436,11 @@ p {
     min-width: 160px;
 }
 
+.dropdown-menu-end[data-bs-popper] {
+    right: -45px;
+    left: auto;
+}
+
 .dropdown-item {
     color: var(--brown);
     font-family: var(--font-family-body);
@@ -493,10 +520,28 @@ p {
     border: none !important;
 }
 
+.btn-quantity-cart .btn {
+    padding: 0.3rem 0.65rem !important;
+    line-height: 1;
+}
+
 .btn-quantity-detail,
 .quantity-input {
     color: var(--brown);
     font-size: large;
+}
+
+/* Chrome/Safari reserve invisible width for the native spin buttons,
+   which pushes the centered digit off-center within the pill. */
+.quantity-input::-webkit-outer-spin-button,
+.quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quantity-input {
+    -webkit-appearance: textfield;
+    appearance: textfield;
 }
 
 .btn-quantity-detail:disabled {
@@ -541,6 +586,7 @@ p {
     background: none;
     border: none;
     transition: color 0.2s ease;
+    font-size: var(--font-lg);
 }
 
 .cart-remove-btn:hover {
@@ -718,6 +764,73 @@ p {
 
 /* #region Gift Page */
 
+/* -- When the user is not logged-in -- */
+
+/* Decorative gift icon in the header bubble */
+.gift-img-hero {
+    width: 130px;
+    height: auto;
+    opacity: 0.4;
+    top: calc(50% - 170px);
+    left: calc(50% - 375px);
+    transform: rotate(-15deg);
+}
+
+/* Decorative heart anchored to the bottom-right */
+.gift-heart-icon {
+    bottom: -170px;
+    right: 40px;
+    width: 145px;
+    height: auto;
+    opacity: 0.4;
+    transform: rotate(20deg);
+}
+
+/* Only adds spacing when the steps stack into a column at lg+ */
+.gift-steps-row {
+    row-gap: 1rem;
+}
+
+.gift-content {
+    position: relative;
+    z-index: 1;
+    margin-top: -180px;
+}
+
+.gift-hero-img {
+    object-fit: cover;
+}
+
+.gift-step-number {
+    width: 45px;
+    height: 45px;
+    font-size: var(--font-xl);
+    background-color: var(--gold);
+    color: var(--brown);
+    /* Visual nudge to center the numbers */
+    padding-top: 0.09rem;
+    padding-right: 0.075rem;
+}
+
+.gift-step-icon-wrap {
+    width: 45px;
+    height: 45px;
+    background-color: rgba(251, 203, 98, 0.2);
+}
+
+.gift-step-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* -- When the user is logged-in -- */
+
+/* h2 for correct heading hierarchy sized to match the rest of the site's h4 */
+.gift-section-title {
+    font-size: var(--font-h4);
+}
+
 .gift-promo-badge {
     background-color: var(--gold);
     color: var(--brown);
@@ -732,7 +845,6 @@ p {
     border-radius: 0.75rem;
     padding: 0.5rem 0.75rem;
     cursor: pointer;
-    font-family: var(--font-family-body);
     transition: border-color 0.2s ease;
 }
 
@@ -790,38 +902,23 @@ p {
     color: var(--placeholder-color);
 }
 
-.gift-step-number {
-    font-size: 3.5rem;
-    color: var(--gold);
-    line-height: 1;
-    margin-bottom: 0.25rem;
-}
-
-.gift-step-label {
-    color: var(--brown);
-}
-
 .gift-contact-label {
     letter-spacing: 0.05em;
-}
-
-.bubble-text-gift {
-    position: absolute;
-    inset: 0;
-    padding: 1rem;
-    padding-top: 1.5rem;
-}
-
-.gift-bubble-back {
-    position: absolute;
-    top: -1rem;
-    left: 1rem;
-    z-index: 1;
+    color: var(--brown);
 }
 
 /* #endregion */
 
 /* #region Cart */
+
+/* Kept as an <h1> for the page's document outline, but sized like an h2 */
+.cart-title {
+    font-size: var(--font-h2);
+}
+
+.empty-cart-title {
+    font-size: var(--font-h3);
+}
 
 .free-delivery-banner {
     background-color: transparent;
@@ -840,14 +937,41 @@ p {
     white-space: nowrap;
 }
 
-.cart-product-name {
-    font-size: var(--font-h4);
+.cart-item-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-.cart-product-price,
+.cart-item-row:not(:last-child) {
+    border-bottom: 1px solid #dfd3ce;
+}
+
+.cart-product-name {
+    font-size: var(--font-h6);
+}
+
+.cart-product-price {
+    font-size: var(--font-md);
+}
+
 .btn-quantity-cart,
 .quantity-value-cart {
     font-size: var(--font-sm);
+}
+
+.cart-item-img {
+    width: 100px;
+}
+
+.cart-gift-icon {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+}
+
+.checkout-item-img {
+    width: 70px;
 }
 
 /* #endregion */
@@ -926,6 +1050,34 @@ p {
 
 /* #region Forms */
 
+/* Login Form */
+
+.login-image{
+    object-fit: cover;
+}
+
+/* Signup Form */
+
+.logo-signup {
+    top: 10%;
+    width: 300px;
+}
+
+.overlay-main-text {
+    top: 30%;
+    color: #faeade;
+    text-shadow: 0 2px 4px rgb(73 35 10 / 50%)
+}
+
+.overlay-secondary-text {
+    top: 40%;
+    max-width: 300px;
+    color: #faeade;
+    text-shadow: 0 2px 4px rgb(73 35 10 / 50%)
+}
+
+
+/* Form */
 .form-text {
     font-size: var(--font-sm);
 }
@@ -1032,7 +1184,7 @@ textarea::placeholder {
 }
 
 .site-toast-body hr {
-    border-color: rgba(60, 36, 22, 1) !important;
+    border-color: var(--light-brown) !important;
 }
 
 .bag-preview-wrapper {
@@ -1167,16 +1319,44 @@ textarea::placeholder {
 
 /* #region Media Queries */
 
+/* Small phones */
+@media (max-width: 359.98px) {
+
+    /* -- Cart -- */
+    .btn-quantity-cart {
+        gap: 0.25rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    .btn-quantity-cart .btn {
+        padding: 0.15rem 0.4rem !important;
+    }
+
+    .cart-remove-btn {
+        font-size: var(--font-md);
+        padding: 0.25rem 0.4rem !important;
+    }
+}
+
 /* Large mobile / tablet */
 @media (min-width: 768px) {
+
     /* -- Font scale -- */
     :root {
+        --font-sm: 0.85rem;
+        --font-md: 1.05rem;
         --font-lg: 1.35rem;
         --font-xl: 1.9rem;
         --font-xxl: 2.9rem;
+        --font-logo: 3.2rem;
         --font-h1: 3.5rem;
+        --font-h2: 2.85rem;
+        --font-h3: 2.35rem;
         --font-h4: 1.7rem;
-        --font-p: 1.05rem;
+        --font-h5: 1.65rem;
+        --font-h6: 1.3rem;
+        --font-p: 1.1rem;
     }
 
     /* -- Navbar -- */
@@ -1259,6 +1439,59 @@ textarea::placeholder {
         font-size: var(--font-md);
     }
 
+    /* -- Gift -- */
+
+    .gift-content {
+        margin-top: -190px;
+    }
+
+    /* Extra lift at the top edge — it sits close to the bubble's white top here */
+    .gift-hero-img,
+    .gift-step-card {
+        box-shadow: 0 -4px 10px rgba(82, 49, 34, 0.08), 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+    }
+
+    .gift-step-number {
+        width: 60px;
+        height: 60px;
+        font-size: var(--font-lg);
+    }
+
+    .gift-step-icon-wrap {
+        width: 60px;
+        height: 60px;
+    }
+
+    .gift-step-icon {
+        width: 45px;
+        height: auto;
+    }
+
+    /* -- Gift Login -- */
+
+    .gift-promo-badge {
+        font-size: var(--font-md);
+    }
+
+    /* -- Cart -- */
+    .cart-summary {
+        position: sticky;
+        top: 6rem;
+    }
+
+    .cart-item-img {
+        width: 110px;
+    }
+
+    .checkout-item-img {
+        width: 96px;
+    }
+
+    .btn-quantity-cart {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
     /* -- Error Pages -- */
     .error-banner-wrap {
         width: auto;
@@ -1277,13 +1510,31 @@ textarea::placeholder {
 
 /* Tablet/small desktop */
 @media (min-width: 1024px) {
+
     /* -- Font scale -- */
     :root {
+        --font-xs: 0.7rem;
+        --font-sm: 0.9rem;
+        --font-md: 1.1rem;
         --font-lg: 1.45rem;
         --font-xl: 2.3rem;
+        --font-logo: 3.6rem;
         --font-h1: 4rem;
+        --font-h2: 3.25rem;
+        --font-h3: 2.7rem;
         --font-h4: 2.1rem;
+        --font-h5: 1.9rem;
+        --font-h6: 1.45rem;
         --font-p: 1.1rem;
+    }
+
+    /* -- Cart / Checkout -- */
+    .cart-item-img {
+        width: 125px;
+    }
+
+    .checkout-item-img {
+        width: 109px;
     }
 
     /* -- Home: Hero -- */
@@ -1308,7 +1559,8 @@ textarea::placeholder {
     }
 
     .bubble-text-favorites,
-    .bubble-text-collection {
+    .bubble-text-collection,
+    .bubble-text-gift {
         padding-top: 150px !important;
     }
 
@@ -1370,6 +1622,22 @@ textarea::placeholder {
         transform: scale(1.2);
     }
 
+    /* -- Gift -- */
+    .gift-content {
+        margin-top: -400px;
+    }
+
+    .gift-img-hero {
+        width: 150px;
+        top: calc(50% - 240px);
+        left: calc(50% - 450px);
+    }
+
+    .gift-heart-icon {
+        width: 160px;
+        bottom: -175px;
+    }
+
     /* -- Footer -- */
     .footer-images {
         height: 300px;
@@ -1399,6 +1667,7 @@ textarea::placeholder {
 
 /* Tweaks that only apply between 1024-1439px, don't carry over to 1440px+ */
 @media (min-width: 1024px) and (max-width: 1439.98px) {
+
     /* -- Home: Favorites -- */
     .favorites-grid,
     .collection-grid {
@@ -1419,6 +1688,7 @@ textarea::placeholder {
     .bubble-text-benefits {
         padding-top: 11rem !important;
     }
+
     /* -- Home: Lifestyle -- */
     .lifestyle-text-col .bubble-lifestyle img {
         transform: rotate(1deg) scale(1.6) translateX(clamp(25px, calc(25px + (100vw - 1024px) * 0.0966), 100px));
@@ -1427,14 +1697,32 @@ textarea::placeholder {
 
 /* Desktop */
 @media (min-width: 1440px) {
+
     /* -- Font scale -- */
     :root {
+        --font-sm: 0.9rem;
+        --font-md: 1.1rem;
         --font-lg: 1.55rem;
-        --font-xl: 1.8rem;
+        --font-xl: 2.35rem;
+        --font-logo: 3.75rem;
         --font-h1: 4.1rem;
+        --font-h2: 3.35rem;
+        --font-h3: 2.75rem;
         --font-h4: 2.15rem;
+        --font-h5: 1.95rem;
+        --font-h6: 1.55rem;
         --font-p: 1.125rem;
     }
+
+    /* -- Cart / Checkout -- */
+    .cart-item-img {
+        width: 140px;
+    }
+
+    .checkout-item-img {
+        width: 123px;
+    }
+
     /* -- Home: Hero -- */
     .hero-visual {
         height: 620px;
@@ -1506,19 +1794,47 @@ textarea::placeholder {
         transform: rotate(6deg);
     }
 
-    /* -- Product Detail -- */
+    /* -- Gift -- */
 
+    .gift-img-hero {
+        width: 190px;
+        top: calc(50% - 250px);
+        left: calc(50% - 630px);
+    }
+
+    .gift-heart-icon {
+        bottom: -190px;
+        right: -180px;
+        width: 200px;
+    }
 }
 
 /* Large desktop */
 @media (min-width: 1800px) {
+
     /* -- Font scale -- */
     :root {
+        --font-sm: 0.95rem;
+        --font-md: 1.15rem;
         --font-lg: 1.65rem;
-        --font-xl: 1.9rem;
+        --font-xl: 2.45rem;
+        --font-logo: 3.8rem;
         --font-h1: 4.2rem;
+        --font-h2: 3.45rem;
+        --font-h3: 2.85rem;
         --font-h4: 2.3rem;
+        --font-h5: 2rem;
+        --font-h6: 1.65rem;
         --font-p: 1.125rem;
+    }
+
+    /* -- Cart / Checkout -- */
+    .cart-item-img {
+        width: 150px;
+    }
+
+    .checkout-item-img {
+        width: 131px;
     }
 
     /* -- Home: Hero -- */
@@ -1538,7 +1854,8 @@ textarea::placeholder {
     }
 
     .bubble-text-favorites,
-    .bubble-text-collection {
+    .bubble-text-collection,
+    .bubble-text-gift {
         padding-top: 160px !important;
     }
 

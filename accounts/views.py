@@ -5,6 +5,7 @@ from .models import UserCustomer, Contact
 from checkout.models import Order
 from .forms import CustomerForm, GiftACanForm
 
+
 @login_required
 def profile_view(request):
     user_customers = UserCustomer.objects.filter(user=request.user).first()
