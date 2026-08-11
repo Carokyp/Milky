@@ -4,7 +4,24 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from products.models import Product
-from accounts.models import UserCustomer
+from accounts.models import Contact
+
+
+def gift_item_from_session(request):
+    """Look up the product/contact for the gift can currently held in session, if any."""
+    gift = request.session.get("gift")
+    if not gift:
+        return None
+
+    product = get_object_or_404(Product, pk=gift["product_id"])
+    contact = Contact.objects.filter(pk=gift["contact_id"]).first()
+
+    return {
+        "product": product,
+        "contact": contact,
+        "personal_message": gift.get("personal_message", ""),
+        "price": product.price,
+    }
 
 
 def cart_contents(request):
@@ -25,6 +42,11 @@ def cart_contents(request):
             "subtotal": quantity * product.price,
         })
 
+    gift_item = gift_item_from_session(request)
+    if gift_item:
+        total += gift_item["price"]
+        product_count += 1
+
     free_delivery_threshold = Decimal(str(settings.FREE_DELIVERY_THRESHOLD))
     delivery_cost = Decimal(str(settings.DELIVERY_COST))
 
@@ -42,17 +64,16 @@ def cart_contents(request):
     grand_total = (total + delivery).quantize(Decimal("0.01"))
 
     promo_discount = None
-    if request.user.is_authenticated:
-        user_customer = UserCustomer.objects.filter(user=request.user).first()
-        if user_customer and user_customer.customer.promo_discount:
-            promo_discount = user_customer.customer.promo_discount
-            discount_rate = Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) / 100
-            grand_total = (grand_total * (1 - discount_rate)).quantize(
-                Decimal("0.01")
-            )
+    if gift_item:
+        promo_discount = Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE))
+        discount_rate = promo_discount / 100
+        grand_total = (grand_total * (1 - discount_rate)).quantize(
+            Decimal("0.01")
+        )
 
     context = {
         "cart_items": cart_items,
+        "gift_item": gift_item,
         "total": total,
         "product_count": product_count,
         "remaining_for_free_delivery": remaining,

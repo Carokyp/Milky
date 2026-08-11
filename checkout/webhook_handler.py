@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from accounts.models import UserCustomer
 from .models import Order, OrderItem
 from .email_utils import build_confirmation_email_context
+from products.email_utils import build_gift_email_context
 from products.models import Product
 
 
@@ -37,6 +38,37 @@ class StripeWHHandler:
             html_message=html_body,
         )
 
+    def _send_gift_email(self, order):
+        """Send the gift-a-can email to the friend, if this order includes a gift."""
+        gift_item = OrderItem.objects.filter(
+            order=order, is_gift=True
+        ).select_related('gift_contact', 'product').first()
+        if not gift_item or not gift_item.gift_contact:
+            return
+
+        contact = gift_item.gift_contact
+        product = gift_item.product
+        subject = render_to_string(
+            'products/gift_email_subject.txt',
+            {'product': product, 'customer': order.customer}
+        )
+        body = render_to_string(
+            'products/gift_email_body.txt',
+            {
+                'product': product,
+                'customer': order.customer,
+                'contact': contact,
+                'personal_message': gift_item.gift_message,
+            },
+        )
+        html_body = render_to_string(
+            'products/gift_email_body.html',
+            build_gift_email_context(
+                self.request, product, order.customer, contact, gift_item.gift_message
+            ),
+        )
+        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [contact.email], html_message=html_body)
+
     def handle_event(self, event):
         """Handle a generic/unknown/unexpected webhook event"""
         return HttpResponse(
@@ -56,6 +88,7 @@ class StripeWHHandler:
 
         order_data = json.loads(metadata.get("order_data", "{}"))
         cart = json.loads(metadata.get("cart", "{}"))
+        gift = json.loads(metadata.get("gift", "{}"))
         user_id = metadata.get("user_id")
 
         # Get the user and customer
@@ -90,10 +123,8 @@ class StripeWHHandler:
         if order:
             order.status = 1  # Completed
             order.save()
-            if customer and customer.promo_discount:
-                customer.promo_discount = None
-                customer.save(update_fields=["promo_discount"])
             self._send_confirmation_email(order)
+            self._send_gift_email(order)
             return HttpResponse(
                 content=f'Webhook received: {event["type"]} | SUCCESS: Order already in database',
                 status=200,
@@ -157,7 +188,7 @@ class StripeWHHandler:
                 ),
                 order_total=Decimal("0.00"),
                 promo_discount_percent=(
-                    customer.promo_discount if customer and customer.promo_discount else None
+                    Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) if gift else None
                 ),
             )
 
@@ -173,9 +204,19 @@ class StripeWHHandler:
                     total_price=product.price * quantity,
                 )
 
-            if customer and customer.promo_discount:
-                customer.promo_discount = None
-                customer.save(update_fields=["promo_discount"])
+            if gift:
+                gift_product = Product.objects.get(id=gift["product_id"])
+                OrderItem.objects.create(
+                    order=order,
+                    product=gift_product,
+                    sku=gift_product.sku,
+                    unit_price=gift_product.price,
+                    quantity=1,
+                    total_price=gift_product.price,
+                    is_gift=True,
+                    gift_contact_id=gift["contact_id"],
+                    gift_message=gift.get("personal_message", ""),
+                )
 
         except Exception as e:
             if order:
@@ -185,6 +226,7 @@ class StripeWHHandler:
             )
 
         self._send_confirmation_email(order)
+        self._send_gift_email(order)
 
         return HttpResponse(
             content=f'Webhook received: {event["type"]} | Order created', status=200

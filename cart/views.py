@@ -5,6 +5,7 @@ from django.contrib import messages
 from decimal import Decimal
 from django.conf import settings
 from products.models import Product
+from .context_processors import gift_item_from_session
 
 
 def _parse_quantity(raw_quantity, default=1):
@@ -19,12 +20,19 @@ def cart_view(request):
     return render(request, "cart/cart.html")
 
 
-def _cart_totals_json(cart, product_id=None, quantity=None):
+def _cart_totals_json(request, cart, product_id=None, quantity=None):
     """Helper function to calculate cart totals, subtotal and delivery costs."""
     total = Decimal("0.00")
     for pid, qty in cart.items():
         product = get_object_or_404(Product, pk=pid)
         total += Decimal(qty) * product.price
+
+    product_count = sum(int(q) for q in cart.values())
+
+    gift_item = gift_item_from_session(request)
+    if gift_item:
+        total += gift_item["price"]
+        product_count += 1
 
     free_delivery_threshold = Decimal(str(settings.FREE_DELIVERY_THRESHOLD))
     delivery_cost = Decimal(str(settings.DELIVERY_COST))
@@ -37,8 +45,12 @@ def _cart_totals_json(cart, product_id=None, quantity=None):
         delivery = Decimal("0.00")
 
     grand_total = (total + delivery).quantize(Decimal("0.01"))
+
+    if gift_item:
+        discount_rate = Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) / 100
+        grand_total = (grand_total * (1 - discount_rate)).quantize(Decimal("0.01"))
+
     total = total.quantize(Decimal("0.01"))
-    product_count = sum(int(q) for q in cart.values())
 
     data = {
         "total": str(total),
@@ -86,7 +98,7 @@ def add_to_cart(request, product_id):
 
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return JsonResponse(
-                _cart_totals_json(cart, product_id=product_id), status=200
+                _cart_totals_json(request, cart, product_id=product_id), status=200
             )
 
         if existing >= 99:
@@ -122,7 +134,7 @@ def update_cart(request, product_id):
 
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return JsonResponse(
-                _cart_totals_json(cart, product_id=product_id, quantity=quantity),
+                _cart_totals_json(request, cart, product_id=product_id, quantity=quantity),
                 status=200,
             )
 
@@ -148,7 +160,7 @@ def remove_from_cart(request, product_id):
         request.session["cart"] = cart
 
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
-            return JsonResponse(_cart_totals_json(cart), status=200)
+            return JsonResponse(_cart_totals_json(request, cart), status=200)
 
         messages.success(request, f"{product.name} has been removed from your cart!", extra_tags="cart-remove")
         return redirect("view_cart")
@@ -157,4 +169,23 @@ def remove_from_cart(request, product_id):
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return JsonResponse({"error": str(e)}, status=500)
         messages.error(request, f"Error removing from cart: {e}")
+        return redirect("view_cart")
+
+
+def remove_gift(request):
+    """Remove the gift can from the current order, freeing up Gift a Can again."""
+    try:
+        request.session.pop("gift", None)
+        cart = request.session.get("cart", {})
+
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JsonResponse(_cart_totals_json(request, cart), status=200)
+
+        messages.success(request, "The gift can has been removed from your cart.", extra_tags="cart-remove")
+        return redirect("view_cart")
+
+    except Exception as e:
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JsonResponse({"error": str(e)}, status=500)
+        messages.error(request, f"Error removing gift: {e}")
         return redirect("view_cart")

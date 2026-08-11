@@ -1,5 +1,6 @@
 import stripe
 import json
+from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
@@ -47,6 +48,7 @@ def cache_checkout_data(request):
             "save_info": str(request.POST.get("save-info") or ""),
             "cart": json.dumps(request.session.get("cart", {})),
             "order_data": json.dumps(essential_data),
+            "gift": json.dumps(request.session.get("gift", {})),
         }
         stripe.PaymentIntent.modify(pid, metadata=metadata)
         return HttpResponse(status=200)
@@ -59,7 +61,7 @@ def cache_checkout_data(request):
 def checkout(request):
 
     cart = request.session.get("cart", {})
-    if not cart:
+    if not cart and not request.session.get("gift"):
         messages.error(request, "Your cart is empty.")
         return redirect(reverse("products"))
 
@@ -150,8 +152,9 @@ def checkout_success(request):
     pid = request.GET.get("payment_intent")
     order_data = request.session.get("order_data", {})
     cart = request.session.get("cart", {})
+    gift = request.session.get("gift")
 
-    if not order_data or not cart:
+    if not order_data or (not cart and not gift):
         messages.error(request, "Something went wrong. Please try again.")
         return redirect(reverse("checkout"))
 
@@ -216,7 +219,7 @@ def checkout_success(request):
             else order_data.get("invoice_country", "")
         ),
         promo_discount_percent=(
-            customer.promo_discount if customer and customer.promo_discount else None
+            Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) if gift else None
         ),
     )
 
@@ -241,6 +244,20 @@ def checkout_success(request):
             order.delete()
             return redirect(reverse("cart"))
 
+    if gift:
+        gift_product = get_object_or_404(Product, pk=gift["product_id"])
+        OrderItem.objects.create(
+            order=order,
+            product=gift_product,
+            sku=gift_product.sku,
+            unit_price=gift_product.price,
+            quantity=1,
+            total_price=gift_product.price,
+            is_gift=True,
+            gift_contact_id=gift["contact_id"],
+            gift_message=gift.get("personal_message", ""),
+        )
+
     # Save delivery info to profile if checkbox was ticked
     save_info = order_data.get("save_info")
     if save_info and customer:
@@ -257,13 +274,11 @@ def checkout_success(request):
     # Save last order reference for non-authenticated users
     request.session["last_order"] = order.reference_code
 
-    if customer and customer.promo_discount:
-        customer.promo_discount = None
-        customer.save(update_fields=["promo_discount"])
-
     # Clear session
-    del request.session["cart"]
+    if "cart" in request.session:
+        del request.session["cart"]
     del request.session["order_data"]
+    request.session.pop("gift", None)
 
     messages.success(
         request,

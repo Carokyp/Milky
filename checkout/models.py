@@ -123,6 +123,13 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
+    # Gift a Can — set when this line is the one can bought for a friend.
+    is_gift = models.BooleanField(default=False)
+    gift_contact = models.ForeignKey(
+        "accounts.Contact", on_delete=models.SET_NULL, null=True, blank=True
+    )
+    gift_message = models.TextField(blank=True)
+
     def save(self, *args, **kwargs):
         # If the admin or a form did not set the price, pull it from the product.
         if self.unit_price is None and getattr(self, "product_id", None):

@@ -5,10 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.template.loader import render_to_string
-from django.core.mail import send_mail
 from django.core.paginator import Paginator
-from django.conf import settings
-from decimal import Decimal
 from .models import Product
 from accounts.models import UserCustomer, Contact
 from checkout.models import Order
@@ -60,6 +57,7 @@ def gift_page_view(request):
     products = Product.objects.filter(is_available=True)
     contacts = []
     customer = None
+    gift_in_progress = request.session.get('gift')
 
     if request.user.is_authenticated:
         user_customer = UserCustomer.objects.filter(user=request.user).first()
@@ -75,8 +73,17 @@ def gift_page_view(request):
             messages.warning(request, 'Please complete your profile before gifting a can.')
             return redirect(reverse('profile'))
 
+        if gift_in_progress:
+            messages.error(request, 'You can only gift one can per order.')
+            return redirect(reverse('gift_page'))
+
         product_id = request.POST.get('product_id')
         product = get_object_or_404(Product, pk=product_id)
+
+        if not product.is_available:
+            messages.error(request, 'This product is not available.')
+            return redirect(reverse('gift_page'))
+
         personal_message = request.POST.get('personal_message', '').strip()
         existing_contact_id = request.POST.get('existing_contact')
         form = GiftACanForm(request.POST)
@@ -95,24 +102,21 @@ def gift_page_view(request):
                 'contacts': contacts,
                 'form': form,
                 'customer': customer,
+                'gift_in_progress': gift_in_progress,
             })
 
-        customer.promo_discount = Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE))
-        customer.save()
+        request.session['gift'] = {
+            'product_id': str(product.id),
+            'contact_id': contact.id,
+            'personal_message': personal_message,
+        }
 
-        subject = render_to_string('products/gift_email_subject.txt', {'product': product, 'customer': customer})
-        body = render_to_string(
-            'products/gift_email_body.txt',
-            {'product': product, 'customer': customer, 'contact': contact, 'personal_message': personal_message},
+        messages.success(
+            request,
+            f'{product.name} added to your cart for {contact.name}! You get 10% off this order at checkout.',
+            extra_tags="gift",
         )
-        html_body = render_to_string(
-            'products/gift_email_body.html',
-            build_gift_email_context(request, product, customer, contact, personal_message),
-        )
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [contact.email], html_message=html_body)
-
-        messages.success(request, 'You gifted a can! You get 10% off your next order!', extra_tags="gift")
-        return redirect(reverse('gift_page'))
+        return redirect(reverse('view_cart'))
 
     form = GiftACanForm()
     return render(request, 'products/gift_page.html', {
@@ -120,6 +124,7 @@ def gift_page_view(request):
         'contacts': contacts,
         'form': form,
         'customer': customer,
+        'gift_in_progress': gift_in_progress,
     })
 
 
