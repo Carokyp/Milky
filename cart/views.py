@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from decimal import Decimal
 from django.conf import settings
+from django.utils.html import format_html
 from products.models import Product
 from .context_processors import gift_item_from_session
 
@@ -106,7 +107,11 @@ def add_to_cart(request, product_id):
         elif new_total < existing + quantity:
             messages.warning(request, f"Requested quantity was reduced so {product.name} is capped at 99 in your cart.")
         else:
-            messages.success(request, f"{product.name} has been added to your cart!", extra_tags="cart")
+            messages.success(
+                request,
+                format_html("<strong>{}</strong> has been added to your cart!", product.name),
+                extra_tags="cart",
+            )
 
         return redirect(request.POST.get("redirect_url", "/"))
 
@@ -138,7 +143,11 @@ def update_cart(request, product_id):
                 status=200,
             )
 
-        messages.success(request, f"{product.name} has been updated in your cart!", extra_tags="cart-update")
+        messages.success(
+            request,
+            format_html("<strong>{}</strong> has been updated in your cart!", product.name),
+            extra_tags="cart-update",
+        )
         return redirect("view_cart")
 
     except Exception as e:
@@ -162,7 +171,11 @@ def remove_from_cart(request, product_id):
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return JsonResponse(_cart_totals_json(request, cart), status=200)
 
-        messages.success(request, f"{product.name} has been removed from your cart!", extra_tags="cart-remove")
+        messages.success(
+            request,
+            format_html("<strong>{}</strong> has been removed from your cart!", product.name),
+            extra_tags="cart-remove",
+        )
         return redirect("view_cart")
 
     except Exception as e:
@@ -181,7 +194,6 @@ def remove_gift(request):
         if request.headers.get("x-requested-with") == "XMLHttpRequest":
             return JsonResponse(_cart_totals_json(request, cart), status=200)
 
-        messages.success(request, "The gift can has been removed from your cart.", extra_tags="cart-remove")
         return redirect("view_cart")
 
     except Exception as e:

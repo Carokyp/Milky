@@ -9,6 +9,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.html import format_html
 from django.views.decorators.http import require_POST
 
 from accounts.models import Customer
@@ -282,7 +283,11 @@ def checkout_success(request):
 
     messages.success(
         request,
-        f"Order {order.reference_code} placed successfully! You will receive a confirmation email at {order.email} shortly.",
+        format_html(
+            'Order <strong>{}</strong> placed successfully! You will receive a confirmation '
+            'email at <strong>{}</strong> shortly.',
+            order.reference_code, order.email,
+        ),
         extra_tags="order",
     )
     return redirect(reverse("order_confirmation", args=[order.reference_code]))

@@ -965,9 +965,13 @@ dd {
 }
 
 .cart-gift-icon {
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     object-fit: contain;
+}
+
+.cart-remove-btn-sm {
+    font-size: var(--font-md);
 }
 
 .checkout-item-img {
@@ -1336,6 +1340,10 @@ textarea::placeholder {
     .cart-remove-btn {
         font-size: var(--font-md);
         padding: 0.25rem 0.4rem !important;
+    }
+
+    .cart-gift-label {
+        font-size: var(--font-xs) !important;
     }
 }
 

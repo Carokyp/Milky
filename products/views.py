@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
+from django.utils.html import format_html
 from .models import Product
 from accounts.models import UserCustomer, Contact
 from checkout.models import Order
@@ -113,7 +114,11 @@ def gift_page_view(request):
 
         messages.success(
             request,
-            f'{product.name} added to your cart for {contact.name}! You get 10% off this order at checkout.',
+            format_html(
+                '<strong>{}</strong> added to your cart for <strong>{}</strong>! '
+                'You get <strong>10% off</strong> this order at checkout.',
+                product.name, contact.name,
+            ),
             extra_tags="gift",
         )
         return redirect(reverse('view_cart'))
