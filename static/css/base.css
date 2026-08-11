@@ -137,6 +137,11 @@ p {
     font-size: var(--font-logo);
 }
 
+/* Keeps an <h1> visually sized like an h2 (e.g. account pages, where <h1> is needed for heading order but the design calls for the smaller size) */
+.text-h2 {
+    font-size: var(--font-h2);
+}
+
 .logo-font {
     font-family: var(--font-family-heading);
 }
