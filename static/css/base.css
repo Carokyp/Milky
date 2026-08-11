@@ -19,24 +19,24 @@
     /* Font families */
     --font-family-body: 'Poppins', sans-serif;
     --font-family-heading: 'Bebas Neue', sans-serif;
+    
+    /* Fluid font scale — utilities */
+    --font-xs: clamp(0.6rem, 0.575rem + 0.111vw, 0.7rem);
+    --font-sm: clamp(0.8rem, 0.763rem + 0.167vw, 0.95rem);
+    --font-md: clamp(1rem, 0.963rem + 0.167vw, 1.15rem);
+    --font-lg: clamp(1.2rem, 1.088rem + 0.5vw, 1.65rem);
+    --font-xl: clamp(1.5rem, 1.263rem + 1.056vw, 2.45rem);
+    --font-xxl: clamp(2rem, 1.775rem + 1vw, 2.9rem);
 
-    /* Font scale — utility sizes */
-    --font-xs: 0.6rem;
-    --font-sm: 0.8rem;
-    --font-md: 1rem;
-    --font-lg: 1.2rem;
-    --font-xl: 1.5rem;
-    --font-xxl: 2rem;
-
-    /* Font scale — heading sizes */
-    --font-logo: 2.5rem;
-    --font-h1: 2.75rem;
-    --font-h2: 2.25rem;
-    --font-h3: 1.85rem;
-    --font-h4: 1.5rem;
-    --font-h5: 1.3rem;
-    --font-h6: 1.15rem;
-    --font-p: 1rem;
+    /* Fluid font scale — headings */
+    --font-logo: clamp(2.5rem, 2.175rem + 1.444vw, 3.8rem);
+    --font-h1: clamp(2.75rem, 2.388rem + 1.611vw, 4.2rem);
+    --font-h2: clamp(2.25rem, 1.95rem + 1.333vw, 3.45rem);
+    --font-h3: clamp(1.85rem, 1.6rem + 1.111vw, 2.85rem);
+    --font-h4: clamp(1.5rem, 1.3rem + 0.889vw, 2.3rem);
+    --font-h5: clamp(1.3rem, 1.125rem + 0.778vw, 2rem);
+    --font-h6: clamp(1.15rem, 1.025rem + 0.556vw, 1.65rem);
+    --font-p: clamp(1rem, 0.969rem + 0.139vw, 1.125rem);
 }
 
 /* #endregion */
@@ -1369,23 +1369,6 @@ textarea::placeholder {
 /* Large mobile / tablet */
 @media (min-width: 768px) {
 
-    /* -- Font scale -- */
-    :root {
-        --font-sm: 0.85rem;
-        --font-md: 1.05rem;
-        --font-lg: 1.35rem;
-        --font-xl: 1.9rem;
-        --font-xxl: 2.9rem;
-        --font-logo: 3.2rem;
-        --font-h1: 3.5rem;
-        --font-h2: 2.85rem;
-        --font-h3: 2.35rem;
-        --font-h4: 1.7rem;
-        --font-h5: 1.65rem;
-        --font-h6: 1.3rem;
-        --font-p: 1.1rem;
-    }
-
     /* -- Navbar -- */
     .navbar-logo {
         height: 36px;
@@ -1572,23 +1555,6 @@ textarea::placeholder {
 /* Tablet/small desktop */
 @media (min-width: 1024px) {
 
-    /* -- Font scale -- */
-    :root {
-        --font-xs: 0.7rem;
-        --font-sm: 0.9rem;
-        --font-md: 1.1rem;
-        --font-lg: 1.45rem;
-        --font-xl: 2.3rem;
-        --font-logo: 3.6rem;
-        --font-h1: 4rem;
-        --font-h2: 3.25rem;
-        --font-h3: 2.7rem;
-        --font-h4: 2.1rem;
-        --font-h5: 1.9rem;
-        --font-h6: 1.45rem;
-        --font-p: 1.1rem;
-    }
-
     /* -- Cart / Checkout -- */
     .cart-item-img {
         width: 125px;
@@ -1769,22 +1735,6 @@ textarea::placeholder {
 /* Desktop */
 @media (min-width: 1440px) {
 
-    /* -- Font scale -- */
-    :root {
-        --font-sm: 0.9rem;
-        --font-md: 1.1rem;
-        --font-lg: 1.55rem;
-        --font-xl: 2.35rem;
-        --font-logo: 3.75rem;
-        --font-h1: 4.1rem;
-        --font-h2: 3.35rem;
-        --font-h3: 2.75rem;
-        --font-h4: 2.15rem;
-        --font-h5: 1.95rem;
-        --font-h6: 1.55rem;
-        --font-p: 1.125rem;
-    }
-
     /* -- Cart / Checkout -- */
     .cart-item-img {
         width: 140px;
@@ -1882,22 +1832,6 @@ textarea::placeholder {
 
 /* Large desktop */
 @media (min-width: 1800px) {
-
-    /* -- Font scale -- */
-    :root {
-        --font-sm: 0.95rem;
-        --font-md: 1.15rem;
-        --font-lg: 1.65rem;
-        --font-xl: 2.45rem;
-        --font-logo: 3.8rem;
-        --font-h1: 4.2rem;
-        --font-h2: 3.45rem;
-        --font-h3: 2.85rem;
-        --font-h4: 2.3rem;
-        --font-h5: 2rem;
-        --font-h6: 1.65rem;
-        --font-p: 1.125rem;
-    }
 
     /* -- Cart / Checkout -- */
     .cart-item-img {
