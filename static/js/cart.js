@@ -25,13 +25,10 @@ function updateDOM(data) {
     if (grandEl) grandEl.textContent = '$' + parseFloat(data.grand_total).toFixed(2);
 
     // Update delivery
-    const deliveryRow = document.querySelectorAll('.row.mt-3 .col-12.d-flex.justify-content-between')[1];
-    if (deliveryRow) {
-        const pEls = deliveryRow.querySelectorAll('p.text-muted');
-        if (pEls.length >= 2) {
-            const deliveryN = parseFloat(data.delivery) || 0;
-            pEls[1].textContent = deliveryN === 0 ? 'Free' : '$' + deliveryN.toFixed(2);
-        }
+    const deliveryValue = document.querySelector('.cart-delivery-row dd');
+    if (deliveryValue) {
+        const deliveryN = parseFloat(data.delivery) || 0;
+        deliveryValue.textContent = deliveryN === 0 ? 'Free' : '$' + deliveryN.toFixed(2);
     }
 
     // Update badge
@@ -96,7 +93,7 @@ document.querySelectorAll('.quantity-input').forEach(input => {
 });
 
 // Delete button
-document.querySelectorAll('form[action*="remove_from_cart"]').forEach(form => {
+document.querySelectorAll('form[action*="/cart/remove/"]').forEach(form => {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         fetch(form.action, {
@@ -107,7 +104,11 @@ document.querySelectorAll('form[action*="remove_from_cart"]').forEach(form => {
         })
         .then(resp => resp.json())
         .then(data => {
-            form.closest('.row').remove();
+            if (parseInt(data.product_count) === 0) {
+                window.location.reload();
+                return;
+            }
+            form.closest('.cart-item-row')?.remove();
             updateDOM(data);
         })
         .catch(err => console.error('Remove failed', err));
@@ -115,7 +116,7 @@ document.querySelectorAll('form[action*="remove_from_cart"]').forEach(form => {
 });
 
 // Prevent default submit for update forms
-document.querySelectorAll('form[action*="update_cart"]').forEach(form => {
+document.querySelectorAll('form[action*="/cart/update/"]').forEach(form => {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         sendCartUpdate(form);

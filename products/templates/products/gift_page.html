@@ -6,44 +6,56 @@
 {% block content %}
 
 <!-- Tagline in bubble -->
-<div class="bubble-text-wrapper position-relative text-center mb-4">
-    <img src="{% static 'images/bubble.png' %}" alt="" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
-    {% if user.is_authenticated %}
-    <a href="{% url 'home' %}" class="back-btn gift-bubble-back">
-        <i class="fa-solid fa-chevron-left"></i>
-    </a>
-    {% endif %}
-    <div class="d-flex flex-column align-items-center justify-content-center bubble-text-gift">
+<section class="bubble-text-wrapper bubble-favorites position-relative text-center">
+    <img src="{% static 'images/gradient-cream-background.png' %}" alt="Decorative background"
+        class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+    <img src="{% static 'images/gift-2.png' %}" alt="Decorative gift box icon"
+        class="gift-img-hero d-none d-md-block position-absolute">
+    <div class="position-absolute w-100 d-flex flex-column align-items-center bubble-text-gift p-3">
         <!-- Title -->
         <div class="text-highlight mb-4">
             <h1 class="logo-font text-uppercase mb-0">Gift a Can</h1>
         </div>
         <p class="mb-0 text-lg">Because good things are better shared.</p>
+        <p class="mb-0 mt-3 text-sm">Send a Milky can to someone you care about.
+            They'll love a sweet surprise!</p>
     </div>
-</div>
+</section>
 
-<div class="container">
+<section class="container gift-content">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6">
-
-            {% if user.is_authenticated %}
+        {% if user.is_authenticated %}
+        <!-- Gift form (logged in) -->
+        <div class="col-12 col-md-10 col-lg-8">
 
             <!-- Promo badge -->
             <div class="text-center mb-4">
                 <span class="badge rounded-pill px-3 py-2 gift-promo-badge">
-                    <i class="fa-solid fa-gift me-1"></i> Gift a can — get <strong>10% off</strong> your next order
+                    <i class="fa-solid fa-gift me-1"></i> Gift a can — get <strong>10% off</strong> this order
                 </span>
             </div>
 
+            {% if gift_in_progress %}
+            <div class="bg-white rounded-4 shadow-sm p-4 mb-3 text-center">
+                <img src="{% static 'images/gift.png' %}" alt="" class="gift-option-img mb-3">
+                <h2 class="gift-section-title mb-2">You've already added a gift for this order</h2>
+                <p class="text-muted text-sm mb-3">You can only gift one can per order. Finish this order to gift again.</p>
+                <a href="{% url 'view_cart' %}" class="btn-milky-gold btn rounded-pill px-4 py-2 text-uppercase fw-bold">
+                    Go to cart
+                </a>
+            </div>
+            {% else %}
             <form method="POST">
                 {% csrf_token %}
 
                 <!-- Product selector -->
                 <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
-                    <h4 class="mb-3">Choose a can</h4>
+                    <h2 class="gift-section-title mb-3">Choose a can</h2>
                     <input type="hidden" name="product_id" id="gift-product-id">
                     <div class="position-relative w-100">
-                        <button type="button" class="gift-product-trigger d-flex align-items-center gap-3" id="gift-product-trigger">
+                        <button type="button" class="gift-product-trigger d-flex align-items-center gap-3"
+                            id="gift-product-trigger">
+                            <!-- Empty/hidden until JS fills it in with the selected can's image -->
                             <img id="gift-trigger-img" src="" alt="" class="gift-option-img" style="display:none;">
                             <span id="gift-trigger-label" class="gift-trigger-placeholder">— Select a flavour —</span>
                             <i class="fa-solid fa-chevron-down gift-dropdown-chevron ms-auto"></i>
@@ -51,10 +63,10 @@
                         <div class="gift-product-options bg-white rounded-3" id="gift-product-options">
                             {% for product in products %}
                             <div class="gift-product-option d-flex align-items-center gap-3"
-                                data-value="{{ product.id }}"
-                                data-name="{{ product.name }}"
+                                data-value="{{ product.id }}" data-name="{{ product.name }}"
                                 data-image="{% if product.product_image %}{{ product.product_image.url }}{% elif product.can_image %}{{ product.can_image.url }}{% endif %}">
-                                <img src="{% if product.product_image %}{{ product.product_image.url }}{% elif product.can_image %}{{ product.can_image.url }}{% endif %}" alt="{{ product.name }}" class="gift-option-img">
+                                <img src="{% if product.product_image %}{{ product.product_image.url }}{% elif product.can_image %}{{ product.can_image.url }}{% endif %}"
+                                    alt="{{ product.name }}" class="gift-option-img">
                                 <span>{{ product.name }}</span>
                             </div>
                             {% endfor %}
@@ -64,18 +76,22 @@
 
                 <!-- Personal message -->
                 <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
-                    <h4 class="mb-1">Add a message <span class="text-muted fw-normal text-sm">(optional)</span></h4>
+                    <h2 class="gift-section-title mb-1">Add a message <span
+                            class="text-muted fw-normal text-sm">(optional)</span></h2>
                     <p class="text-muted text-sm mb-3">Your friend will see this in the email they receive.</p>
-                    <textarea name="personal_message" class="form-control" rows="3" placeholder="Write something nice..."></textarea>
+                    <textarea name="personal_message" class="form-control" rows="3"
+                        placeholder="Write something nice..."></textarea>
                 </div>
 
                 <!-- Friend selector -->
                 <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
-                    <h4 class="mb-3">Send to...</h4>
+                    <h2 class="gift-section-title mb-3">Send to...</h2>
 
                     {% if contacts %}
                     <div class="mb-3">
-                        <label class="fw-semibold d-block mb-1 text-sm text-uppercase gift-contact-label">Existing contact</label>
+                        <label for="existing-contact-select"
+                            class="fw-semibold d-block mb-1 text-sm text-uppercase gift-contact-label">Existing
+                            contact</label>
                         <select class="form-control" name="existing_contact" id="existing-contact-select">
                             <option value="">— New friend —</option>
                             {% for contact in contacts %}
@@ -98,134 +114,101 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold mb-2">
-                    Send Gift <i class="fa-solid fa-gift ms-2"></i>
-                </button>
+                <div class="d-grid gap-2 col-8 col-md-4 mx-auto my-4">
+                    <button type="submit"
+                        class="btn-milky-gold btn rounded-pill py-2 text-uppercase fw-bold">
+                        Send Gift <i class="fa-solid fa-gift ms-2"></i>
+                    </button>
+                </div>
                 <p class="text-sm text-center mb-5">Your friend will receive an email with the good news.</p>
             </form>
-
-            {% else %}
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="col-12 col-lg-11 col-xl-8">
 
             <!-- Promo / landing (not logged in) -->
             <div class="text-center pb-5">
 
-                <!-- Image -->
-                <img src="{% static 'images/gift-a-can.png' %}" alt="Gift a Can"
-                    class="img-fluid mb-4 rounded-4 shadow-sm">
-
-                <!-- How it works -->
-                <div class="row g-3 mb-4">
-                    <div class="col-4">
-                        <div class="bg-white rounded-4 shadow-sm p-3 h-100 text-center">
-                            <p class="gift-step-number logo-font">01</p>
-                            <p class="gift-step-label fw-semibold text-sm mb-0">Pick a can</p>
-                            <p class="text-muted text-sm mb-0">Your fav Milky flavour</p>
-                        </div>
+                <!-- Image + How it works -->
+                <div class="row g-4 mb-5 position-relative">
+                    <img src="{% static 'images/heart.png' %}" alt=""
+                        class="gift-heart-icon d-none d-md-block position-absolute">
+                    <div class="col-12 col-md-6">
+                        <img src="{% static 'images/gift-a-can.png' %}" alt="Gift a Can"
+                            class="gift-hero-img rounded-4 shadow-sm w-100 h-100">
                     </div>
-                    <div class="col-4">
-                        <div class="bg-white rounded-4 shadow-sm p-3 h-100 text-center">
-                            <p class="gift-step-number logo-font">02</p>
-                            <p class="gift-step-label fw-semibold text-sm mb-0">Add a friend</p>
-                            <p class="text-muted text-sm mb-0">Enter their details</p>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="bg-white rounded-4 shadow-sm p-3 h-100 text-center">
-                            <p class="gift-step-number logo-font">03</p>
-                            <p class="gift-step-label fw-semibold text-sm mb-0">Get 10% off</p>
-                            <p class="text-muted text-sm mb-0">On your next order</p>
-                        </div>
+                    <div class="col-12 col-md-6">
+                        <ol class="row gx-3 flex-lg-column flex-lg-nowrap h-100 gift-steps-row list-unstyled mb-0">
+                            <li class="col-4 col-md-12 flex-lg-fill">
+                                <div
+                                    class="gift-step-card bg-white rounded-4 shadow-sm p-3 h-100 text-center text-md-start d-flex flex-column flex-md-row align-items-center gap-md-3">
+                                    <div class="d-flex align-items-center gap-2 mb-3 mb-md-0">
+                                        <span
+                                            class="gift-step-number fw-bold rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 lh-1">01</span>
+                                        <span
+                                            class="gift-step-icon-wrap rounded-circle d-none d-md-flex align-items-center justify-content-center flex-shrink-0">
+                                            <img src="{% static 'images/cans.png' %}" alt="" class="gift-step-icon">
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="fw-semibold text-sm mb-2">Pick a can</p>
+                                        <p class="text-muted text-sm mb-0">Your fav Milky flavour</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="col-4 col-md-12 flex-lg-fill">
+                                <div
+                                    class="gift-step-card bg-white rounded-4 shadow-sm p-3 h-100 text-center text-md-start d-flex flex-column flex-md-row align-items-center gap-md-3">
+                                    <div class="d-flex align-items-center gap-2 mb-3 mb-md-0">
+                                        <span
+                                            class="gift-step-number fw-bold rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 lh-1">02</span>
+                                        <span
+                                            class="gift-step-icon-wrap rounded-circle d-none d-md-flex align-items-center justify-content-center flex-shrink-0">
+                                            <img src="{% static 'images/friends.png' %}" alt="" class="gift-step-icon">
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="fw-semibold text-sm mb-2">Add a friend</p>
+                                        <p class="text-muted text-sm mb-0">Enter their details</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="col-4 col-md-12 flex-lg-fill">
+                                <div
+                                    class="gift-step-card bg-white rounded-4 shadow-sm p-3 h-100 text-center text-md-start d-flex flex-column flex-md-row align-items-center gap-md-3">
+                                    <div class="d-flex align-items-center gap-2 mb-3 mb-md-0">
+                                        <span
+                                            class="gift-step-number fw-bold rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 lh-1">03</span>
+                                        <span
+                                            class="gift-step-icon-wrap rounded-circle d-none d-md-flex align-items-center justify-content-center flex-shrink-0">
+                                            <img src="{% static 'images/discount.png' %}" alt="" class="gift-step-icon">
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p class="fw-semibold text-sm mb-2">Get 10% off</p>
+                                        <p class="text-muted text-sm mb-0">On this order</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ol>
                     </div>
                 </div>
 
                 <!-- CTA -->
-                <div class="d-grid gap-2 col-8 mx-auto mt-4">
+                <div class="d-grid gap-2 col-8 col-md-4 mx-auto mt-4">
                     <a href="{% url 'account_login' %}?next={% url 'gift_page' %}"
                         class="btn-milky-gold btn rounded-pill py-2 text-uppercase fw-bold w-100">Login to gift</a>
                     <a href="{% url 'account_signup' %}"
                         class="btn-milky btn rounded-pill py-2 text-uppercase fw-bold w-100">Register</a>
                 </div>
             </div>
-
-            {% endif %}
-
         </div>
+        {% endif %}
     </div>
-</div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-(function () {
-    // --- Custom product dropdown ---
-    var trigger = document.getElementById('gift-product-trigger');
-    var optionsEl = document.getElementById('gift-product-options');
-    var hiddenInput = document.getElementById('gift-product-id');
-    var triggerImg = document.getElementById('gift-trigger-img');
-    var triggerLabel = document.getElementById('gift-trigger-label');
-
-    if (trigger && optionsEl) {
-        trigger.addEventListener('click', function () {
-            optionsEl.classList.toggle('open');
-            trigger.classList.toggle('open');
-        });
-
-        optionsEl.querySelectorAll('.gift-product-option').forEach(function (opt) {
-            opt.addEventListener('click', function () {
-                hiddenInput.value = this.dataset.value;
-                triggerLabel.textContent = this.dataset.name;
-                triggerLabel.classList.remove('gift-trigger-placeholder');
-                trigger.style.borderColor = '';
-
-                var img = this.dataset.image;
-                if (img) {
-                    triggerImg.src = img;
-                    triggerImg.style.display = '';
-                } else {
-                    triggerImg.style.display = 'none';
-                }
-
-                optionsEl.querySelectorAll('.gift-product-option').forEach(function (o) { o.classList.remove('selected'); });
-                this.classList.add('selected');
-                optionsEl.classList.remove('open');
-                trigger.classList.remove('open');
-            });
-        });
-
-        document.addEventListener('click', function (e) {
-            if (!trigger.contains(e.target) && !optionsEl.contains(e.target)) {
-                optionsEl.classList.remove('open');
-                trigger.classList.remove('open');
-            }
-        });
-    }
-
-    // --- Form submit validation ---
-    var form = document.querySelector('form[method="POST"]');
-    if (form && hiddenInput) {
-        form.addEventListener('submit', function (e) {
-            if (!hiddenInput.value) {
-                e.preventDefault();
-                trigger.style.borderColor = 'var(--danger)';
-                trigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        });
-    }
-
-    // --- Existing contact toggle ---
-    var contactSelect = document.getElementById('existing-contact-select');
-    var newFields = document.getElementById('new-contact-fields');
-
-    if (contactSelect && newFields) {
-        contactSelect.addEventListener('change', function () {
-            if (this.value) {
-                newFields.style.display = 'none';
-                newFields.querySelectorAll('input').forEach(function (i) { i.removeAttribute('required'); });
-            } else {
-                newFields.style.display = '';
-            }
-        });
-    }
-})();
-</script>
+<script src="{% static 'js/gift-page.js' %}"></script>
 {% endblock %}

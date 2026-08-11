@@ -22,56 +22,6 @@ document.querySelectorAll('.btn-quantity-detail').forEach(button => {
     });
 });
 
-function updateGiftFriendDetailsState() {
-    const contactSelect = document.getElementById('existing_contact');
-    const detailFieldIds = ['id_name', 'id_surname', 'id_email', 'id_phone_number'];
-
-    if (!contactSelect) return;
-
-    const selectedOption = contactSelect.selectedOptions[0];
-    const hasSelectedContact = Boolean(contactSelect.value);
-
-    detailFieldIds.forEach((fieldId) => {
-        const field = document.getElementById(fieldId);
-        if (!field) return;
-
-        field.disabled = hasSelectedContact;
-        field.classList.toggle('bg-light', hasSelectedContact);
-        field.classList.toggle('text-muted', hasSelectedContact);
-
-        if (!hasSelectedContact) {
-            field.value = '';
-        }
-    });
-
-    if (!selectedOption || !hasSelectedContact) {
-        return;
-    }
-
-    const fieldMappings = {
-        id_name: selectedOption.dataset.name || '',
-        id_surname: selectedOption.dataset.surname || '',
-        id_email: selectedOption.dataset.email || '',
-        id_phone_number: selectedOption.dataset.phone || '',
-    };
-
-    Object.entries(fieldMappings).forEach(([fieldId, value]) => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.value = value;
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    updateGiftFriendDetailsState();
-
-    const contactSelect = document.getElementById('existing_contact');
-    if (contactSelect) {
-        contactSelect.addEventListener('change', updateGiftFriendDetailsState);
-    }
-});
-
 // Reviews pagination without a full page reload — swaps only the reviews
 // list/pagination markup so the rest of the page never moves. Listener is
 // on the stable container (not the links themselves) so it still works
