@@ -17,6 +17,26 @@
 
     <!-- Order summary + price recap -->
     <div class="bg-white rounded-4 shadow-sm px-3 mb-3">
+        {% if gift_item %}
+        <div class="d-flex align-items-center gap-3 py-3">
+            <div class="flex-shrink-0 checkout-item-img">
+                {% if gift_item.product.product_image %}
+                <img src="{{ gift_item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
+                {% else %}
+                <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
+                {% endif %}
+            </div>
+            <div class="flex-grow-1 min-w-0">
+                <p class="logo-font text-uppercase mb-0 cart-product-name">{{ gift_item.product.name }}</p>
+                <p class="mb-0 cart-product-price">Price: ${{ gift_item.price }}</p>
+                <p class="mb-0 text-sm text-green d-flex align-items-center gap-2">
+                    <img src="{% static 'images/gift.png' %}" alt="" class="cart-gift-icon">
+                    Gift for {{ gift_item.contact.name }}
+                </p>
+            </div>
+        </div>
+        {% if cart_items %}<hr class="my-0">{% endif %}
+        {% endif %}
         {% for item in cart_items %}
         <div class="d-flex align-items-center gap-3 py-3">
             <div class="flex-shrink-0 checkout-item-img">

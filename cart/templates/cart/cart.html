@@ -32,14 +32,14 @@
                     <div class="flex-grow-1 min-w-0">
                         <p class="logo-font text-uppercase mb-0 cart-product-name">{{ gift_item.product.name }}</p>
                         <p class="mb-2 cart-product-price">${{ gift_item.price }}</p>
-                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-                            <span class="text-sm text-green d-flex align-items-center gap-2">
-                                <img src="{% static 'images/gift.png' %}" alt="" class="cart-gift-icon">
-                                Gift for {{ gift_item.contact.name }}
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                            <span class="cart-gift-label text-sm text-green d-flex align-items-center gap-1 min-w-0">
+                                <img src="{% static 'images/gift.png' %}" alt="" class="cart-gift-icon flex-shrink-0">
+                                <span class="text-truncate">Gift for {{ gift_item.contact.name }}</span>
                             </span>
-                            <form method="POST" action="{% url 'remove_gift' %}" class="ms-auto">
+                            <form method="POST" action="{% url 'remove_gift' %}" class="flex-shrink-0">
                                 {% csrf_token %}
-                                <button type="submit" class="btn cart-remove-btn">
+                                <button type="submit" class="btn cart-remove-btn cart-remove-btn-sm">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </form>
