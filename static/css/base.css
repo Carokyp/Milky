@@ -1056,7 +1056,7 @@ dd {
 
 /* Login Form */
 
-.login-image{
+.login-image {
     object-fit: cover;
 }
 
@@ -1156,13 +1156,15 @@ textarea::placeholder {
 /* #region Toast */
 
 .toast {
-    max-width: 320px;
+    width: calc(100vw - 2rem);
+    max-width: 380px;
     z-index: 9999;
     border: none;
 }
 
 .site-toast {
-    box-shadow: 0 8px 32px rgba(82, 49, 34, 0.22), 0 2px 8px rgba(82, 49, 34, 0.1);
+    box-shadow: 0 8px 32px rgba(82, 49, 34, 0.22),
+        0 2px 8px rgba(82, 49, 34, 0.1);
 }
 
 .site-toast-header {
@@ -1192,9 +1194,26 @@ textarea::placeholder {
 }
 
 .bag-preview-wrapper {
-    max-height: 280px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    max-height: none;
+    overflow: visible;
+}
+
+.mini-cart-products,
+.mini-cart-totals,
+.mini-cart-delivery-banner {
+    display: none;
+}
+
+.mini-cart-view-cart {
+    display: inline-block;
+}
+
+.mini-cart-checkout {
+    display: none;
+}
+
+.mini-cart-title {
+    margin-bottom: 0 !important;
 }
 
 /* #endregion */
@@ -1500,6 +1519,40 @@ textarea::placeholder {
         padding-right: 0.5rem !important;
     }
 
+    /* -- Mini Cart -- */
+
+    .toast {
+        width: 360px;
+        max-width: 360px;
+    }
+
+    .bag-preview-wrapper {
+        max-height: 320px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .mini-cart-products,
+    .mini-cart-totals {
+        display: block;
+    }
+
+    .mini-cart-delivery-banner {
+        display: none !important;
+    }
+
+    .mini-cart-view-cart {
+        display: none;
+    }
+
+    .mini-cart-checkout {
+        display: inline-block;
+    }
+
+    .mini-cart-title {
+        margin-bottom: 1rem !important;
+    }
+
     /* -- Error Pages -- */
     .error-banner-wrap {
         width: auto;
@@ -1644,6 +1697,16 @@ textarea::placeholder {
     .gift-heart-icon {
         width: 160px;
         bottom: -175px;
+    }
+
+    /* -- Mini Cart -- */
+    .toast {
+        width: 320px;
+        max-width: 320px;
+    }
+
+    .mini-cart-delivery-banner {
+        display: flex !important;
     }
 
     /* -- Footer -- */

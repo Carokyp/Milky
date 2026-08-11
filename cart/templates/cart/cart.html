@@ -79,7 +79,6 @@
                                     </button>
                                 </div>
                             </form>
-                            <!-- ms-auto keeps the button right-aligned even if it wraps onto its own line on narrow screens -->
                             <form method="POST" action="{% url 'remove_from_cart' item.product_id %}" class="ms-auto">
                                 {% csrf_token %}
                                 <button type="submit" class="btn cart-remove-btn">
@@ -123,8 +122,7 @@
                     </div>
                     {% endif %}
                 </dl>
-                <!-- Grand Total is a separate dl: a dl's content model only allows dt/dd
-                     (optionally grouped in div), so the divider hr can't live inside one -->
+                <!-- Grand Total -->
                 <hr class="my-3">
                 <dl class="mb-4">
                     <div class="d-flex justify-content-between">
