@@ -12,158 +12,169 @@
         <h1 class="text-uppercase mb-0">Checkout</h1>
     </div>
 
-    <!-- Order summary + price recap -->
-    <div class="bg-white rounded-4 shadow-sm px-3 mb-3">
-        {% if gift_item %}
-        <div class="d-flex align-items-center gap-3 py-3">
-            <div class="flex-shrink-0 checkout-item-img">
-                {% if gift_item.product.product_image %}
-                <img src="{{ gift_item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
-                {% else %}
-                <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
-                {% endif %}
-            </div>
-            <div class="flex-grow-1 min-w-0">
-                <p class="logo-font text-uppercase mb-0 cart-product-name">{{ gift_item.product.name }}</p>
-                <p class="mb-0 cart-product-price">Price: ${{ gift_item.price }}</p>
-                <p class="mb-0 text-sm text-green d-flex align-items-center gap-2">
-                    <img src="{% static 'images/gift.png' %}" alt="" class="cart-gift-icon">
-                    Gift for {{ gift_item.contact.name }}
-                </p>
-            </div>
-        </div>
-        {% if cart_items %}<hr class="my-0">{% endif %}
-        {% endif %}
-        {% for item in cart_items %}
-        <div class="d-flex align-items-center gap-3 py-3">
-            <div class="flex-shrink-0 checkout-item-img">
-                {% if item.product.product_image %}
-                <img src="{{ item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
-                {% else %}
-                <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
-                {% endif %}
-            </div>
-            <div class="flex-grow-1 min-w-0">
-                <p class="logo-font text-uppercase mb-0 cart-product-name">{{ item.product.name }}</p>
-                <p class="mb-0 cart-product-price">Qty: {{ item.quantity }}</p>
-                <p class="mb-0 cart-product-price">Price: ${{ item.subtotal }}</p>
-            </div>
-        </div>
-        {% if not forloop.last %}<hr class="my-0">{% endif %}
-        {% endfor %}
-
-        <!-- Price recap -->
-        <div class="pt-4 pb-3">
-            {% if promo_discount %}
-            <div class="d-flex align-items-center justify-content-center gap-2 mb-3 text-success text-sm">
-                <i class="fa-solid fa-tag"></i>
-                <span>Gift reward — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied.</span>
-            </div>
-            {% endif %}
-            <div class="d-flex justify-content-between mb-2 text-sm">
-                <p class="mb-0">Subtotal</p>
-                <p class="mb-0">${{ total }}</p>
-            </div>
-            <div class="d-flex justify-content-between mb-2 text-sm">
-                <p class="mb-0 text-light-brown">Delivery</p>
-                <p class="mb-0 text-light-brown">{% if delivery == 0 %}Free{% else %}${{ delivery }}{% endif %}</p>
-            </div>
-            {% if promo_discount %}
-            <div class="d-flex justify-content-between mb-2 text-success text-sm">
-                <p class="mb-0">Gift discount</p>
-                <p class="mb-0">-{{ promo_discount|floatformat:0 }}%</p>
-            </div>
-            {% endif %}
-            <hr class="my-3">
-            <div class="d-flex justify-content-between">
-                <p class="fw-bold mb-0">Grand Total</p>
-                <p class="fw-bold mb-0">${{ grand_total|floatformat:2 }}</p>
-            </div>
-        </div>
-    </div>
-
     <!-- Form -->
     <form action="{% url 'checkout' %}" method="POST" id="payment-form"
         data-checkout-url="{% url 'checkout' %}"
         data-cache-url="{% url 'cache_checkout_data' %}">
         {% csrf_token %}
 
-        <!-- Details -->
-        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
-            <h4 class="mb-3">Details</h4>
-            {{ form.delivery_name|as_crispy_field }}
-            {{ form.delivery_surname|as_crispy_field }}
+        <div class="row g-3 g-lg-4">
 
-            {% if not user.is_authenticated %}
-                {{ form.email|as_crispy_field }}
-            {% endif %}
-        </div>
+            <!-- Details / Delivery / Invoice / Payment -->
+            <div class="col-12 col-md-8">
 
-        <!-- Delivery -->
-        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
-            <h4 class="mb-3">Delivery</h4>
-            {{ form.delivery_phone|as_crispy_field }}
-            {{ form.delivery_address|as_crispy_field }}
-            {{ form.delivery_city|as_crispy_field }}
-            {{ form.delivery_county|as_crispy_field }}
-            {{ form.delivery_postcode|as_crispy_field }}
-            {{ form.delivery_country|as_crispy_field }}
-            <div class="mt-4">
-                {% if user.is_authenticated %}
-                <div class="d-flex align-items-center justify-content-center gap-2">
-                    <input class="form-check-input m-0 flex-shrink-0" type="checkbox" id="id-save-info" name="save-info" checked>
-                    <label class="text-sm mb-0" for="id-save-info">Save this delivery info to my profile</label>
+                <!-- Details -->
+                <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+                    <h4 class="mb-3">Details</h4>
+                    {{ form.delivery_name|as_crispy_field }}
+                    {{ form.delivery_surname|as_crispy_field }}
+
+                    {% if not user.is_authenticated %}
+                        {{ form.email|as_crispy_field }}
+                    {% endif %}
                 </div>
-                {% else %}
-                <div class="text-center text-sm">
-                    <a class="links" href="{% url 'account_signup' %}">Create an account</a> or
-                    <a class="links" href="{% url 'account_login' %}">login</a> to save this information
+
+                <!-- Delivery -->
+                <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+                    <h4 class="mb-3">Delivery</h4>
+                    {{ form.delivery_phone|as_crispy_field }}
+                    {{ form.delivery_address|as_crispy_field }}
+                    {{ form.delivery_city|as_crispy_field }}
+                    {{ form.delivery_county|as_crispy_field }}
+                    {{ form.delivery_postcode|as_crispy_field }}
+                    {{ form.delivery_country|as_crispy_field }}
+                    <div class="mt-4">
+                        {% if user.is_authenticated %}
+                        <div class="d-flex align-items-center justify-content-center gap-2">
+                            <input class="form-check-input m-0 flex-shrink-0" type="checkbox" id="id-save-info" name="save-info" checked>
+                            <label class="text-sm mb-0" for="id-save-info">Save this delivery info to my profile</label>
+                        </div>
+                        {% else %}
+                        <div class="text-center text-sm">
+                            <a class="links" href="{% url 'account_signup' %}">Create an account</a> or
+                            <a class="links" href="{% url 'account_login' %}">login</a> to save this information
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
-                {% endif %}
-            </div>
-        </div>
 
-        <!-- Invoice -->
-        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
-            <h4 class="mb-3">Invoice</h4>
-            <div class="form-check mb-3">
-                <input class="form-check-input" type="checkbox" id="same-as-delivery" name="same-as-delivery" checked>
-                <label class="form-check-label text-sm" for="same-as-delivery">Same as delivery address</label>
-            </div>
-            <div id="invoice-fields" style="display: none;">
-                {{ form.invoice_name|as_crispy_field }}
-                {{ form.invoice_surname|as_crispy_field }}
-                {{ form.invoice_phone|as_crispy_field }}
-                {{ form.invoice_address|as_crispy_field }}
-                {{ form.invoice_city|as_crispy_field }}
-                {{ form.invoice_county|as_crispy_field }}
-                {{ form.invoice_postcode|as_crispy_field }}
-                {{ form.invoice_country|as_crispy_field }}
-            </div>
-        </div>
+                <!-- Invoice -->
+                <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+                    <h4 class="mb-3">Invoice</h4>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="same-as-delivery" name="same-as-delivery" checked>
+                        <label class="form-check-label text-sm" for="same-as-delivery">Same as delivery address</label>
+                    </div>
+                    <div id="invoice-fields" style="display: none;">
+                        {{ form.invoice_name|as_crispy_field }}
+                        {{ form.invoice_surname|as_crispy_field }}
+                        {{ form.invoice_phone|as_crispy_field }}
+                        {{ form.invoice_address|as_crispy_field }}
+                        {{ form.invoice_city|as_crispy_field }}
+                        {{ form.invoice_county|as_crispy_field }}
+                        {{ form.invoice_postcode|as_crispy_field }}
+                        {{ form.invoice_country|as_crispy_field }}
+                    </div>
+                </div>
 
-        <!-- Payment -->
-        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
-            <h4 class="mb-3">Payment</h4>
-            <div id="payment-element"></div>
-            <p id="payment-status" class="text-sm text-danger text-center mt-2 mb-0">
-                Payment form not ready. Please wait a moment.
-            </p>
-            <div class="mb-0 text-danger" id="card-errors" role="alert"></div>
-            <p class="text-sm text-danger text-center mt-3 mb-0">
-                <i class="fas fa-exclamation-circle me-1"></i>
-                Your card will be charged <strong>${{ grand_total|floatformat:2 }}</strong>
-            </p>
-        </div>
+                <!-- Payment -->
+                <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+                    <h4 class="mb-3">Payment</h4>
+                    <div id="payment-element"></div>
+                    <p id="payment-status" class="text-sm text-danger text-center mt-2 mb-0">
+                        Payment form not ready. Please wait a moment.
+                    </p>
+                    <div class="mb-0 text-danger" id="card-errors" role="alert"></div>
+                    <p class="text-sm text-danger text-center mt-3 mb-0">
+                        <i class="fas fa-exclamation-circle me-1"></i>
+                        Your card will be charged <strong>${{ grand_total|floatformat:2 }}</strong>
+                    </p>
+                </div>
 
-        <!-- Actions -->
-        <div class="d-flex flex-column gap-2 mb-5">
-            <button id="submit-button" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold" disabled>
-                <span>Complete Order</span>
-            </button>
-            <a href="{% url 'view_cart' %}" class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center">
-                Adjust Cart
-            </a>
+            </div>
+
+            <!-- Order summary + price recap -->
+            <div class="col-12 col-md-4">
+                <div class="bg-white rounded-4 shadow-sm px-3 checkout-summary">
+                    {% if gift_item %}
+                    <div class="d-flex align-items-center gap-3 py-3">
+                        <div class="flex-shrink-0 checkout-item-img">
+                            {% if gift_item.product.product_image %}
+                            <img src="{{ gift_item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
+                            {% else %}
+                            <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <p class="logo-font text-uppercase mb-0 cart-product-name">{{ gift_item.product.name }}</p>
+                            <p class="mb-0 cart-product-price">Price: ${{ gift_item.price }}</p>
+                            <p class="mb-0 text-sm text-green d-flex align-items-center gap-2">
+                                <img src="{% static 'images/gift.png' %}" alt="" class="cart-gift-icon">
+                                Gift for {{ gift_item.contact.name }}
+                            </p>
+                        </div>
+                    </div>
+                    {% if cart_items %}<hr class="my-0">{% endif %}
+                    {% endif %}
+                    {% for item in cart_items %}
+                    <div class="d-flex align-items-center gap-3 py-3">
+                        <div class="flex-shrink-0 checkout-item-img">
+                            {% if item.product.product_image %}
+                            <img src="{{ item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                            {% else %}
+                            <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1 min-w-0">
+                            <p class="logo-font text-uppercase mb-0 cart-product-name">{{ item.product.name }}</p>
+                            <p class="mb-0 cart-product-price">Qty: {{ item.quantity }}</p>
+                            <p class="mb-0 cart-product-price">Price: ${{ item.subtotal }}</p>
+                        </div>
+                    </div>
+                    {% if not forloop.last %}<hr class="my-0">{% endif %}
+                    {% endfor %}
+
+                    <!-- Price recap -->
+                    <div class="pt-4 pb-3">
+                        {% if promo_discount %}
+                        <div class="d-flex align-items-center justify-content-center gap-2 mb-3 text-success text-sm">
+                            <i class="fa-solid fa-tag"></i>
+                            <span>Gift reward — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied.</span>
+                        </div>
+                        {% endif %}
+                        <div class="d-flex justify-content-between mb-2 text-sm">
+                            <p class="mb-0">Subtotal</p>
+                            <p class="mb-0">${{ total }}</p>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 text-sm">
+                            <p class="mb-0 text-light-brown">Delivery</p>
+                            <p class="mb-0 text-light-brown">{% if delivery == 0 %}Free{% else %}${{ delivery }}{% endif %}</p>
+                        </div>
+                        {% if promo_discount %}
+                        <div class="d-flex justify-content-between mb-2 text-success text-sm">
+                            <p class="mb-0">Gift discount</p>
+                            <p class="mb-0">-{{ promo_discount|floatformat:0 }}%</p>
+                        </div>
+                        {% endif %}
+                        <hr class="my-3">
+                        <div class="d-flex justify-content-between mb-4">
+                            <p class="fw-bold mb-0">Grand Total</p>
+                            <p class="fw-bold mb-0">${{ grand_total|floatformat:2 }}</p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex flex-column gap-2">
+                            <button id="submit-button" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold" disabled>
+                                <span>Complete Order</span>
+                            </button>
+                            <a href="{% url 'view_cart' %}" class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center">
+                                Adjust Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </form>

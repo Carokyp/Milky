@@ -1499,6 +1499,11 @@ textarea::placeholder {
         width: 96px;
     }
 
+    .checkout-summary {
+        position: sticky;
+        top: 6rem;
+    }
+
     .btn-quantity-cart {
         padding-left: 0.5rem !important;
         padding-right: 0.5rem !important;
