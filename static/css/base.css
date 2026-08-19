@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
-/* #region Design */
+/* #region DESIGN TOKENS */
 
 :root {
     --site-max-width: 1800px;
@@ -19,7 +19,7 @@
     /* Font families */
     --font-family-body: 'Poppins', sans-serif;
     --font-family-heading: 'Bebas Neue', sans-serif;
-    
+
     /* Fluid font scale — utilities */
     --font-xs: clamp(0.6rem, 0.575rem + 0.111vw, 0.7rem);
     --font-sm: clamp(0.8rem, 0.763rem + 0.167vw, 0.95rem);
@@ -41,7 +41,7 @@
 
 /* #endregion */
 
-/* #region Base */
+/* #region RESET / BASE */
 
 html {
     overflow-x: hidden;
@@ -64,14 +64,15 @@ main {
 
 /* #endregion */
 
-/* #region Typography */
+/* #region TYPOGRAPHY */
 
 h1,
 h2,
 h3,
 h4,
 h5,
-h6 {
+h6,
+legend {
     font-family: var(--font-family-heading);
 }
 
@@ -90,9 +91,18 @@ h3 {
     color: var(--brown);
 }
 
-h4 {
+h4,
+legend {
     font-size: var(--font-h4);
     color: var(--brown);
+}
+
+/* Bootstrap's reboot floats/bolds legend and adds its own bottom margin — match the h4 look it replaces in the checkout form groups */
+legend {
+    float: none;
+    margin: 0;
+    font-weight: 400;
+    line-height: inherit;
 }
 
 h5 {
@@ -137,9 +147,12 @@ p {
     font-size: var(--font-logo);
 }
 
-/* Keeps an <h1> visually sized like an h2 (e.g. account pages, where <h1> is needed for heading order but the design calls for the smaller size) */
 .text-h2 {
     font-size: var(--font-h2);
+}
+
+.text-h3 {
+    font-size: var(--font-h3);
 }
 
 .logo-font {
@@ -161,15 +174,16 @@ p {
 
 /* #endregion */
 
-/* #region Utilities */
-
-/* Bootstrap overrides */
-.bg-white {
-    background-color: var(--card-background) !important;
-}
+/* #region GENERIC UTILITIES */
 
 hr {
     color: var(--light-brown);
+}
+
+.divider {
+    height: 1px;
+    background-color: currentcolor;
+    opacity: .25;
 }
 
 dt {
@@ -195,6 +209,21 @@ dd {
 }
 
 /* #endregion */
+
+/* #region BOOTSTRAP OVERRIDES */
+
+.bg-white {
+    background-color: var(--card-background) !important;
+}
+
+/* Not an actual Bootstrap utility needed so flex children can shrink below their content's natural width */
+.min-w-0 {
+    min-width: 0;
+}
+
+/* #endregion */
+
+/* #region LAYOUT */
 
 /* #region Navbar */
 
@@ -257,210 +286,95 @@ dd {
 
 /* #endregion */
 
-/* #region Home Page */
+/* #region Footer */
 
-/* -- Hero -- */
-
-/* 3D Can */
-.hero-visual {
-    height: 300px;
-    /* Overrides the parent .hero-section's px-3 so the background bleeds to the edges. */
-    width: calc(100% + 2rem);
-    margin-left: -1rem;
-    margin-right: -1rem;
+.footer-background {
+    background-color: var(--footer-background);
 }
 
-.hero-brand-name {
-    width: 95%;
-    max-width: 600px;
+/* Cream wave — compound selector so this wins over .hero-wave-bottom's own `bottom`
+   regardless of source order, since both classes sit on the same element in base.html */
+.hero-wave-bottom.lifestyle-wave-bottom {
+    bottom: -60px;
 }
 
-#can-viewer {
-    background: radial-gradient(circle 160px at center, rgba(251, 215, 138, 0.55), rgba(251, 203, 98, 0) 100%);
+.footer-images {
+    height: 200px;
 }
 
-/* Filter applied directly to the rendered canvas */
-#can-viewer canvas {
-    filter: brightness(1.15) contrast(1.05) saturate(1.15);
+.footer-img {
+    width: 140px;
+    padding: 0.3rem 0.3rem 2rem;
 }
 
-/* Cream wave */
-.hero-wave-bottom {
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    width: 100%;
-    height: 70px;
-    pointer-events: none;
+.footer-img-left {
+    top: 30px;
+    left: calc(50% - 120px);
+    transform: rotate(-10deg);
 }
 
-.hero-wave-bottom svg {
-    display: block;
-    width: 100%;
-    height: 100%;
+.footer-img-right {
+    top: 90px;
+    left: calc(50% - 20px);
+    transform: rotate(8deg);
 }
 
-.hero-wave-bottom path {
-    fill: var(--light-cream);
+.footer-comma-image {
+    top: 4.5rem;
+    left: calc(50% + 120px);
+    width: 30px;
 }
 
-/* Bubble with text inside -- */
-
-/* Full-bleed ignores ancestor padding */
-.bubble-text-wrapper {
-    min-height: 400px;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-}
-
-.bubble-text {
-    padding-top: 2.5rem;
-}
-
-/* -- Our Favorites -- */
-
-/* Our Favorites background */
-.bubble-text-wrapper.bubble-favorites {
-    max-width: 1800px;
-    min-height: 500px;
-    width: 100%;
-}
-
-.favorites-grid,
-.collection-grid {
-    position: relative;
-    z-index: 1;
-    margin-top: -220px;
-}
-
-/* Shared bubble text sizing for Favorites, Benefits, Collection & Gift */
-.bubble-text-favorites,
-.bubble-text-benefits,
-.bubble-text-collection,
-.bubble-text-gift {
-    height: auto !important;
-    justify-content: flex-start !important;
-    padding-top: 85px !important;
-}
-
-/* -- Benefits -- */
-
-/* Section background */
-.section-yellow {
-    background-color: #fade9a;
-}
-
-.bubble-benefits {
-    max-width: 1800px;
-    min-height: 350px;
-    width: 100%;
-    transform: translateY(-55px);
-    margin-top: 8rem;
-}
-
-.benefits-stats {
-    max-width: 800px;
-}
-
-.comma-icon {
-    width: 24px;
-    height: auto;
-}
-
-.comma-left {
-    transform: scaleX(-1);
-}
-
-.comma-right {
-    transform: scaleX(1);
-}
-
-.home-arrow {
-    top: 2rem;
+.footer-arrow {
+    top: 15rem;
     left: calc(50% + 70px);
     width: 50px;
     height: 50px;
-    transform: rotate(70deg);
+    transform: rotate(80deg);
     pointer-events: none;
 }
 
-.benefits-label,
-.benefits-value {
-    font-size: var(--font-md);
+.decorative-font,
+.good-stuff-text {
+    font-family: "Patrick Hand", cursive;
+    font-weight: 400;
 }
 
-.benefits-value {
-    font-family: var(--font-family-heading);
+.footer-social-icon {
+    width: 44px;
+    height: 44px;
+    background-color: white;
+    color: var(--brown);
+    font-size: var(--font-lg);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
-.benefits-stat-divider {
-    border-left: 1px solid var(--brown);
-    border-right: 1px solid var(--brown);
+.footer-social-icon:hover {
+    background-color: var(--brown);
+    color: white;
+    transform: translateY(-3px);
 }
 
-/* -- Lifestyle -- */
-
-/* Lifestyle bubble */
-.lifestyle-text-col .bubble-text-wrapper {
-    min-height: 480px;
+.footer-comma {
+    margin-top: -2rem;
+    width: 25px;
+    height: 25px;
 }
 
-.lifestyle-photo-frame {
-    position: relative;
-    aspect-ratio: 1 / 1;
-    max-width: 500px;
-    z-index: 10;
-    margin-top: -90px;
-    margin-left: auto;
-    margin-right: auto;
-    transform: rotate(6deg);
+.footer-comma.comma-left {
+    margin-right: -1.5rem;
 }
 
-.lifestyle-photo {
-    position: absolute;
-    inset: 0;
-    height: 100%;
-    border-radius: 1.5rem;
-    border: 10px solid white;
-    box-shadow: 0 8px 24px rgba(82, 49, 34, 0.18);
+.footer-comma.comma-right {
+    margin-left: -1.5rem;
 }
 
 /* #endregion */
 
-/* #region Dropdown */
-
-.dropdown-menu {
-    background-color: var(--light-cream);
-    border: 1px solid rgba(91, 42, 14, 0.312);
-    border-radius: 1rem;
-    padding: 0.5rem;
-    box-shadow: 0 8px 24px rgba(82, 49, 34, 0.12);
-    min-width: 160px;
-}
-
-.dropdown-menu-end[data-bs-popper] {
-    right: -45px;
-    left: auto;
-}
-
-.dropdown-item {
-    color: var(--brown);
-    font-family: var(--font-family-body);
-    font-size: var(--font-p);
-    font-weight: 500;
-    border-radius: 1rem;
-    padding: 0.5rem 1rem;
-    transition: background-color 0.2s ease;
-}
-
-.dropdown-item:hover,
-.dropdown-item:focus {
-    background-color: var(--gold);
-    color: var(--brown);
-}
-
 /* #endregion */
+
+/* #region SHARED COMPONENTS */
 
 /* #region Buttons */
 
@@ -479,7 +393,14 @@ dd {
     border: none;
 }
 
-.btn-milky:focus,
+.btn-milky:focus {
+    background-color: var(--brown) !important;
+    color: white !important;
+    border: none !important;
+    outline: 2px solid var(--light-brown);
+    outline-offset: 2px;
+}
+
 .btn-milky:active,
 .btn-milky:disabled {
     background-color: var(--brown) !important;
@@ -682,7 +603,412 @@ dd {
 
 /* #endregion */
 
-/* #region Product Card */
+/* #region Dropdowns */
+
+.dropdown-menu {
+    background-color: var(--light-cream);
+    border: 1px solid rgba(91, 42, 14, 0.312);
+    border-radius: 1rem;
+    padding: 0.5rem;
+    box-shadow: 0 8px 24px rgba(82, 49, 34, 0.12);
+    min-width: 160px;
+}
+
+.dropdown-menu-end[data-bs-popper] {
+    right: -45px;
+    left: auto;
+}
+
+.dropdown-item {
+    color: var(--brown);
+    font-family: var(--font-family-body);
+    font-size: var(--font-p);
+    font-weight: 500;
+    border-radius: 1rem;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: var(--gold);
+    color: var(--brown);
+}
+
+/* #endregion */
+
+/* #region Forms */
+
+/* Generic form styling shared across pages */
+.form-text {
+    font-size: var(--font-sm);
+}
+
+select:invalid,
+select option[value=""] {
+    color: var(--placeholder-color) !important;
+}
+
+select:has(option[value=""]:checked) {
+    color: var(--placeholder-color) !important;
+}
+
+#id_country option:not(:first-child) {
+    color: black;
+}
+
+#id_country option:first-child {
+    color: var(--placeholder-color);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--placeholder-color) !important;
+    opacity: 1;
+}
+
+.county-field,
+.county-field::placeholder {
+    color: var(--placeholder-color) !important;
+    opacity: 1;
+}
+
+#payment-form .form-control,
+#card-element,
+#profile-form .form-control,
+#profile-form select {
+    color: black;
+    border: 1px solid black;
+}
+
+/* Add and Edit Product form */
+
+.product-form .form-label {
+    color: var(--bs-secondary-color);
+    font-size: var(--font-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.widget-preview-img {
+    width: 100%;
+    max-width: 150px;
+    object-fit: contain;
+    background-color: transparent;
+}
+
+.image-field-row {
+    background: #f9f4f0;
+    border: 1px solid rgba(82, 49, 34, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.change-image-btn {
+    max-width: 240px;
+}
+
+/* Below 376px: full-width button under the whole image row.
+   From 376px up: compact centered button inside the text column, under "Remove Image". */
+.change-image-btn-full {
+    display: none;
+}
+
+.change-image-btn-compact {
+    display: none;
+}
+
+/* Reserves room for 2 lines (line-height 1.5) so the hr/image/button below line up across the 3 side-by-side cards */
+.widget-visual-desc {
+    min-height: 3em;
+}
+
+/* #endregion */
+
+/* #region Modals */
+
+.modal-content {
+    background-color: var(--card-background);
+}
+
+/* #endregion */
+
+/* #region Toasts */
+
+.toast-wrapper {
+    max-width: var(--site-max-width);
+}
+
+.toast {
+    width: calc(100vw - 2rem);
+    max-width: 380px;
+    z-index: 9999;
+    border: none;
+}
+
+.site-toast {
+    box-shadow: 0 8px 32px rgba(82, 49, 34, 0.22),
+        0 2px 8px rgba(82, 49, 34, 0.1);
+}
+
+.site-toast-header {
+    background-color: var(--brown);
+    color: white;
+}
+
+.site-toast-header--error {
+    background-color: var(--danger);
+}
+
+.site-toast-header--warning {
+    background-color: var(--gold);
+    color: var(--brown);
+}
+
+.site-toast-header--info {
+    background-color: var(--light-brown);
+}
+
+.site-toast-body {
+    background-color: var(--light-cream);
+}
+
+.site-toast-body hr {
+    border-color: var(--light-brown) !important;
+}
+
+.bag-preview-wrapper {
+    max-height: none;
+    overflow: visible;
+}
+
+.mini-cart-products,
+.mini-cart-totals,
+.mini-cart-delivery-banner {
+    display: none;
+}
+
+.mini-cart-view-cart {
+    display: inline-block;
+}
+
+.mini-cart-checkout {
+    display: none;
+}
+
+.mini-cart-title {
+    margin-bottom: 0 !important;
+}
+
+/* #endregion */
+
+/* #region Tables */
+
+.table {
+    --bs-table-bg: var(--card-background);
+    --bs-table-border-color: rgba(82, 49, 34, 0.2);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.table-group-divider {
+    border-top: none;
+}
+
+.table thead th {
+    background-color: var(--light-brown);
+    color: var(--light-cream);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-xl);
+    border: none;
+    padding: 0.75rem 1rem;
+}
+
+.table td {
+    padding: 0.85rem 1rem;
+    color: var(--brown);
+    font-size: var(--font-p);
+}
+
+/* #endregion */
+
+/* #endregion */
+
+/* #region PAGES COMPONENTS */
+
+/* #region Home */
+
+/* -- Hero -- */
+
+/* 3D Can */
+.hero-visual {
+    height: 300px;
+    /* Overrides the parent .hero-section's px-3 so the background bleeds to the edges. */
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-right: -1rem;
+}
+
+.hero-brand-name {
+    width: 95%;
+    max-width: 600px;
+}
+
+#can-viewer {
+    background: radial-gradient(circle 160px at center, rgba(251, 215, 138, 0.55), rgba(251, 203, 98, 0) 100%);
+}
+
+/* Filter applied directly to the rendered canvas */
+#can-viewer canvas {
+    filter: brightness(1.15) contrast(1.05) saturate(1.15);
+}
+
+/* Cream wave */
+.hero-wave-bottom {
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    pointer-events: none;
+}
+
+.hero-wave-bottom svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-wave-bottom path {
+    fill: var(--light-cream);
+}
+
+/* Bubble with text inside -- */
+
+/* Full-bleed ignores ancestor padding */
+.bubble-text-wrapper {
+    min-height: 400px;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+}
+
+.bubble-text {
+    padding-top: 2.5rem;
+}
+
+/* -- Our Favorites -- */
+
+/* Our Favorites background */
+.bubble-text-wrapper.bubble-favorites {
+    max-width: 1800px;
+    min-height: 500px;
+    width: 100%;
+}
+
+.favorites-grid,
+.collection-grid {
+    position: relative;
+    z-index: 1;
+    margin-top: -220px;
+}
+
+/* Shared bubble text sizing for Favorites, Benefits, Collection & Gift */
+.bubble-text-favorites,
+.bubble-text-benefits,
+.bubble-text-collection,
+.bubble-text-gift {
+    height: auto !important;
+    justify-content: flex-start !important;
+    padding-top: 85px !important;
+}
+
+/* -- Benefits -- */
+
+/* Section background */
+.section-yellow {
+    background-color: #fade9a;
+}
+
+.bubble-benefits {
+    max-width: 1800px;
+    min-height: 350px;
+    width: 100%;
+    transform: translateY(-55px);
+    margin-top: 8rem;
+}
+
+.benefits-stats {
+    max-width: 800px;
+}
+
+.comma-icon {
+    width: 24px;
+    height: auto;
+}
+
+.comma-left {
+    transform: scaleX(-1);
+}
+
+.comma-right {
+    transform: scaleX(1);
+}
+
+.home-arrow {
+    top: 2rem;
+    left: calc(50% + 70px);
+    width: 50px;
+    height: 50px;
+    transform: rotate(70deg);
+    pointer-events: none;
+}
+
+.benefits-label,
+.benefits-value {
+    font-size: var(--font-md);
+}
+
+.benefits-value {
+    font-family: var(--font-family-heading);
+}
+
+.benefits-stat-divider {
+    border-left: 1px solid var(--brown);
+    border-right: 1px solid var(--brown);
+}
+
+/* -- Lifestyle -- */
+
+/* Lifestyle bubble */
+.lifestyle-text-col .bubble-text-wrapper {
+    min-height: 480px;
+}
+
+.lifestyle-photo-frame {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 500px;
+    z-index: 10;
+    margin-top: -90px;
+    margin-left: auto;
+    margin-right: auto;
+    transform: rotate(6deg);
+}
+
+.lifestyle-photo {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    border-radius: 1.5rem;
+    border: 10px solid white;
+    box-shadow: 0 8px 24px rgba(82, 49, 34, 0.18);
+}
+
+/* #endregion */
+
+/* #region Products */
 
 .product-card {
     cursor: pointer;
@@ -728,32 +1054,6 @@ dd {
     line-height: 1.3;
 }
 
-.table {
-    --bs-table-bg: var(--card-background);
-    --bs-table-border-color: rgba(82, 49, 34, 0.2);
-    border-radius: 0.75rem;
-    overflow: hidden;
-}
-
-.table-group-divider {
-    border-top: none;
-}
-
-.table thead th {
-    background-color: var(--light-brown);
-    color: var(--light-cream);
-    font-family: var(--font-family-heading);
-    font-size: var(--font-xl);
-    border: none;
-    padding: 0.75rem 1rem;
-}
-
-.table td {
-    padding: 0.85rem 1rem;
-    color: var(--brown);
-    font-size: var(--font-p);
-}
-
 .star,
 .rating {
     color: var(--brown);
@@ -765,7 +1065,7 @@ dd {
 
 /* #endregion */
 
-/* #region Gift Page */
+/* #region Gift */
 
 /* -- When the user is not logged-in -- */
 
@@ -940,13 +1240,11 @@ dd {
     white-space: nowrap;
 }
 
-.cart-item-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.cart-item-row:not(:last-child) {
+    border-bottom: 1px solid #dfd3ce;
 }
 
-.cart-item-row:not(:last-child) {
+.order-confirmation-item-row:not(:last-child) {
     border-bottom: 1px solid #dfd3ce;
 }
 
@@ -1055,7 +1353,7 @@ dd {
 
 /* #endregion */
 
-/* #region Forms */
+/* #region Authentication */
 
 /* Login Form */
 
@@ -1083,49 +1381,6 @@ dd {
     text-shadow: 0 2px 4px rgb(73 35 10 / 50%)
 }
 
-
-/* Form */
-.form-text {
-    font-size: var(--font-sm);
-}
-
-select:invalid,
-select option[value=""] {
-    color: var(--placeholder-color) !important;
-}
-
-select:has(option[value=""]:checked) {
-    color: var(--placeholder-color) !important;
-}
-
-#id_country option:not(:first-child) {
-    color: black;
-}
-
-#id_country option:first-child {
-    color: var(--placeholder-color);
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: var(--placeholder-color) !important;
-    opacity: 1;
-}
-
-.county-field,
-.county-field::placeholder {
-    color: var(--placeholder-color) !important;
-    opacity: 1;
-}
-
-#payment-form .form-control,
-#card-element,
-#profile-form .form-control,
-#profile-form select {
-    color: black;
-    border: 1px solid black;
-}
-
 .allauth-form-inner-content input {
     border-color: black;
 }
@@ -1139,186 +1394,10 @@ textarea::placeholder {
     height: 0.75rem;
 }
 
-/* Add and Edit Product form */
-
-.widget-preview-img {
-    max-width: 96px;
-    height: auto;
-}
-
-.image-field-row {
-    background: #f9f4f0;
-    border: 1px solid rgba(82, 49, 34, 0.1);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-}
-
-/* #endregion */
-
-/* #region Toast */
-
-.toast-wrapper {
-    max-width: var(--site-max-width);
-}
-
-.toast {
-    width: calc(100vw - 2rem);
-    max-width: 380px;
-    z-index: 9999;
-    border: none;
-}
-
-.site-toast {
-    box-shadow: 0 8px 32px rgba(82, 49, 34, 0.22),
-        0 2px 8px rgba(82, 49, 34, 0.1);
-}
-
-.site-toast-header {
-    background-color: var(--brown);
-    color: white;
-}
-
-.site-toast-header--error {
-    background-color: var(--danger);
-}
-
-.site-toast-header--warning {
-    background-color: var(--gold);
-    color: var(--brown);
-}
-
-.site-toast-header--info {
-    background-color: var(--light-brown);
-}
-
-.site-toast-body {
-    background-color: var(--light-cream);
-}
-
-.site-toast-body hr {
-    border-color: var(--light-brown) !important;
-}
-
-.bag-preview-wrapper {
-    max-height: none;
-    overflow: visible;
-}
-
-.mini-cart-products,
-.mini-cart-totals,
-.mini-cart-delivery-banner {
-    display: none;
-}
-
-.mini-cart-view-cart {
-    display: inline-block;
-}
-
-.mini-cart-checkout {
-    display: none;
-}
-
-.mini-cart-title {
-    margin-bottom: 0 !important;
-}
-
-/* #endregion */
-
-/* #region Modal */
-
-.modal-content {
-    background-color: var(--card-background);
-}
-
-/* #endregion */
-
-/* #region Footer */
-
-.footer-background {
-    background-color: var(--footer-background);
-}
-
-/* Cream wave */
-.lifestyle-wave-bottom {
-    bottom: -60px;
-}
-
-.footer-images {
-    height: 200px;
-}
-
-.footer-img {
-    width: 140px;
-    padding: 0.3rem 0.3rem 2rem;
-}
-
-.footer-img-left {
-    top: 30px;
-    left: calc(50% - 120px);
-    transform: rotate(-10deg);
-}
-
-.footer-img-right {
-    top: 90px;
-    left: calc(50% - 20px);
-    transform: rotate(8deg);
-}
-
-.footer-comma-image {
-    top: 4.5rem;
-    left: calc(50% + 120px);
-    width: 30px;
-}
-
-.footer-arrow {
-    top: 15rem;
-    left: calc(50% + 70px);
-    width: 50px;
-    height: 50px;
-    transform: rotate(80deg);
-    pointer-events: none;
-}
-
-.decorative-font,
-.good-stuff-text {
-    font-family: "Patrick Hand", cursive;
-    font-weight: 400;
-}
-
-.footer-social-icon {
-    width: 44px;
-    height: 44px;
-    background-color: white;
-    color: var(--brown);
-    font-size: var(--font-lg);
-    text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.footer-social-icon:hover {
-    background-color: var(--brown);
-    color: white;
-    transform: translateY(-3px);
-}
-
-.footer-comma {
-    margin-top: -2rem;
-    width: 25px;
-    height: 25px;
-}
-
-.footer-comma.comma-left {
-    margin-right: -1.5rem;
-}
-
-.footer-comma.comma-right {
-    margin-left: -1.5rem;
-}
-
 /* #endregion */
 
 /* #region Error Pages */
+
 .error-code {
     color: var(--gold);
     line-height: 1;
@@ -1347,9 +1426,38 @@ textarea::placeholder {
 
 /* #endregion */
 
-/* #region Media Queries */
+/* #endregion */
 
-/* Small phones */
+/* #region RESPONSIVE RULES */
+
+/* Extra small phones (≤375px) */
+@media (max-width: 375px) {
+
+    /* -- Add/Edit product -- */
+    .widget-preview-label,
+    .widget-remove-label,
+    .widget-preview-caption {
+        font-size: var(--font-xs) !important;
+    }
+
+    .change-image-btn {
+        max-width: none;
+    }
+
+    .change-image-btn-full {
+        display: block;
+    }
+}
+
+/* Add/Edit product — Change Image button goes compact/centered above the extra-small-phones breakpoint */
+@media (min-width: 376px) {
+    .change-image-btn-compact {
+        display: block;
+        margin-inline: auto;
+    }
+}
+
+/* Small phones (≤359.98px) — narrower than the breakpoint above, kept separate on purpose */
 @media (max-width: 359.98px) {
 
     /* -- Cart -- */
@@ -1370,6 +1478,11 @@ textarea::placeholder {
 
     .cart-gift-label {
         font-size: var(--font-xs) !important;
+    }
+
+    /* -- Profile -- */
+    .profile-tab-icon {
+        display: none;
     }
 }
 
@@ -1420,7 +1533,7 @@ textarea::placeholder {
         height: 100px;
     }
 
-    .lifestyle-wave-bottom {
+    .hero-wave-bottom.lifestyle-wave-bottom {
         bottom: -90px;
     }
 
@@ -1504,7 +1617,8 @@ textarea::placeholder {
         width: 96px;
     }
 
-    .checkout-summary {
+    .checkout-summary,
+    .order-confirmation-summary {
         position: sticky;
         top: 6rem;
     }
@@ -1546,6 +1660,13 @@ textarea::placeholder {
 
     .mini-cart-title {
         margin-bottom: 1rem !important;
+    }
+
+    /* -- Add/Edit Product -- */
+
+    .select-image-btn-tablet-right {
+        margin-right: auto !important;
+        margin-left: 0 !important;
     }
 
     /* -- Error Pages -- */
@@ -1687,6 +1808,18 @@ textarea::placeholder {
         display: flex !important;
     }
 
+    /* -- Profile -- */
+    .contact-edit-btn,
+    .contact-delete-btn {
+        font-size: var(--font-md);
+    }
+
+    /* -- Edit/Add Product -- */
+
+    .change-image-btn {
+        font-size: var(--font-sm);
+    }
+
     /* -- Footer -- */
     .footer-images {
         height: 300px;
@@ -1817,7 +1950,7 @@ textarea::placeholder {
     }
 
     /* -- Home: Lifestyle -- */
-    .lifestyle-wave-bottom {
+    .hero-wave-bottom.lifestyle-wave-bottom {
         height: 100px;
         bottom: -90px;
     }
