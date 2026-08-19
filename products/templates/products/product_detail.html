@@ -8,6 +8,13 @@
 <!-- Hero -->
 <section>
     <div class="container">
+        <!-- Back to products -->
+        <div class="mb-3">
+            <a href="{% url 'all_products' %}" class="back-btn">
+                <i class="fa-solid fa-chevron-left"></i>
+            </a>
+        </div>
+
         <div class="rounded-4 overflow-hidden">
             <div class="row g-0 align-items-stretch">
                 <!-- Keeps the image glued to the bottom so it lines up with the price/button side -->
@@ -40,7 +47,7 @@
                 </div>
                 <div class="col-12 col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5 text-center bg-white">
                     <h1 class="logo-font text-uppercase text-xxl mb-1">{{ product.name }}</h1>
-                    <p class="fw-bold mb-3">${{ product.price }} / per can (330ml)</p>
+                    <p class="fw-bold mb-md-4">${{ product.price }} / per can (330ml)</p>
                     <p class="mb-4">{{ product.description }}</p>
 
                     <form method="POST" action="{% url 'add_to_cart' product.id %}">
