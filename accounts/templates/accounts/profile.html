@@ -7,14 +7,12 @@
 {% block content %}
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6">
+        <div class="col-12 col-lg-10">
 
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <a href="{% url 'home' %}" class="back-btn">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </a>
+            <!-- Page title -->
+            <header class="d-flex align-items-center gap-3 mb-4">
                 <h1 class="text-uppercase mb-0">My Profile</h1>
-            </div>
+            </header>
 
             <div class="bg-white rounded-4 shadow-sm p-4">
 
@@ -27,34 +25,36 @@
                         {{ request.user.username|first|upper }}
                         {% endif %}
                     </div>
-                    <div style="min-width: 0;">
+                    <div class="min-w-0">
                         {% if customer.name %}
                         <p class="mb-0 fw-bold">{{ customer.name }} {{ customer.surname }}</p>
                         {% else %}
                         <p class="mb-0 fw-bold">{{ request.user.username }}</p>
                         {% endif %}
-                        <p class="mb-0 profile-email text-muted">{{ request.user.email }}</p>
+                        <p class="mb-0 profile-email text-light-brown">{{ request.user.email }}</p>
                     </div>
                 </div>
 
                 <!-- Tabs navigation -->
-                <ul class="nav profile-tabs rounded-pill p-1 w-100 flex-nowrap justify-content-between mb-4">
-                    <li class="nav-item">
-                        <button class="nav-link {% if active_tab == 'profile' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#profile-tab" type="button">
-                            My Profile
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link {% if active_tab == 'orders' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#orders-tab" type="button">
-                            Orders
-                        </button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link {% if active_tab == 'contacts' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#contacts-tab" type="button">
-                            Contacts
-                        </button>
-                    </li>
-                </ul>
+                <nav aria-label="Profile sections">
+                    <ul class="nav d-flex profile-tabs rounded-pill p-1 w-100 flex-nowrap mb-4">
+                        <li class="nav-item flex-fill">
+                            <button class="nav-link w-100 text-center {% if active_tab == 'profile' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#profile-tab" type="button">
+                                <i class="fa-solid fa-user me-2 profile-tab-icon"></i>My Profile
+                            </button>
+                        </li>
+                        <li class="nav-item flex-fill">
+                            <button class="nav-link w-100 text-center {% if active_tab == 'orders' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#orders-tab" type="button">
+                                <i class="fa-solid fa-bag-shopping me-2 profile-tab-icon"></i>Orders
+                            </button>
+                        </li>
+                        <li class="nav-item flex-fill">
+                            <button class="nav-link w-100 text-center {% if active_tab == 'contacts' %}active{% endif %}" data-bs-toggle="tab" data-bs-target="#contacts-tab" type="button">
+                                <i class="fa-solid fa-users me-2 profile-tab-icon"></i>Contacts
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
 
                 <!-- Tabs content -->
                 <div class="tab-content">
@@ -63,20 +63,31 @@
                     <div class="tab-pane fade {% if active_tab == 'profile' %}show active{% endif %}" id="profile-tab">
                         <form method="post" id="profile-form">
                             {% csrf_token %}
-                            <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</p>
-                            {{ form.name|as_crispy_field }}
-                            {{ form.surname|as_crispy_field }}
-                            {{ form.phone_number|as_crispy_field }}
-                            <hr>
-                            <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Delivery address</p>
-                            {{ form.address|as_crispy_field }}
-                            {{ form.city|as_crispy_field }}
-                            {{ form.postal_code|as_crispy_field }}
-                            {{ form.country|as_crispy_field }}
-                            <div class="text-center mt-3">
-                                <button type="submit" class="btn-milky btn rounded-pill px-4 py-2">
-                                    Update profile
-                                </button>
+                            <div class="row g-4">
+                                <div class="col-12 col-md">
+                                    <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</p>
+                                    {{ form.name|as_crispy_field }}
+                                    {{ form.surname|as_crispy_field }}
+                                    {{ form.phone_number|as_crispy_field }}
+                                    <div class="d-md-none m-0 divider"></div>
+                                </div>
+                                <div class="col-auto d-none d-md-flex px-0">
+                                    <div class="vr h-100"></div>
+                                </div>
+                                <div class="col-12 col-md mt-3 mt-md-4">
+                                    <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Delivery address</p>
+                                    {{ form.address|as_crispy_field }}
+                                    {{ form.city|as_crispy_field }}
+                                    {{ form.postal_code|as_crispy_field }}
+                                    {{ form.country|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mt-3 mt-md-4">
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <button type="submit" class="btn-milky btn rounded-pill px-4 py-2 w-100">
+                                        Update profile
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -84,29 +95,33 @@
                     <!-- Orders tab -->
                     <div class="tab-pane fade {% if active_tab == 'orders' %}show active{% endif %}" id="orders-tab">
                         {% if orders %}
-                        {% for order in orders %}
-                        <div class="bg-white rounded-4 shadow-sm p-3 mb-2">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <div>
-                                    <p class="mb-0 fw-bold text-sm">{{ order.reference_code }}</p>
-                                    <p class="mb-0 text-sm text-muted">{{ order.created_at|date:"d M Y" }}</p>
-                                    <p class="mb-0 text-sm text-muted">{{ order.items.count }} item{% if order.items.count > 1 %}s{% endif %}</p>
+                        <ul class="row g-3 list-unstyled mb-0">
+                            {% for order in orders %}
+                            <li class="col-12 col-md-6">
+                                <div class="bg-white rounded-4 shadow-sm p-3 h-100">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <p class="mb-0 fw-bold text-sm">{{ order.reference_code }}</p>
+                                            <p class="mb-0 text-sm text-muted">{{ order.created_at|date:"d M Y" }}</p>
+                                            <p class="mb-0 text-sm text-muted">{{ order.items.count }} item{% if order.items.count > 1 %}s{% endif %}</p>
+                                        </div>
+                                        <div class="text-end">
+                                            <p class="mb-0 text-sm fw-bold">${{ order.grand_total }}</p>
+                                            <span class="badge rounded-pill
+                                                {% if order.status == 1 %}bg-success
+                                                {% elif order.status == 2 %}bg-danger
+                                                {% else %}bg-warning text-dark{% endif %}">
+                                                {{ order.get_status_display }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <a href="{% url 'order_history' order.reference_code %}" class="text-sm text-light-brown">
+                                        View details <i class="fa-solid fa-arrow-right fa-xs"></i>
+                                    </a>
                                 </div>
-                                <div class="text-end">
-                                    <p class="mb-0 text-sm fw-bold">${{ order.grand_total }}</p>
-                                    <span class="badge rounded-pill
-                                        {% if order.status == 1 %}bg-success
-                                        {% elif order.status == 2 %}bg-danger
-                                        {% else %}bg-warning text-dark{% endif %}">
-                                        {{ order.get_status_display }}
-                                    </span>
-                                </div>
-                            </div>
-                            <a href="{% url 'order_history' order.reference_code %}" class="text-sm text-light-brown">
-                                View details <i class="fa-solid fa-arrow-right fa-xs"></i>
-                            </a>
-                        </div>
-                        {% endfor %}
+                            </li>
+                            {% endfor %}
+                        </ul>
                         {% else %}
                         <p class="text-sm text-muted text-center mb-0">No orders found yet.</p>
                         {% endif %}
@@ -114,81 +129,97 @@
 
                     <!-- Contacts tab -->
                     <div class="tab-pane fade {% if active_tab == 'contacts' %}show active{% endif %}" id="contacts-tab">
+                        <div class="row g-4">
 
-                        {% if contacts %}
-                        {% for contact in contacts %}
-                        <div class="bg-white rounded-4 shadow-sm p-3 mb-2" id="contact-card-{{ contact.id }}">
+                            <!-- Saved contacts -->
+                            <div class="col-12 col-md">
+                                <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Contacts</p>
 
-                            <div class="d-flex align-items-center gap-3" id="contact-view-{{ contact.id }}">
-                                <div class="profile-avatar-sm align-items-center justify-content-center d-flex flex-shrink-0 rounded-circle text-uppercase fw-bold">
-                                    {{ contact.name|first|upper }}{{ contact.surname|first|upper }}
-                                </div>
-                                <div class="flex-grow-1 overflow-hidden">
-                                    <p class="mb-0 fw-bold text-sm">{{ contact.name }} {{ contact.surname }}</p>
-                                    <p class="mb-0 text-sm text-muted text-truncate">{{ contact.email }}</p>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button type="button" class="contact-edit-btn" data-contact-id="{{ contact.id }}">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </button>
-                                    <button type="button" class="contact-delete-btn"
-                                        data-delete-url="{% url 'delete_contact' contact.id %}"
-                                        data-contact-name="{{ contact.name }} {{ contact.surname }}">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
+                                {% if contacts %}
+                                <ul class="list-unstyled mb-0">
+                                    {% for contact in contacts %}
+                                    <li class="bg-white rounded-4 shadow-sm p-3 mb-2" id="contact-card-{{ contact.id }}">
+
+                                        <div class="d-flex align-items-center gap-3" id="contact-view-{{ contact.id }}">
+                                            <div class="profile-avatar-sm align-items-center justify-content-center d-flex flex-shrink-0 rounded-circle text-uppercase fw-bold">
+                                                {{ contact.name|first|upper }}{{ contact.surname|first|upper }}
+                                            </div>
+                                            <div class="flex-grow-1 overflow-hidden">
+                                                <p class="mb-0 fw-bold text-sm">{{ contact.name }} {{ contact.surname }}</p>
+                                                <p class="mb-0 text-sm text-muted text-truncate">{{ contact.email }}</p>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="contact-edit-btn" data-contact-id="{{ contact.id }}">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                </button>
+                                                <button type="button" class="contact-delete-btn"
+                                                    data-delete-url="{% url 'delete_contact' contact.id %}"
+                                                    data-contact-name="{{ contact.name }} {{ contact.surname }}">
+                                                    <i class="fa-solid fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div id="contact-edit-{{ contact.id }}" style="display: none;" class="mt-3">
+                                            <form method="POST" action="{% url 'edit_contact' contact.id %}">
+                                                {% csrf_token %}
+                                                <div class="row g-2">
+                                                    <div class="col-6">
+                                                        <input type="text" name="name" class="form-control form-control-sm" value="{{ contact.name }}" placeholder="Name">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <input type="text" name="surname" class="form-control form-control-sm" value="{{ contact.surname }}" placeholder="Surname">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <input type="email" name="email" class="form-control form-control-sm" value="{{ contact.email }}" placeholder="Email">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <input type="text" name="phone_number" class="form-control form-control-sm" value="{{ contact.phone_number }}" placeholder="Phone">
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex gap-2 mt-2">
+                                                    <button type="submit" class="btn btn-sm btn-milky rounded-pill px-3">Save</button>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 contact-cancel-btn" data-contact-id="{{ contact.id }}">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p class="text-sm text-muted text-center mb-0">No contacts yet.</p>
+                                {% endif %}
+
+                                <div class="d-md-none my-3 divider"></div>
                             </div>
 
-                            <div id="contact-edit-{{ contact.id }}" style="display: none;" class="mt-3">
-                                <form method="POST" action="{% url 'edit_contact' contact.id %}">
+                            <div class="col-auto d-none d-md-flex px-0">
+                                <div class="vr h-100"></div>
+                            </div>
+
+                            <!-- Add contact form -->
+                            <div class="col-12 col-md">
+                                <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Add a Friend</p>
+                                <form method="POST" action="{% url 'add_contact' %}">
                                     {% csrf_token %}
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <input type="text" name="name" class="form-control form-control-sm" value="{{ contact.name }}" placeholder="Name">
-                                        </div>
-                                        <div class="col-6">
-                                            <input type="text" name="surname" class="form-control form-control-sm" value="{{ contact.surname }}" placeholder="Surname">
-                                        </div>
-                                        <div class="col-12">
-                                            <input type="email" name="email" class="form-control form-control-sm" value="{{ contact.email }}" placeholder="Email">
-                                        </div>
-                                        <div class="col-12">
-                                            <input type="text" name="phone_number" class="form-control form-control-sm" value="{{ contact.phone_number }}" placeholder="Phone">
-                                        </div>
-                                    </div>
-                                    <div class="d-flex gap-2 mt-2">
-                                        <button type="submit" class="btn btn-sm btn-milky rounded-pill px-3">Save</button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 contact-cancel-btn" data-contact-id="{{ contact.id }}">Cancel</button>
+                                    {{ contact_form|crispy }}
+                                    <div class="text-center mt-3">
+                                        <button type="submit" class="btn-milky btn rounded-pill px-4 py-2">
+                                            Add Contact
+                                        </button>
                                     </div>
                                 </form>
                             </div>
 
                         </div>
-                        {% endfor %}
-                        {% else %}
-                        <p class="text-sm text-muted text-center mb-0">No friends yet.</p>
-                        {% endif %}
-
-                        <!-- Add contact form -->
-                        <div class="mt-4">
-                            <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Add a Friend</p>
-                            <form method="POST" action="{% url 'add_contact' %}">
-                                {% csrf_token %}
-                                {{ contact_form|crispy }}
-                                <div class="text-center mt-3">
-                                    <button type="submit" class="btn-milky btn rounded-pill px-4 py-2">
-                                        Add Contact
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
                     </div>
 
                 </div>
             </div>
         </div>
     </div>
+<!-- Delete contact confirmation modal -->
 <div class="modal fade" id="deleteContactModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 border-0 shadow-lg">

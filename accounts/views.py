@@ -100,7 +100,7 @@ def edit_contact_view(request, contact_id):
 
 
 @login_required
-def delete_contact_view(request, contact_id): 
+def delete_contact_view(request, contact_id):
     contact = get_object_or_404(Contact, id=contact_id, customer__usercustomer__user=request.user)
     contact.delete()
     messages.success(request, "Contact deleted successfully.", extra_tags="contact")
