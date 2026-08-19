@@ -1,0 +1,134 @@
+{% load crispy_forms_tags %}
+{% comment %}
+Shared body for add_product.html / edit_product.html: the four fieldsets
+(Info, Stock & Visibility, Cart & Checkout Image, Product Card Visuals)
+plus the Cancel/Submit actions row. Must be rendered inside a <form> tag.
+Params:
+  submit_label      — submit button text ("Add Product" / "Update Product")
+  show_url_divider  — whether to show the vertical divider between the
+                       Image and Image URL cards (edit_product only)
+{% endcomment %}
+<div class="row g-3">
+
+    <!-- Info -->
+    <div class="col-12 col-lg-6">
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-3 h-100">
+            <fieldset>
+                <legend class="text-h3 mb-3">Info</legend>
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6">
+                        {{ form.sku|as_crispy_field }}
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        {{ form.flavor|as_crispy_field }}
+                    </div>
+                </div>
+                {{ form.name|as_crispy_field }}
+                {{ form.description|as_crispy_field }}
+                {{ form.price|as_crispy_field }}
+            </fieldset>
+        </div>
+    </div>
+
+    <!-- Stock & Visibility -->
+    <div class="col-12 col-lg-6">
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-3 h-100">
+            <fieldset>
+                <legend class="text-h3 mb-3">Stock & Visibility</legend>
+                {{ form.stock|as_crispy_field }}
+                {{ form.is_available|as_crispy_field }}
+                {{ form.featured|as_crispy_field }}
+                {{ form.display_order|as_crispy_field }}
+            </fieldset>
+        </div>
+    </div>
+
+    <!-- Cart & Checkout Image -->
+    <div class="col-12">
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+            <fieldset>
+                <legend class="text-h3 mb-1">Cart &amp; Checkout Image</legend>
+                <p class="text-muted text-sm mb-3">Shown in the cart, checkout and order confirmation — <strong>not</strong> on the product card.</p>
+                <div class="row g-4">
+                    <div class="col-12 col-lg d-flex flex-column">
+                        <div class="image-field-row mb-0 h-100">
+                            <h4 class="mb-1">{{ form.product_image.label }}</h4>
+                            <hr class="mb-3">
+                            {{ form.product_image }}
+                            {% if form.product_image.errors %}<div class="text-danger text-sm mt-1">{{ form.product_image.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+                    {% if show_url_divider %}
+                    <div class="col-auto d-none d-lg-flex px-0">
+                        <div class="vr h-100"></div>
+                    </div>
+                    {% endif %}
+                    <div class="col-12 col-lg d-flex flex-column">
+                        <div class="image-field-row mb-0 h-100 d-flex flex-column justify-content-center">
+                            <h4 class="mb-1">Image URL</h4>
+                            <hr class="mb-3">
+                            {{ form.product_image_url|as_crispy_field }}
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <!-- Product Card Visuals -->
+    <div class="col-12">
+        <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
+            <fieldset>
+                <legend class="text-h3 mb-1">Product Card Visuals</legend>
+                <p class="text-muted text-sm mb-3">Three layered images for the animated card on home &amp; products pages — <strong>not</strong> used in the cart.</p>
+
+                <div class="row g-3">
+                    <div class="col-12 col-lg-4">
+                        <div class="image-field-row mb-0 h-100">
+                            <h4 class="mb-1">{{ form.background_image.label }}</h4>
+                            {% if form.background_image.help_text %}<p class="widget-visual-desc text-muted text-sm mb-3">{{ form.background_image.help_text }}</p>{% endif %}
+                            <hr class="mb-3">
+                            {{ form.background_image }}
+                            {% if form.background_image.errors %}<div class="text-danger text-sm mt-1">{{ form.background_image.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-4">
+                        <div class="image-field-row mb-0 h-100">
+                            <h4 class="mb-1">{{ form.objects_image.label }}</h4>
+                            {% if form.objects_image.help_text %}<p class="widget-visual-desc text-muted text-sm mb-3">{{ form.objects_image.help_text }}</p>{% endif %}
+                            <hr class="mb-3">
+                            {{ form.objects_image }}
+                            {% if form.objects_image.errors %}<div class="text-danger text-sm mt-1">{{ form.objects_image.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-4">
+                        <div class="image-field-row mb-0 h-100">
+                            <h4 class="mb-1">{{ form.can_image.label }}</h4>
+                            {% if form.can_image.help_text %}<p class="widget-visual-desc text-muted text-sm mb-3">{{ form.can_image.help_text }}</p>{% endif %}
+                            <hr class="mb-3">
+                            {{ form.can_image }}
+                            {% if form.can_image.errors %}<div class="text-danger text-sm mt-1">{{ form.can_image.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+</div>
+
+<!-- Actions -->
+<div class="row g-2 justify-content-md-end mb-5">
+    <div class="col-12 col-md-auto">
+        <a href="{% url 'all_products' %}" class="btn-milky btn rounded-pill py-2 px-5 text-uppercase w-100 fw-bold text-center">
+            Cancel
+        </a>
+    </div>
+    <div class="col-12 col-md-auto">
+        <button type="submit" class="btn-milky-gold btn rounded-pill py-2 px-5 text-uppercase w-100 fw-bold">
+            {{ submit_label }}
+        </button>
+    </div>
+</div>
