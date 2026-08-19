@@ -1,0 +1,15 @@
+{% comment %}
+Single "Change Image" / "Select Image" button, compact variant (capped width,
+hidden below 376px in favour of _image-full-button.html). Proxies a click to
+the widget's hidden file input (see .trigger-file-input in main.js).
+Params:
+  input_id     — id of the hidden file input to trigger
+  label        — button text ("Change Image" or "Select Image")
+  tablet_right — when true, right-aligns on tablet instead of centering
+                 (used only for "Select Image", see .select-image-btn-tablet-right)
+{% endcomment %}
+<button type="button"
+        class="btn btn-milky change-image-btn change-image-btn-compact trigger-file-input{% if tablet_right %} select-image-btn-tablet-right{% else %} text-uppercase text-nowrap{% endif %} rounded-pill w-100 py-2 text-sm fw-bold mx-lg-0"
+        data-target="{{ input_id }}">
+    <i class="fa-solid fa-arrow-up-from-bracket me-2"></i>{{ label }}
+</button>

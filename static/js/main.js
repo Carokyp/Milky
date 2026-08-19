@@ -21,11 +21,72 @@ document.querySelectorAll('.delete-product-btn').forEach(function(btn) {
     });
 });
 
+document.querySelectorAll('.trigger-file-input').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var input = document.getElementById(this.dataset.target);
+        if (input) input.click();
+    });
+});
+
 document.querySelectorAll('input[data-filename-target]').forEach(function(input) {
     input.addEventListener('change', function() {
         var file = this.files[0];
         var target = document.getElementById(this.dataset.filenameTarget);
         if (target) target.textContent = file ? file.name : '';
+
+        var selectTrigger = this.dataset.selectTrigger ? document.getElementById(this.dataset.selectTrigger) : null;
+        var blankTrigger = this.dataset.blankTrigger ? document.getElementById(this.dataset.blankTrigger) : null;
+        var realClearCheckbox = this.dataset.realClearCheckbox ? document.getElementById(this.dataset.realClearCheckbox) : null;
+
+        var previewImg = document.getElementById(this.dataset.previewTarget);
+        var previewWrap = previewImg ? previewImg.closest('[id^="preview-wrap-"]') : null;
+        if (previewImg && previewWrap) {
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewWrap.classList.remove('d-none');
+                    if (selectTrigger) selectTrigger.classList.add('d-none');
+                    if (blankTrigger) blankTrigger.classList.add('d-none');
+                };
+                reader.readAsDataURL(file);
+                var removeCheckbox = document.getElementById('remove-preview-' + this.id);
+                if (removeCheckbox) removeCheckbox.checked = false;
+                if (realClearCheckbox) realClearCheckbox.checked = false;
+            } else {
+                previewImg.src = '';
+                previewWrap.classList.add('d-none');
+                if (realClearCheckbox && realClearCheckbox.checked) {
+                    if (blankTrigger) blankTrigger.classList.remove('d-none');
+                } else if (selectTrigger) {
+                    selectTrigger.classList.remove('d-none');
+                }
+            }
+        }
+    });
+});
+
+document.querySelectorAll('.remove-preview-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        if (!this.checked) return;
+        var input = document.getElementById(this.dataset.clearTarget);
+        if (!input) return;
+        input.value = '';
+        input.dispatchEvent(new Event('change'));
+    });
+});
+
+document.querySelectorAll('.real-clear-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
+        var selectTrigger = this.dataset.selectTrigger ? document.getElementById(this.dataset.selectTrigger) : null;
+        var blankTrigger = this.dataset.blankTrigger ? document.getElementById(this.dataset.blankTrigger) : null;
+        if (this.checked) {
+            if (selectTrigger) selectTrigger.classList.add('d-none');
+            if (blankTrigger) blankTrigger.classList.remove('d-none');
+        } else {
+            if (blankTrigger) blankTrigger.classList.add('d-none');
+            if (selectTrigger) selectTrigger.classList.remove('d-none');
+        }
     });
 });
 

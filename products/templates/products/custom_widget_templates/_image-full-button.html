@@ -1,0 +1,12 @@
+{% comment %}
+Full-width "Change Image" / "Select Image" button, shown only below 376px
+(see .change-image-btn-full), plus the helper caption underneath. Proxies a
+click to the widget's hidden file input (see .trigger-file-input in main.js).
+Params: input_id, label
+{% endcomment %}
+<button type="button"
+        class="btn btn-milky rounded-pill w-100 py-2 text-sm text-uppercase text-nowrap fw-bold change-image-btn-full trigger-file-input"
+        data-target="{{ input_id }}">
+    <i class="fa-solid fa-arrow-up-from-bracket me-2"></i>{{ label }}
+</button>
+<p class="widget-preview-caption text-muted text-sm mt-2 mb-0">Upload a new image to replace the current one.</p>

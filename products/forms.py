@@ -48,9 +48,11 @@ class ProductForm(forms.ModelForm):
         if 'can_image' in self.fields:
             self.fields['can_image'].label = 'Can photo'
             self.fields['can_image'].help_text = 'Product can (transparent PNG).'
+        if 'product_image_url' in self.fields:
+            self.fields['product_image_url'].help_text = 'Use a direct link to an image (https://…).'
         if 'description' in self.fields:
             self.fields['description'].widget.attrs.update({
-                'rows': 4,
+                'rows': 3,
                 'placeholder': 'Enter product description here...',
                 'class': 'form-control',
             })

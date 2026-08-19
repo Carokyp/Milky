@@ -1,26 +1,93 @@
+{% comment %}
+Trigger state — shown by default.
+Hidden via main.js once a new file is chosen (see #preview-wrap below)
+or once the existing image is marked for removal (see .real-clear-checkbox).
+{% endcomment %}
+<div id="select-trigger-{{ widget.attrs.id }}">
+    {% if widget.is_initial %}
+        {% comment %}An image is already saved: show it, a Remove checkbox, and a Change Image button{% endcomment %}
+        <div class="row gx-3 align-items-center mb-3">
+            <div class="col-5 col-md-6 col-lg-4">
+                <a href="{{ widget.value.url }}" class="d-block">
+                    <img class="widget-preview-img" src="{{ widget.value.url }}" alt="product image">
+                </a>
+            </div>
+            <div class="col-7 col-md-6 col-lg-8 d-flex flex-column text-center text-lg-start">
+                <p class="widget-preview-label text-muted text-uppercase text-sm text-nowrap fw-bold mb-2 text-truncate">{{ widget.filename|default:widget.initial_text }}</p>
+                {% if not widget.required %}
+                <div class="form-check mb-2 d-flex align-items-center justify-content-center justify-content-lg-start gap-1 p-0">
+                    <input class="form-check-input mt-0 ms-0 real-clear-checkbox"
+                           type="checkbox"
+                           name="{{ widget.checkbox_name }}"
+                           id="{{ widget.checkbox_id }}"
+                           data-select-trigger="select-trigger-{{ widget.attrs.id }}"
+                           data-blank-trigger="blank-trigger-{{ widget.attrs.id }}">
+                    <label class="widget-remove-label form-check-label text-sm text-nowrap" for="{{ widget.checkbox_id }}">
+                        {{ widget.clear_checkbox_label }}
+                    </label>
+                </div>
+                {% endif %}
+                {% include "products/custom_widget_templates/_image-compact-button.html" with input_id=widget.attrs.id label="Change Image" %}
+            </div>
+        </div>
+        {% include "products/custom_widget_templates/_image-full-button.html" with input_id=widget.attrs.id label="Change Image" %}
+        <hr class="mb-3">
+    {% else %}
+        {% comment %}No image yet: just a single Select Image button{% endcomment %}
+        {% include "products/custom_widget_templates/_image-compact-button.html" with input_id=widget.attrs.id label="Select Image" tablet_right=True %}
+        {% include "products/custom_widget_templates/_image-full-button.html" with input_id=widget.attrs.id label="Select Image" %}
+    {% endif %}
+</div>
+
 {% if widget.is_initial %}
-<p class="text-muted text-sm mb-1 mt-0">{{ widget.initial_text }}:</p>
-<a href="{{ widget.value.url }}" class="d-inline-block mb-2">
-    <img class="widget-preview-img" src="{{ widget.value.url }}" alt="product image">
-</a>
-{% if not widget.required %}
-<div class="form-check mb-2">
-    <input class="form-check-input" type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
-    <label class="form-check-label" for="{{ widget.checkbox_id }}">
-        {{ widget.clear_checkbox_label }}
-    </label>
+{% comment %}
+Blank state — hidden by default.
+Revealed by main.js when the "Remove Image" checkbox above is checked,
+so the field visually reads as empty even though removal only takes
+effect once the form is submitted.
+{% endcomment %}
+<div id="blank-trigger-{{ widget.attrs.id }}" class="d-none">
+    {% include "products/custom_widget_templates/_image-compact-button.html" with input_id=widget.attrs.id label="Select Image" tablet_right=True %}
+    {% include "products/custom_widget_templates/_image-full-button.html" with input_id=widget.attrs.id label="Select Image" %}
 </div>
 {% endif %}
-{% endif %}
 
-<button type="button"
-        class="btn btn-milky rounded-pill px-3 py-1 w-auto text-sm"
-        onclick="document.getElementById('{{ widget.attrs.id }}').click()">
-    <i class="fa-solid fa-arrow-up-from-bracket me-2"></i>{{ widget.input_text }} Select Image
-</button>
+{% comment %}
+Hidden native file input — every button above just proxies a click here.
+main.js listens for its change event to drive the preview below.
+{% endcomment %}
 <input id="{{ widget.attrs.id }}"
        type="{{ widget.type }}"
        name="{{ widget.name }}"
        data-filename-target="filename-{{ widget.attrs.id }}"
+       data-preview-target="preview-{{ widget.attrs.id }}"
+       data-select-trigger="select-trigger-{{ widget.attrs.id }}"
+       {% if widget.is_initial %}data-blank-trigger="blank-trigger-{{ widget.attrs.id }}" data-real-clear-checkbox="{{ widget.checkbox_id }}"{% endif %}
        style="display: none;">
-<p id="filename-{{ widget.attrs.id }}" class="text-sm text-muted mt-1 mb-0"></p>
+
+{% comment %}
+Live preview — hidden by default.
+Revealed by main.js after a new file is picked, showing a client-side
+preview (filename, thumbnail, Remove Image) before the form is submitted.
+{% endcomment %}
+<div id="preview-wrap-{{ widget.attrs.id }}" class="d-none">
+    <div class="row gx-3 align-items-center mb-3">
+        <div class="col-5 col-md-6 col-lg-4">
+            <img id="preview-{{ widget.attrs.id }}" class="widget-preview-img" src="" alt="Selected image preview">
+        </div>
+        <div class="col-7 col-md-6 col-lg-8 d-flex flex-column text-center text-lg-start">
+            <p id="filename-{{ widget.attrs.id }}" class="widget-preview-label text-muted text-uppercase text-sm text-nowrap fw-bold mb-2 text-truncate"></p>
+            <div class="form-check mb-2 d-flex align-items-center justify-content-center justify-content-lg-start gap-1 p-0">
+                <input class="form-check-input mt-0 ms-0 remove-preview-checkbox"
+                       type="checkbox"
+                       data-clear-target="{{ widget.attrs.id }}"
+                       id="remove-preview-{{ widget.attrs.id }}">
+                <label class="widget-remove-label form-check-label text-sm text-nowrap" for="remove-preview-{{ widget.attrs.id }}">
+                    Remove Image
+                </label>
+            </div>
+            {% include "products/custom_widget_templates/_image-compact-button.html" with input_id=widget.attrs.id label="Change Image" %}
+        </div>
+    </div>
+    {% include "products/custom_widget_templates/_image-full-button.html" with input_id=widget.attrs.id label="Change Image" %}
+</div>
