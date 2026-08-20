@@ -9,11 +9,11 @@
     <!-- Page title -->
     <header class="text-center mb-4">
         {% if from_profile %}
-        <h1 class="text-uppercase mb-1">Order Details</h1>
+        <h1 class="text-h2 text-uppercase mb-1">Order Details</h1>
         <p class="text-muted">Here is a summary of your past order.</p>
         {% else %}
         <i class="fa-solid fa-circle-check fa-3x mb-3 text-light-brown"></i>
-        <h1 class="text-uppercase mb-1">Thank You!</h1>
+        <h1 class="text-h2 text-uppercase mb-1">Thank You!</h1>
         <p class="mb-1">Your order has been placed successfully.</p>
         <p class="text-sm">A confirmation email will be sent to <strong>{{ order.email }}</strong>.</p>
         {% endif %}
