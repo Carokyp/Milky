@@ -32,10 +32,10 @@
         <li class="nav-item"><a href="{% url 'add_product' %}" class="nav-link {% if request.resolver_match.url_name == 'add_product' %}active{% endif %}">Products Management</a></li>
         {% endif %}
         <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">My Profile</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Logout</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a></li>
         {% else %}
         <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'account_signup' %}active{% endif %}" href="{% url 'account_signup' %}">Register</a></li>
-        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'account_login' %}active{% endif %}" href="{% url 'account_login' %}">Login</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.resolver_match.url_name == 'account_login' %}active{% endif %}" href="{% url 'account_login' %}">Sign In</a></li>
         {% endif %}
     </ul>
 </div>

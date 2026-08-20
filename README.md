@@ -424,8 +424,8 @@ The palette centers on warm cream backgrounds with brown text, gold for primary 
 ## Features
 
 #### **Navigation**
-- **Public Navigation**: Home, All Products, Gift a Can, Login, Register
-- **Authenticated Navigation**: Home, All Products, Gift a Can, My Profile, Logout, plus **Products Management** for superusers only
+- **Public Navigation**: Home, All Products, Gift a Can, Sign In, Register
+- **Authenticated Navigation**: Home, All Products, Gift a Can, My Profile, Sign Out, plus **Products Management** for superusers only
 
 <p align="center">
   <img src="docs/images/Navbar.png" alt="Milky navigation bar" style="width: 90%; max-width: 900px; height: auto;">
@@ -456,14 +456,14 @@ The palette centers on warm cream backgrounds with brown text, gold for primary 
 - Quantity selector and Add to Cart
 - Benefit highlight icons and a nutrition-facts table (per 100ml / per 330ml)
 - Paginated reviews (3 per page, loaded via AJAX without a full reload) with a star-rating display
-- A star-picker review form for authenticated users, or a "Login to leave a review" prompt for guests
+- A star-picker review form for authenticated users, or a "Sign In to leave a review" prompt for guests
 
 <p align="center">
   <img src="docs/images/Product_Detail.png" alt="Product detail page" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
 #### **Gift a Can**
-- **Logged out**: a promo landing page — hero image, a 3-step "how it works" explainer, and Login/Register calls to action
+- **Logged out**: a promo landing page — hero image, a 3-step "how it works" explainer, and Sign In/Register calls to action
 - **Logged in**: a full gift form — a custom product picker, an optional personal message, and either a saved contact or new-friend fields
 - If a gift is already in the session, the page shows a locked state instead (one gift per order)
 
