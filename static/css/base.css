@@ -1641,6 +1641,18 @@ textarea::placeholder {
         height: 100%;
         width: auto;
     }
+    
+    .error-banner-text h1 {
+        font-size: 4rem;
+    }
+
+    .error-banner-text h2 {
+        font-size: 2rem;
+    }
+
+    .error-banner-text p {
+        font-size: var(--font-md);
+    }
 }
 
 /* Tablet/small desktop */
@@ -1803,6 +1815,20 @@ textarea::placeholder {
     .decorative-font {
         font-size: var(--font-xl);
     }
+
+    /* -- Error Pages -- */
+
+    .error-banner-text h1 {
+        font-size: 5rem;
+    }
+
+    .error-banner-text h2 {
+        font-size: 3rem;
+    }
+
+    .error-banner-text p {
+        font-size: var(--font-md);
+    }
 }
 
 /* Tweaks that only apply between 1024-1439px, don't carry over to 1440px+ */
@@ -1930,6 +1956,20 @@ textarea::placeholder {
         bottom: -190px;
         right: -180px;
         width: 200px;
+    }
+
+    /* -- Error Pages -- */
+
+    .error-banner-text h1 {
+        font-size: 6rem;
+    }
+
+    .error-banner-text h2 {
+        font-size: 4rem;
+    }
+
+    .error-banner-text p {
+        font-size: var(--font-lg);
     }
 }
 
