@@ -489,6 +489,11 @@ dd {
     transition: background 0.2s ease;
 }
 
+/* Nudge down the heading to match the icon's optical center */
+.back-btn + h1 {
+    transform: translateY(0.08em);
+}
+
 .back-btn:hover,
 .review-nav-btn:hover {
     background: rgba(201, 142, 80, 0.23);
