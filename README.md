@@ -522,6 +522,7 @@ The palette centers on warm cream backgrounds with brown text, gold for primary 
 #### **Authentication Pages** (django-allauth)
 - Register, Sign In, Sign Out, Password Reset (request/sent/confirm/done), Password Change, Password Set, and email address management
 - Mandatory email verification before a new account can sign in
+- "Remember Me" on Sign In controls session length only: checked keeps the session alive for 2 weeks even after closing the browser, unchecked ends it as soon as the browser closes. It does not pre-fill the form on a later visit — that's the browser's own password manager
 - Each branded auth page follows the same split layout: a form on one side, an illustration on the other (hidden below tablet width)
 
 <p align="center">
