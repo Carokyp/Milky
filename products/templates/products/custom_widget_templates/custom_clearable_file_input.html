@@ -5,7 +5,7 @@ or once the existing image is marked for removal (see .real-clear-checkbox).
 {% endcomment %}
 <div id="select-trigger-{{ widget.attrs.id }}">
     {% if widget.is_initial %}
-        {% comment %}An image is already saved: show it, a Remove checkbox, and a Change Image button{% endcomment %}
+        {% comment %}An image is already saved: show it, show a remove checkbox, and a change image button{% endcomment %}
         <div class="row gx-3 align-items-center mb-3">
             <div class="col-5 col-md-6 col-lg-4">
                 <a href="{{ widget.value.url }}" class="d-block">
