@@ -6,10 +6,10 @@
 <title>Milky - Order Confirmation</title>
 <style>
 {% comment %}
-_email_styles.css lives in templates/emails/ (shared by every email in the
-project, not just checkout) for readability, but its content has to end up
-inlined in this single <style> tag — mail clients don't fetch external
-stylesheets
+_email_styles.css lives in templates/emails/ and is shared by all project
+emails for readability. Its content is included here so the final email
+contains a single embedded <style> block, since email clients cannot rely
+on external stylesheets.
 {% endcomment %}
 {% include "emails/_email_styles.css" %}
 </style>
@@ -95,11 +95,11 @@ stylesheets
             <td class="totals-section">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                     <tr class="totals-row text-brown">
-                        <td >Order total</td>
+                        <td>Order total</td>
                         <td align="right">${{ order.order_total }}</td>
                     </tr>
                     <tr class="totals-row text-brown">
-                        <td >Delivery</td>
+                        <td>Delivery</td>
                         <td align="right">${{ order.delivery_cost }}</td>
                     </tr>
                     <tr class="grandtotal-row text-brown fw-bold">
