@@ -235,10 +235,7 @@ def add_review(request, product_id):
                 review.order = order
             review.save()
             messages.success(request, 'Review added successfully!', extra_tags="review")
-            return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
         else:
             messages.error(request, 'Failed to add review. Please check the form.')
-    else:
-        form = ReviewForm()
 
-    return render(request, 'products/add_review.html', {'form': form, 'product': product})
+    return redirect(reverse('product_detail', args=[product.id]))  # type: ignore
