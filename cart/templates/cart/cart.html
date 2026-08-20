@@ -130,9 +130,14 @@
                         <dd class="fw-bold mb-0 cart-grand-total">${{ grand_total }}</dd>
                     </div>
                 </dl>
-                <a href="{% url 'checkout' %}" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold">
-                    Checkout
-                </a>
+                <div class="d-flex flex-column gap-2">
+                    <a href="{% url 'checkout' %}" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold">
+                        Checkout
+                    </a>
+                    <a href="{% url 'all_products' %}" class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center">
+                        Continue Shopping
+                    </a>
+                </div>
             </div>
         </section>
 
