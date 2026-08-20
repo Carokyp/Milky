@@ -64,7 +64,7 @@ def checkout(request):
     cart = request.session.get("cart", {})
     if not cart and not request.session.get("gift"):
         messages.error(request, "Your cart is empty.")
-        return redirect(reverse("products"))
+        return redirect(reverse("all_products"))
 
     if request.user.is_authenticated:
         user_customers = UserCustomer.objects.filter(user=request.user).first()
@@ -243,7 +243,7 @@ def checkout_success(request):
         except Product.DoesNotExist:
             messages.error(request, "Product not found.")
             order.delete()
-            return redirect(reverse("cart"))
+            return redirect(reverse("view_cart"))
 
     if gift:
         gift_product = get_object_or_404(Product, pk=gift["product_id"])
