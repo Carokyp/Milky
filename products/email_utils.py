@@ -3,8 +3,10 @@ from django.templatetags.static import static
 from milky.email_utils import build_email_font_urls
 
 
-def build_gift_email_context(request, product, customer, contact, personal_message):
-    """Build the template context shared by the real send and the preview view"""
+def build_gift_email_context(
+    request, product, customer, contact, personal_message
+):
+    """Build the email context shared by the send and preview views."""
     return {
         'product': product,
         'customer': customer,
