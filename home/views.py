@@ -1,11 +1,11 @@
-from django.shortcuts import render
 from django.contrib import messages
+from django.shortcuts import redirect, render
+
 from products.models import Product
-from django.shortcuts import redirect
 
 
 def index(request):
-    """View to return the index page"""
+    """Render the home page with featured products."""
     products = Product.objects.filter(featured=True)
     return render(request, "home/index.html", {"products": products})
 
@@ -16,13 +16,16 @@ def test_404(request):
     from accounts.views import handler404
     return handler404(request, Exception())
 
+
 def test_403(request):
     from accounts.views import handler403
     return handler403(request, Exception())
 
+
 def test_405(request):
     from accounts.views import handler405
     return handler405(request, Exception())
+
 
 def test_500(request):
     from accounts.views import handler500
