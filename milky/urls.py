@@ -20,6 +20,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Custom error handlers, used site-wide by Django for the matching HTTP errors.
 handler404 = 'accounts.views.handler404'
 handler403 = 'accounts.views.handler403'
 handler405 = 'accounts.views.handler405'
@@ -34,3 +35,4 @@ urlpatterns = [
     path("profile/", include("accounts.urls")),
     path("checkout/", include("checkout.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# The line above appends routes that let Django serve uploaded media files.
