@@ -1,3 +1,9 @@
+// Disable automatic scroll restoration to prevent the page from jumping to the previous scroll position on reload.
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
 // Get Stripe keys and URLs from Django template
 const stripePublicKey = JSON.parse(document.getElementById('id_stripe_public_key').textContent);
 const clientSecret = JSON.parse(document.getElementById('id_client_secret').textContent);
@@ -42,13 +48,11 @@ async function initialize() {
     elements = stripe.elements({ appearance, clientSecret });
 
     const paymentElement = elements.create("payment");
-    document.documentElement.style.overflow = 'hidden';
     paymentElement.mount("#payment-element");
 
     paymentElement.on('ready', function () {
         submitButton.disabled = false;
         paymentStatus.style.display = "none";
-        document.documentElement.style.overflow = '';
     });
 }
 
