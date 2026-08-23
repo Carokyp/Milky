@@ -39,9 +39,12 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    # Authentication (django-allauth)
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+
+    # Built-in Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -49,9 +52,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+
+    # Third-party apps
     "django_countries",
     "crispy_forms",
     "crispy_bootstrap5",
+
+    # Local apps
     "home",
     "products",
     "cart",
@@ -59,6 +66,8 @@ INSTALLED_APPS = [
     "checkout",
 ]
 
+# Order matters: each request passes through these top to bottom,
+# and the response passes back through them bottom to top.
 MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -102,11 +111,15 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
+# Required by django.contrib.sites, used internally by allauth
 SITE_ID = 1
 
+# Console backend: emails are printed to the terminal instead of actually
+# sent. Replace with a real backend (e.g. SMTP) before production.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'milky@example.com'
 
+# django-allauth settings
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
