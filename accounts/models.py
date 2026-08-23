@@ -6,7 +6,6 @@ class Customer(models.Model):
     # Personal info
     name = models.CharField(max_length=255, blank=True)
     surname = models.CharField(max_length=255, blank=True)
-    display_name = models.CharField(max_length=50, blank=True, null=True)
     phone_number = models.CharField(max_length=20, blank=True)
 
     # Address

@@ -1,4 +1,5 @@
 from django import forms
+from typing import Any, cast
 from .models import Customer, Contact
 
 
@@ -10,7 +11,6 @@ class CustomerForm(forms.ModelForm):
         fields = [
             "name",
             "surname",
-            "display_name",
             "address",
             "postal_code",
             "city",
@@ -23,9 +23,6 @@ class CustomerForm(forms.ModelForm):
             ),
             "surname": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Surname"}
-            ),
-            "display_name": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Username"}
             ),
             "address": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Address"}
@@ -50,9 +47,10 @@ class CustomerForm(forms.ModelForm):
             self.fields[field].label = False  # type: ignore
 
         # Replace blank label on country dropdown
-        choices = list(self.fields["country"].choices)
+        typed_country_field = cast(Any, self.fields["country"])
+        choices = list(typed_country_field.choices)
         choices[0] = ("", "Country")
-        self.fields["country"].choices = choices
+        typed_country_field.choices = choices
 
 
 class GiftACanForm(forms.ModelForm):
