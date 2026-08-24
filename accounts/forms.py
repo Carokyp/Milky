@@ -1,5 +1,7 @@
-from django import forms
 from typing import Any, cast
+
+from django import forms
+
 from .models import Customer, Contact
 
 
@@ -33,15 +35,13 @@ class CustomerForm(forms.ModelForm):
             "city": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "City"}
             ),
-            "county": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "County"}
-            ),
             "phone_number": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Phone Number"}
             ),
         }
 
     def __init__(self, *args, **kwargs):
+        """Style all fields and give the country dropdown a placeholder."""
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].label = False  # type: ignore
@@ -55,8 +55,8 @@ class CustomerForm(forms.ModelForm):
 
 class GiftACanForm(forms.ModelForm):
     """Form for gifting a can to a friend."""
-    class Meta:
 
+    class Meta:
         model = Contact
         fields = [
             "email",
@@ -66,9 +66,9 @@ class GiftACanForm(forms.ModelForm):
         ]
 
         widgets = {
-            "email": forms.EmailInput(
-                attrs={"class": "form-control", "placeholder": "Friend's Email"}
-            ),
+            "email": forms.EmailInput(attrs={
+                "class": "form-control", "placeholder": "Friend's Email"
+            }),
             "name": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Name"}
             ),
@@ -81,6 +81,7 @@ class GiftACanForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """Remove field labels so placeholders act as labels instead."""
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].label = False  # type: ignore

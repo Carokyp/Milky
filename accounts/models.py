@@ -3,6 +3,8 @@ from django_countries.fields import CountryField
 
 
 class Customer(models.Model):
+    """Delivery/contact profile linked to a user via UserCustomer."""
+
     # Personal info
     name = models.CharField(max_length=255, blank=True)
     surname = models.CharField(max_length=255, blank=True)
@@ -16,22 +18,25 @@ class Customer(models.Model):
     country = CountryField(null=True, blank=True)
 
     def __str__(self):
+        """Return the customer's full name."""
         return f"{self.name} {self.surname}"
 
 
 class UserCustomer(models.Model):
+    """Link between a Django user account and its Customer profile."""
+
     # Relationships
     user = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 
-    # Status
-    enabled = models.BooleanField(default=True)
-
     def __str__(self):
+        """Return the linked username and customer."""
         return f"{self.user.username} - {self.customer}"
 
 
 class Contact(models.Model):
+    """A person a customer can gift a can to."""
+
     # Relationship
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 
@@ -45,4 +50,5 @@ class Contact(models.Model):
     ip_address = models.GenericIPAddressField()
 
     def __str__(self):
+        """Return the contact's full name."""
         return f"{self.name} {self.surname}"
