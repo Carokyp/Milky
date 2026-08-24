@@ -1,7 +1,6 @@
-import stripe
 import json
-from decimal import Decimal
 
+import stripe
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -12,20 +11,25 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.views.decorators.http import require_POST
 
-from accounts.models import Customer
-from accounts.models import UserCustomer
+from accounts.models import Customer, UserCustomer
 from cart.context_processors import cart_contents
+from products.models import Product
 
 from .email_utils import build_confirmation_email_context
 from .forms import OrderForm
-from .models import Order, OrderItem
-from products.models import Product
+from .models import Order
+from .order_utils import (
+    build_order_kwargs,
+    create_gift_order_item,
+    create_order_item,
+)
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 @require_POST
 def cache_checkout_data(request):
+    """Attach cart/order metadata to the Stripe PaymentIntent before pay."""
     try:
         pid = request.POST.get("client_secret").split("_secret")[0]
         stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -45,7 +49,9 @@ def cache_checkout_data(request):
             "save_info": order_data.get("save_info", False),
         }
         metadata = {
-            "user_id": str(request.user.id) if request.user.is_authenticated else "",
+            "user_id": (
+                str(request.user.id) if request.user.is_authenticated else ""
+            ),
             "save_info": str(request.POST.get("save-info") or ""),
             "cart": json.dumps(request.session.get("cart", {})),
             "order_data": json.dumps(essential_data),
@@ -54,20 +60,23 @@ def cache_checkout_data(request):
         stripe.PaymentIntent.modify(pid, metadata=metadata)
         return HttpResponse(status=200)
     except Exception as e:
-        print(f"Cache checkout error: {e}")  # Log the error for debugging
-        messages.error(request, "Sorry, your payment cannot be processed right now.")
+        messages.error(
+            request, "Sorry, your payment cannot be processed right now."
+        )
         return HttpResponse(content=e, status=400)
 
 
 def checkout(request):
-
+    """Render the checkout page and stash the delivery form on submit."""
     cart = request.session.get("cart", {})
     if not cart and not request.session.get("gift"):
         messages.error(request, "Your cart is empty.")
         return redirect(reverse("all_products"))
 
     if request.user.is_authenticated:
-        user_customers = UserCustomer.objects.filter(user=request.user).first()
+        user_customers = UserCustomer.objects.filter(
+            user=request.user
+        ).first()
         customer = user_customers.customer if user_customers else None
 
         if not customer:
@@ -75,7 +84,6 @@ def checkout(request):
             UserCustomer.objects.create(
                 user=request.user,
                 customer=customer,
-                enabled=True,
             )
 
         order_form = OrderForm(
@@ -96,7 +104,9 @@ def checkout(request):
         order_form = OrderForm(user_authenticated=False)
 
     if request.method == "POST":
-        form = OrderForm(request.POST, user_authenticated=request.user.is_authenticated)
+        form = OrderForm(
+            request.POST, user_authenticated=request.user.is_authenticated
+        )
         if form.is_valid():
             same_as_delivery = request.POST.get("same-as-delivery")
             request.session["order_data"] = {
@@ -105,9 +115,15 @@ def checkout(request):
                 "delivery_phone": form.cleaned_data["delivery_phone"],
                 "delivery_address": form.cleaned_data["delivery_address"],
                 "delivery_city": form.cleaned_data["delivery_city"],
-                "delivery_county": form.cleaned_data.get("delivery_county", ""),
-                "delivery_postcode": form.cleaned_data.get("delivery_postcode", ""),
-                "delivery_country": str(form.cleaned_data["delivery_country"]),
+                "delivery_county": form.cleaned_data.get(
+                    "delivery_county", ""
+                ),
+                "delivery_postcode": form.cleaned_data.get(
+                    "delivery_postcode", ""
+                ),
+                "delivery_country": str(
+                    form.cleaned_data["delivery_country"]
+                ),
                 "email": (
                     request.user.email
                     if request.user.is_authenticated
@@ -115,13 +131,23 @@ def checkout(request):
                 ),
                 "same_as_delivery": bool(same_as_delivery),
                 "invoice_name": form.cleaned_data.get("invoice_name", ""),
-                "invoice_surname": form.cleaned_data.get("invoice_surname", ""),
+                "invoice_surname": form.cleaned_data.get(
+                    "invoice_surname", ""
+                ),
                 "invoice_phone": form.cleaned_data.get("invoice_phone", ""),
-                "invoice_address": form.cleaned_data.get("invoice_address", ""),
+                "invoice_address": form.cleaned_data.get(
+                    "invoice_address", ""
+                ),
                 "invoice_city": form.cleaned_data.get("invoice_city", ""),
-                "invoice_county": form.cleaned_data.get("invoice_county", ""),
-                "invoice_postcode": form.cleaned_data.get("invoice_postcode", ""),
-                "invoice_country": str(form.cleaned_data.get("invoice_country", "")),
+                "invoice_county": form.cleaned_data.get(
+                    "invoice_county", ""
+                ),
+                "invoice_postcode": form.cleaned_data.get(
+                    "invoice_postcode", ""
+                ),
+                "invoice_country": str(
+                    form.cleaned_data.get("invoice_country", "")
+                ),
                 "save_info": bool(request.POST.get("save-info")),
             }
             return JsonResponse({"status": "ok"})
@@ -134,7 +160,9 @@ def checkout(request):
         amount=int(cart_data["grand_total"] * 100),
         currency="usd",
         metadata={
-            "user_id": str(request.user.id) if request.user.is_authenticated else ""
+            "user_id": (
+                str(request.user.id) if request.user.is_authenticated else ""
+            )
         },
     )
 
@@ -150,6 +178,7 @@ def checkout(request):
 
 
 def checkout_success(request):
+    """Create the Order/OrderItems after payment and show a summary."""
     pid = request.GET.get("payment_intent")
     order_data = request.session.get("order_data", {})
     cart = request.session.get("cart", {})
@@ -160,68 +189,16 @@ def checkout_success(request):
         return redirect(reverse("checkout"))
 
     if request.user.is_authenticated:
-        user_customers = UserCustomer.objects.filter(user=request.user).first()
+        user_customers = UserCustomer.objects.filter(
+            user=request.user
+        ).first()
         customer = user_customers.customer if user_customers else None
     else:
         customer = None
 
-    same_as_delivery = order_data.get("same_as_delivery", True)
-
     order = Order(
-        customer=customer,
+        **build_order_kwargs(order_data, customer, gift),
         stripe_pid=pid,
-        delivery_name=order_data["delivery_name"],
-        delivery_surname=order_data["delivery_surname"],
-        delivery_phone=order_data["delivery_phone"],
-        delivery_address=order_data["delivery_address"],
-        delivery_city=order_data["delivery_city"],
-        delivery_county=order_data.get("delivery_county", ""),
-        delivery_postcode=order_data.get("delivery_postcode", ""),
-        delivery_country=order_data["delivery_country"],
-        email=order_data.get("email", ""),
-        invoice_name=(
-            order_data["delivery_name"]
-            if same_as_delivery
-            else order_data.get("invoice_name", "")
-        ),
-        invoice_surname=(
-            order_data["delivery_surname"]
-            if same_as_delivery
-            else order_data.get("invoice_surname", "")
-        ),
-        invoice_phone=(
-            order_data["delivery_phone"]
-            if same_as_delivery
-            else order_data.get("invoice_phone", "")
-        ),
-        invoice_address=(
-            order_data["delivery_address"]
-            if same_as_delivery
-            else order_data.get("invoice_address", "")
-        ),
-        invoice_city=(
-            order_data["delivery_city"]
-            if same_as_delivery
-            else order_data.get("invoice_city", "")
-        ),
-        invoice_county=(
-            order_data.get("delivery_county", "")
-            if same_as_delivery
-            else order_data.get("invoice_county", "")
-        ),
-        invoice_postcode=(
-            order_data.get("delivery_postcode", "")
-            if same_as_delivery
-            else order_data.get("invoice_postcode", "")
-        ),
-        invoice_country=(
-            order_data["delivery_country"]
-            if same_as_delivery
-            else order_data.get("invoice_country", "")
-        ),
-        promo_discount_percent=(
-            Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) if gift else None
-        ),
     )
 
     cart_data = cart_contents(request)
@@ -231,15 +208,7 @@ def checkout_success(request):
     # Create order items
     for item_id, quantity in cart.items():
         try:
-            product = Product.objects.get(id=item_id)
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                sku=product.sku,
-                unit_price=product.price,
-                quantity=quantity,
-                total_price=product.price * quantity,
-            )
+            create_order_item(order, item_id, quantity)
         except Product.DoesNotExist:
             messages.error(request, "Product not found.")
             order.delete()
@@ -247,17 +216,7 @@ def checkout_success(request):
 
     if gift:
         gift_product = get_object_or_404(Product, pk=gift["product_id"])
-        OrderItem.objects.create(
-            order=order,
-            product=gift_product,
-            sku=gift_product.sku,
-            unit_price=gift_product.price,
-            quantity=1,
-            total_price=gift_product.price,
-            is_gift=True,
-            gift_contact_id=gift["contact_id"],
-            gift_message=gift.get("personal_message", ""),
-        )
+        create_gift_order_item(order, gift, gift_product)
 
     # Save delivery info to profile if checkbox was ticked
     save_info = order_data.get("save_info")
@@ -284,16 +243,19 @@ def checkout_success(request):
     messages.success(
         request,
         format_html(
-            'Order <strong>{}</strong> placed successfully! You will receive a confirmation '
-            'email at <strong>{}</strong> shortly.',
+            "Order <strong>{}</strong> placed successfully! You will "
+            "receive a confirmation email at <strong>{}</strong> shortly.",
             order.reference_code, order.email,
         ),
         extra_tags="order",
     )
-    return redirect(reverse("order_confirmation", args=[order.reference_code]))
+    return redirect(
+        reverse("order_confirmation", args=[order.reference_code])
+    )
 
 
 def order_confirmation(request, reference_code):
+    """Show the order confirmation page for a given reference code."""
     if request.user.is_authenticated:
         order = get_object_or_404(
             Order,
@@ -306,21 +268,33 @@ def order_confirmation(request, reference_code):
             return redirect(reverse("home"))
         order = get_object_or_404(Order, reference_code=reference_code)
 
-    return render(request, "checkout/checkout_success.html", {"order": order})
+    return render(
+        request, "checkout/checkout_success.html", {"order": order}
+    )
 
 
+# TODO: Remove before deployment
 @login_required
 def preview_confirmation_email(request):
     """Render the real confirmation email in the browser, for styling work.
-    Store-owner only — shows real customer data from the most recent order."""
+
+    Store-owner only. Shows real customer data from the most recent
+    order.
+    """
     if not request.user.is_superuser:
         messages.error(request, 'Sorry, only store owners can do that.')
         return redirect(reverse('home'))
 
     order = Order.objects.order_by("-created_at").first()
     if not order:
-        return HttpResponse("No order in the database yet — place a test order first.")
+        return HttpResponse(
+            "No order in the database yet — place a test order first."
+        )
 
-    context = build_confirmation_email_context(request, order, settings.DEFAULT_FROM_EMAIL)
-    html_body = render_to_string("checkout/confirmation_email_body.html", context)
+    context = build_confirmation_email_context(
+        request, order, settings.DEFAULT_FROM_EMAIL
+    )
+    html_body = render_to_string(
+        "checkout/confirmation_email_body.html", context
+    )
     return HttpResponse(html_body)

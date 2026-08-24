@@ -1,9 +1,12 @@
+from typing import Iterable, cast
+
 from django import forms
-from typing import cast
+
 from .models import Order
 
 
 class OrderForm(forms.ModelForm):
+    """Form for collecting delivery and invoice details at checkout."""
 
     class Meta:
         model = Order
@@ -28,6 +31,7 @@ class OrderForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
+        """Style fields, add placeholders, and toggle required fields."""
         user_authenticated = kwargs.pop("user_authenticated", False)
         super().__init__(*args, **kwargs)
 
@@ -57,8 +61,12 @@ class OrderForm(forms.ModelForm):
 
         for field in self.fields:
             if field in ("delivery_county", "invoice_county"):
-                self.fields[field].widget.attrs["class"] = "form-control county-field"
-                self.fields[field].widget.attrs["placeholder"] = placeholders[field]
+                self.fields[field].widget.attrs["class"] = (
+                    "form-control county-field"
+                )
+                self.fields[field].widget.attrs["placeholder"] = (
+                    placeholders[field]
+                )
                 self.fields[field].label = False  # type: ignore
                 continue
 
@@ -66,14 +74,17 @@ class OrderForm(forms.ModelForm):
                 country_field = cast(forms.ChoiceField, self.fields[field])
                 country_field.widget.attrs["class"] = "form-control"
                 country_field.label = False  # type: ignore
+                choices_iterable = cast(
+                    Iterable[tuple[object, object]], country_field.choices
+                )
                 existing_choices = [
                     (str(code), str(name))
-                    for code, name in cast(
-                        list[tuple[object, object]], list(country_field.choices)
-                    )
+                    for code, name in choices_iterable
                     if code
                 ]
-                country_field.choices = [("", "Country *"), *existing_choices]
+                country_field.choices = [
+                    ("", "Country *"), *existing_choices
+                ]
                 continue
 
             if self.fields[field].required:
@@ -85,7 +96,8 @@ class OrderForm(forms.ModelForm):
             self.fields[field].widget.attrs["class"] = "form-control"
             self.fields[field].label = False  # type: ignore
 
-        # Make invoice fields not required (filled automatically if same as delivery)
+        # Invoice fields are optional: filled automatically when the
+        # "same as delivery" checkbox is used.
         invoice_fields = [
             "invoice_name",
             "invoice_surname",

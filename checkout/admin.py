@@ -9,12 +9,16 @@ from .models import Order, OrderItem
 
 
 class OrderItemInline(admin.TabularInline):
+    """Editable list of an order's line items, shown on the Order page."""
+
     model = OrderItem
     readonly_fields = ("total_price", "unit_price", "sku")
     extra = 0
 
 
 class OrderAdmin(admin.ModelAdmin):
+    """Admin configuration for the Order model."""
+
     inlines = (OrderItemInline,)
     readonly_fields = (
         "reference_code",
@@ -42,7 +46,14 @@ class OrderAdmin(admin.ModelAdmin):
         ),
         (
             "Financials",
-            {"fields": ("order_total", "delivery_cost", "promo_discount_percent", "grand_total")},
+            {
+                "fields": (
+                    "order_total",
+                    "delivery_cost",
+                    "promo_discount_percent",
+                    "grand_total",
+                )
+            },
         ),
         (
             "Delivery Details",
@@ -90,6 +101,7 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ("reference_code", "customer__name", "customer__surname")
 
     def save_formset(self, request, form, formset, change):
+        """Save order items and refresh the order total afterwards."""
         # Prepare OrderItems in memory without saving to DB yet
         instances = formset.save(commit=False)
 
@@ -114,14 +126,16 @@ class OrderAdmin(admin.ModelAdmin):
         order.save()
 
     def customer_display(self, obj):
+        """Return the customer's name, or the guest's delivery name."""
         if obj.customer:
             return f"{obj.customer.name} {obj.customer.surname}"
         return f"{obj.delivery_name} {obj.delivery_surname} (Guest)"
 
     customer_display.short_description = "Customer"  # type: ignore
 
-    # custom JavaScript to show/hide invoice fields based on "same as delivery" checkbox
     class Media:
+        # Shows/hides invoice fields based on the "same as delivery"
+        # checkbox.
         js = ("js/admin-invoice.js",)
 
 

@@ -1,25 +1,34 @@
 import json
-from django.core.mail import send_mail
-from django.template.loader import render_to_string
-from django.conf import settings
 from decimal import Decimal
-from django.http import HttpResponse
+
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+
 from accounts.models import UserCustomer
-from .models import Order, OrderItem
-from .email_utils import build_confirmation_email_context
 from products.email_utils import build_gift_email_context
 from products.models import Product
 
+from .email_utils import build_confirmation_email_context
+from .models import Order, OrderItem
+from .order_utils import (
+    build_order_kwargs,
+    create_gift_order_item,
+    create_order_item,
+)
+
 
 class StripeWHHandler:
-    """Handle Stripe webhooks"""
+    """Handle Stripe webhooks."""
 
     def __init__(self, request):
+        """Store the incoming request for use by the handler methods."""
         self.request = request
 
     def _send_confirmation_email(self, order):
-        """Send the user a confirmation email"""
+        """Send the user a confirmation email."""
         customer_email = order.email
         subject = render_to_string(
             'checkout/confirmation_email_subject.txt',
@@ -28,8 +37,12 @@ class StripeWHHandler:
         context = build_confirmation_email_context(
             self.request, order, settings.DEFAULT_FROM_EMAIL
         )
-        body = render_to_string('checkout/confirmation_email_body.txt', context)
-        html_body = render_to_string('checkout/confirmation_email_body.html', context)
+        body = render_to_string(
+            'checkout/confirmation_email_body.txt', context
+        )
+        html_body = render_to_string(
+            'checkout/confirmation_email_body.html', context
+        )
         send_mail(
             subject,
             body,
@@ -39,7 +52,7 @@ class StripeWHHandler:
         )
 
     def _send_gift_email(self, order):
-        """Send the gift-a-can email to the friend, if this order includes a gift."""
+        """Send the gift-a-can email to the friend, if this order has one."""
         gift_item = OrderItem.objects.filter(
             order=order, is_gift=True
         ).select_related('gift_contact', 'product').first()
@@ -64,19 +77,29 @@ class StripeWHHandler:
         html_body = render_to_string(
             'products/gift_email_body.html',
             build_gift_email_context(
-                self.request, product, order.customer, contact, gift_item.gift_message
+                self.request,
+                product,
+                order.customer,
+                contact,
+                gift_item.gift_message,
             ),
         )
-        send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [contact.email], html_message=html_body)
+        send_mail(
+            subject,
+            body,
+            settings.DEFAULT_FROM_EMAIL,
+            [contact.email],
+            html_message=html_body,
+        )
 
     def handle_event(self, event):
-        """Handle a generic/unknown/unexpected webhook event"""
+        """Handle a generic/unknown/unexpected webhook event."""
         return HttpResponse(
             content=f'Unhandled webhook received: {event["type"]}', status=200
         )
 
     def handle_payment_intent_succeeded(self, event):
-        """Handle the payment_intent.succeeded webhook from Stripe"""
+        """Handle the payment_intent.succeeded webhook from Stripe."""
         payment_intent = event.data.object
 
         # Convert metadata to a plain Python dict
@@ -113,8 +136,6 @@ class StripeWHHandler:
             customer.country = order_data.get("delivery_country", "")
             customer.save()
 
-        same_as_delivery = order_data.get("same_as_delivery", True)
-
         # Check if order already exists
         order = Order.objects.filter(
             stripe_pid=payment_intent.id,
@@ -126,7 +147,10 @@ class StripeWHHandler:
             self._send_confirmation_email(order)
             self._send_gift_email(order)
             return HttpResponse(
-                content=f'Webhook received: {event["type"]} | SUCCESS: Order already in database',
+                content=(
+                    f'Webhook received: {event["type"]} | '
+                    'SUCCESS: Order already in database'
+                ),
                 status=200,
             )
 
@@ -134,109 +158,43 @@ class StripeWHHandler:
         order = None
         try:
             order = Order.objects.create(
-                customer=customer,
+                **build_order_kwargs(order_data, customer, gift),
                 status=1,  # Completed
                 stripe_pid=payment_intent.id,
-                delivery_name=order_data.get("delivery_name", ""),
-                delivery_surname=order_data.get("delivery_surname", ""),
-                delivery_phone=order_data.get("delivery_phone", ""),
-                delivery_address=order_data.get("delivery_address", ""),
-                delivery_city=order_data.get("delivery_city", ""),
-                delivery_county=order_data.get("delivery_county", ""),
-                delivery_postcode=order_data.get("delivery_postcode", ""),
-                delivery_country=order_data.get("delivery_country", ""),
-                email=order_data.get("email", ""),
-                invoice_name=(
-                    order_data.get("delivery_name", "")
-                    if same_as_delivery
-                    else order_data.get("invoice_name", "")
-                ),
-                invoice_surname=(
-                    order_data.get("delivery_surname", "")
-                    if same_as_delivery
-                    else order_data.get("invoice_surname", "")
-                ),
-                invoice_phone=(
-                    order_data.get("delivery_phone", "")
-                    if same_as_delivery
-                    else order_data.get("invoice_phone", "")
-                ),
-                invoice_address=(
-                    order_data.get("delivery_address", "")
-                    if same_as_delivery
-                    else order_data.get("invoice_address", "")
-                ),
-                invoice_city=(
-                    order_data.get("delivery_city", "")
-                    if same_as_delivery
-                    else order_data.get("invoice_city", "")
-                ),
-                invoice_county=(
-                    order_data.get("delivery_county", "")
-                    if same_as_delivery
-                    else order_data.get("invoice_county", "")
-                ),
-                invoice_postcode=(
-                    order_data.get("delivery_postcode", "")
-                    if same_as_delivery
-                    else order_data.get("invoice_postcode", "")
-                ),
-                invoice_country=(
-                    order_data.get("delivery_country", "")
-                    if same_as_delivery
-                    else order_data.get("invoice_country", "")
-                ),
                 order_total=Decimal("0.00"),
-                promo_discount_percent=(
-                    Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) if gift else None
-                ),
             )
 
             # Create order items
             for item_id, quantity in cart.items():
-                product = Product.objects.get(id=item_id)
-                OrderItem.objects.create(
-                    order=order,
-                    product=product,
-                    sku=product.sku,
-                    unit_price=product.price,
-                    quantity=quantity,
-                    total_price=product.price * quantity,
-                )
+                create_order_item(order, item_id, quantity)
 
             if gift:
                 gift_product = Product.objects.get(id=gift["product_id"])
-                OrderItem.objects.create(
-                    order=order,
-                    product=gift_product,
-                    sku=gift_product.sku,
-                    unit_price=gift_product.price,
-                    quantity=1,
-                    total_price=gift_product.price,
-                    is_gift=True,
-                    gift_contact_id=gift["contact_id"],
-                    gift_message=gift.get("personal_message", ""),
-                )
+                create_gift_order_item(order, gift, gift_product)
 
         except Exception as e:
             if order:
                 order.delete()
             return HttpResponse(
-                content=f'Webhook received: {event["type"]} | ERROR: {e}', status=500
+                content=f'Webhook received: {event["type"]} | ERROR: {e}',
+                status=500,
             )
 
         self._send_confirmation_email(order)
         self._send_gift_email(order)
 
         return HttpResponse(
-            content=f'Webhook received: {event["type"]} | Order created', status=200
+            content=f'Webhook received: {event["type"]} | Order created',
+            status=200,
         )
 
     def handle_payment_intent_payment_failed(self, event):
-        """Handle the payment_intent.payment_failed webhook from Stripe"""
+        """Handle the payment_intent.payment_failed webhook from Stripe."""
         payment_intent = event.data.object
         order = Order.objects.filter(stripe_pid=payment_intent.id).first()
         if order:
             order.status = 2  # Cancelled
             order.save()
-        return HttpResponse(content=f'Webhook received: {event["type"]}', status=200)
+        return HttpResponse(
+            content=f'Webhook received: {event["type"]}', status=200
+        )

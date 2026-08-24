@@ -4,7 +4,7 @@ from milky.email_utils import build_email_font_urls
 
 
 def build_confirmation_email_context(request, order, contact_email):
-    """Build the template context shared by the real send and the preview view"""
+    """Build the email context shared by the send and preview views."""
     items = [
         {
             'item': item,
