@@ -8,7 +8,10 @@ from accounts.models import Contact
 
 
 def gift_item_from_session(request):
-    """Look up the product/contact for the gift can currently held in session, if any."""
+    """Look up the gift can's product/contact from the current session.
+
+    Returns None if there is no gift in progress.
+    """
     gift = request.session.get("gift")
     if not gift:
         return None
@@ -25,7 +28,7 @@ def gift_item_from_session(request):
 
 
 def cart_contents(request):
-    """Make cart contents available across all templates"""
+    """Make cart contents available across all templates."""
     cart_items = []
     total = Decimal("0.00")
     product_count = 0
@@ -71,16 +74,13 @@ def cart_contents(request):
             Decimal("0.01")
         )
 
-    context = {
+    return {
         "cart_items": cart_items,
         "gift_item": gift_item,
         "total": total,
         "product_count": product_count,
         "remaining_for_free_delivery": remaining,
-        "free_delivery_threshold": free_delivery_threshold,
         "delivery": delivery,
         "grand_total": grand_total,
         "promo_discount": promo_discount,
     }
-
-    return context
