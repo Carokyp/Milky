@@ -20,7 +20,8 @@ if (container) {
     renderer.toneMappingExposure = 1.5;
     container.appendChild(renderer.domElement);
 
-    // Soft studio-style reflections so PBR materials don't render flat/black without this, metal surfaces have nothing to reflect and look dark.
+    // Soft studio-style reflections so PBR materials don't render flat/black —
+    // without this, metal surfaces have nothing to reflect and look dark.
     const pmremGenerator = new THREE.PMREMGenerator(renderer);
     scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 
@@ -46,6 +47,11 @@ if (container) {
 
     new GLTFLoader().load(
         modelUrl,
+        /**
+         * Tones down the loaded model's metalness/roughness so it doesn't
+         * look like a mirror, then centers and scales it inside the tilt group.
+         * @param {Object} gltf - The loaded glTF asset.
+         */
         (gltf) => {
             can = gltf.scene;
 
@@ -84,6 +90,10 @@ if (container) {
 
     const clock = new THREE.Clock();
 
+    /**
+     * Renders one frame and schedules the next: swings the loaded can back
+     * and forth on its Y axis, then draws the scene.
+     */
     function animate() {
         requestAnimationFrame(animate);
 
@@ -96,6 +106,10 @@ if (container) {
     }
     animate();
 
+    /**
+     * Resizes the renderer and updates the camera aspect ratio to match the
+     * viewer container's current dimensions.
+     */
     function handleResize() {
         const width = container.clientWidth;
         const height = container.clientHeight;

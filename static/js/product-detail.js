@@ -1,6 +1,10 @@
-// Quantity selector on product detail page
+/**
+ * Wires up each quantity +/- button on the product detail page to adjust
+ * the quantity input, staying within the 1-99 range.
+ * @param {HTMLButtonElement} button - The increase/decrease button being configured.
+ */
 document.querySelectorAll('.btn-quantity-detail').forEach(button => {
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         const action = this.dataset.action;
         const quantityInput = document.querySelector('.quantity-input');
         const decreaseButton = document.querySelector('button[data-action="decrease"]');
@@ -28,19 +32,23 @@ document.querySelectorAll('.btn-quantity-detail').forEach(button => {
 // after the links get replaced by each fetch.
 const reviewsList = document.getElementById('reviews-list');
 if (reviewsList) {
-    reviewsList.addEventListener('click', function(event) {
-        const link = event.target.closest('.review-nav-btn:not(.disabled)');
+    /**
+     * Intercepts clicks on review pagination links and swaps in the next
+     * page of reviews via AJAX instead of a full navigation.
+     * @param {MouseEvent} e - The click event on the reviews container.
+     */
+    reviewsList.addEventListener('click', function (e) {
+        const link = e.target.closest('.review-nav-btn:not(.disabled)');
         if (!link) return;
 
-        event.preventDefault();
+        e.preventDefault();
 
         fetch(link.href, {
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
             credentials: 'same-origin',
         })
-            .then(response => response.json())
-            .then(data => { reviewsList.innerHTML = data.html; })
-            .catch(err => console.error('Failed to load reviews page', err));
+        .then(response => response.json())
+        .then(data => { reviewsList.innerHTML = data.html; })
+        .catch(err => console.error('Failed to load reviews page', err));
     });
 }
-
