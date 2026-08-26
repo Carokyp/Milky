@@ -762,6 +762,10 @@ textarea::placeholder {
     background-color: var(--light-cream);
 }
 
+.site-toast-body strong {
+    color: var(--brown);
+}
+
 .site-toast-body hr {
     border-color: var(--light-brown) !important;
 }
