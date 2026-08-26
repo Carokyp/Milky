@@ -20,7 +20,7 @@
 
     <div class="toast-body site-toast-body px-3 py-3">
         <div class="row">
-            <div class="col text-sm text-brown">{{message}}</div>
+            <div class="col text-sm text-brown">{{message|safe}}</div>
 
             {% if 'cart' in message.tags %}
             <hr class="mt-3 mb-3" />
