@@ -117,10 +117,19 @@ AUTHENTICATION_BACKENDS = [
 # Required by django.contrib.sites, used internally by allauth
 SITE_ID = 1
 
-# Console backend: emails are printed to the terminal instead of actually
-# sent. Replace with a real backend (e.g. SMTP) before production.
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "milky@example.com"
+if "DEVELOPMENT" in os.environ:
+    # Console backend: emails are printed to the terminal instead of
+    # actually sent.
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    DEFAULT_FROM_EMAIL = "milky@example.com"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+    EMAIL_HOST = "smtp.gmail.com"
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASS")
+    DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_HOST_USER")
 
 # django-allauth settings
 ACCOUNT_LOGIN_METHODS = {"email"}
