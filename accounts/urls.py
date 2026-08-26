@@ -21,4 +21,15 @@ urlpatterns = [
         views.edit_contact_view,
         name="edit_contact",
     ),
+    # TODO: Remove before deployment
+    path(
+        "preview/confirmation-signup-email/",
+        views.preview_confirmation_signup_email,
+        name="preview_confirmation_signup_email",
+    ),
+    path(
+        "preview/account-already-exists-email/",
+        views.preview_account_already_exists_email,
+        name="preview_account_already_exists_email",
+    ),
 ]

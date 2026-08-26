@@ -1,8 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.template.loader import render_to_string
 
 from checkout.models import Order
+from milky.email_utils import build_email_font_urls
 
 from .forms import CustomerForm, GiftACanForm
 from .models import Contact, UserCustomer
@@ -121,6 +124,54 @@ def delete_contact_view(request, contact_id):
     )
     request.session['profile_active_tab'] = 'contacts'
     return redirect('profile')
+
+
+# TODO: Remove before deployment
+@login_required
+def preview_confirmation_signup_email(request):
+    """Render the real account-confirmation email in the browser, for
+    styling work. Store-owner only. Uses the logged-in user's own data and
+    a dummy activation link, since previewing shouldn't create a real key.
+    """
+    if not request.user.is_superuser:
+        messages.error(request, 'Sorry, only store owners can do that.')
+        return redirect(reverse('home'))
+
+    context = {
+        'user': request.user,
+        'activate_url': request.build_absolute_uri(
+            reverse('account_confirm_email', args=['preview-key'])
+        ),
+        **build_email_font_urls(request),
+    }
+    html_body = render_to_string(
+        'account/email/email_confirmation_signup_message.html', context
+    )
+    return HttpResponse(html_body)
+
+
+# TODO: Remove before deployment
+@login_required
+def preview_account_already_exists_email(request):
+    """Render the real account-already-exists email in the browser, for
+    styling work. Store-owner only. Uses the logged-in user's own email and
+    a dummy reset link, since previewing shouldn't create a real one.
+    """
+    if not request.user.is_superuser:
+        messages.error(request, 'Sorry, only store owners can do that.')
+        return redirect(reverse('home'))
+
+    context = {
+        'email': request.user.email,
+        'password_reset_url': request.build_absolute_uri(
+            reverse('account_reset_password')
+        ),
+        **build_email_font_urls(request),
+    }
+    html_body = render_to_string(
+        'account/email/account_already_exists_message.html', context
+    )
+    return HttpResponse(html_body)
 
 
 def handler404(request, exception):

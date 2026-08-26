@@ -119,6 +119,23 @@ body {
     margin: 0 0 12px 0;
 }
 
+/* Centered call-to-action button inside an info-box panel — used by the
+   account confirmation and account-already-exists emails */
+.cta-section {
+    padding: 30px 40px;
+}
+
+.cta-button {
+    background-color: #e9cfb7;
+    color: #523122;
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
 /* Footer */
 .footer {
     padding: 22px 24px;

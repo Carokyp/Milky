@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Milky - Account Already Exists</title>
+<style>
+{% comment %}
+Same shared stylesheet as the other emails — see
+templates/emails/_email_styles.css and milky/adapter.py for why this has to
+be included rather than linked.
+{% endcomment %}
+{% include "emails/_email_styles.css" %}
+</style>
+</head>
+<body>
+<!-- Outer table: full-width page background behind the card, since some
+     mail clients ignore styles on <body> itself -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-bg">
+<tr>
+<td align="center" class="email-pad">
+
+    <table role="presentation" class="email-wrapper card" width="600" cellpadding="0" cellspacing="0">
+
+        <!-- Header / logo text -->
+        <tr>
+            <td align="center" class="bg-brown header">
+                <span class="logo-font text-cream text-uppercase logo-text">Account Already Exists</span>
+            </td>
+        </tr>
+
+        <!-- Message -->
+        <tr>
+            <td class="greeting text-center">
+                <h1 class="logo-font text-brown no-margin">Hi there!</h1>
+                <p class="text-muted greeting-text">
+                    Someone tried to sign up using <span class="text-brown fw-bold">{{ email }}</span>,
+                    but an account with that address already exists.
+                </p>
+                <p class="text-muted greeting-text">
+                    Already have an account? You can reset your password below.
+                </p>
+            </td>
+        </tr>
+
+        <!-- Password reset button -->
+        <tr>
+            <td class="cta-section text-center">
+                <a href="{{ password_reset_url }}" class="cta-button">Reset Password</a>
+            </td>
+        </tr>
+
+        <!-- Ignore note -->
+        <tr>
+            <td class="cta-section text-center">
+                <p class="text-muted no-margin">If you didn’t try to create an account, you can safely ignore this email.</p>
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td align="center" class="bg-brown-light footer">
+                <p class="text-cream text-sm no-margin">Thank you for choosing Milky!</p>
+            </td>
+        </tr>
+
+    </table>
+
+</td>
+</tr>
+</table>
+</body>
+</html>

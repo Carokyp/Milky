@@ -8,26 +8,39 @@
 
 {% block inner_content %}
 
-<h1 class="logo-font text-h2 text-uppercase mb-4">{% trans "Confirm E-mail Address" %}</h1>
-
+<div class="p-4">
 
 {% if confirmation %}
 
 {% user_display confirmation.email_address.user as user_display %}
 
-<p>{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+<div class="text-center mb-4">
+    <i class="fa-solid fa-envelope-circle-check fa-3x mb-3 text-light-brown"></i>
+    <h1 class="logo-font text-h2 text-uppercase mb-1">{% trans "Confirm E-mail Address" %}</h1>
+    <p class="text-muted text-sm">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a class="links" href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+</div>
 
 <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
 {% csrf_token %}
-    <button type="submit" class="btn-milky btn rounded-pill">{% trans 'Confirm' %}</button>
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-4">
+            <button type="submit" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold">{% trans 'Confirm' %}</button>
+        </div>
+    </div>
 </form>
 
 {% else %}
 
 {% url 'account_email' as email_url %}
 
-<p>{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+<div class="text-center mb-4">
+    <i class="fa-solid fa-triangle-exclamation fa-3x mb-3 text-light-brown"></i>
+    <h1 class="logo-font text-h2 text-uppercase mb-1">{% trans "Confirm E-mail Address" %}</h1>
+    <p class="text-muted text-sm">{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a class="links" href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+</div>
 
 {% endif %}
+
+</div>
 
 {% endblock %}
