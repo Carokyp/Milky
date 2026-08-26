@@ -119,8 +119,8 @@ on external stylesheets.
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="info-box">
                     <tr>
                         <td class="text-brown box-content">
-                            <p class="fw-bold">{{ order.delivery_name }} {{ order.delivery_surname }}</p>
-                            <p>{{ order.delivery_address }}, {{ order.delivery_city }}, {{ order.delivery_country }}</p>
+                            <p class="text-brown fw-bold">{{ order.delivery_name }} {{ order.delivery_surname }}</p>
+                            <p class="text-brown">{{ order.delivery_address }}, {{ order.delivery_city }}, {{ order.delivery_country }}</p>
                         </td>
                     </tr>
                 </table>
@@ -130,7 +130,7 @@ on external stylesheets.
         <!-- Contact -->
         <tr>
             <td class="text-center contact-section">
-                <p class="text-muted text-sm">
+                <p class="text-brown text-sm">
                     If you have any questions, contact us at
                     <a href="mailto:{{ contact_email }}" class="contact-link">{{ contact_email }}</a>.
                 </p>
