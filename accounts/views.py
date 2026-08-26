@@ -17,7 +17,9 @@ def profile_view(request):
     user_customers = UserCustomer.objects.filter(user=request.user).first()
     customer = user_customers.customer if user_customers else None
     orders = Order.objects.filter(customer=customer) if customer else None
-    contacts = customer.contact_set.all() if customer else []  # type: ignore
+    contacts = list(customer.contact_set.all()) if customer else []  # type: ignore
+    for contact in contacts:
+        contact.edit_form = GiftACanForm(instance=contact)
     contact_form = GiftACanForm()
     active_tab = request.session.pop('profile_active_tab', 'profile')
 

@@ -63,6 +63,10 @@ class GiftACanForm(forms.ModelForm):
             "name",
             "surname",
             "phone_number",
+            "address",
+            "postal_code",
+            "city",
+            "country",
         ]
 
         widgets = {
@@ -78,6 +82,15 @@ class GiftACanForm(forms.ModelForm):
             "phone_number": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Phone Number"}
             ),
+            "address": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Friend's Address"}
+            ),
+            "postal_code": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Postal Code"}
+            ),
+            "city": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "City"}
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -85,3 +98,9 @@ class GiftACanForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].label = False  # type: ignore
+
+        # Replace blank label on country dropdown
+        typed_country_field = cast(Any, self.fields["country"])
+        choices = list(typed_country_field.choices)
+        choices[0] = ("", "Country")
+        typed_country_field.choices = choices

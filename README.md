@@ -582,6 +582,10 @@ All four custom error pages share the same branded layout: a breakpoint-swapped 
 - **A loyalty or rewards program**
 - **Live chat support**
 - **Multiple photos per review**
+- **Shipping a gifted can to the recipient's own address** — the friend's
+  address is now collected and saved on the Contact, but the order itself
+  still ships to the buyer's address; there's no support yet for a single
+  order having two different delivery addresses
 
 ## Technologies Used
 

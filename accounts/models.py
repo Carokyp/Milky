@@ -46,6 +46,15 @@ class Contact(models.Model):
     phone_number = models.CharField(max_length=20)
     email = models.EmailField()
 
+    # Address — required, like Order.delivery_address, since a Contact is
+    # created at the moment of an actual gift, not a work-in-progress
+    # profile like Customer
+    address = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    county = models.CharField(max_length=100, null=True, blank=True)
+    postal_code = models.CharField(max_length=20)
+    country = CountryField()
+
     # Technical
     ip_address = models.GenericIPAddressField()
 
