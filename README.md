@@ -778,6 +778,11 @@ Testing on this project has been manual so far, centered on the flows exercised 
 - Stripe webhook endpoint registered and `STRIPE_WH_SECRET` set
 - HTTPS enabled (automatic on Heroku)
 
+**Note:** local (`localhost:8000/admin/`) and Heroku
+(`your-app.herokuapp.com/admin/`) use two separate databases — an account or
+order created on one will not appear in the other. Always check the admin
+that matches where the action actually happened.
+
 ## Credits
 
 ### Visual Design References
