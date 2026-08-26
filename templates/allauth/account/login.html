@@ -18,8 +18,8 @@
         <form class="login" method="POST" action="{% url 'account_login' %}">
             {% csrf_token %}
             {% if form.non_field_errors %}
-            <div class="text-danger text-sm mb-3">
-                {% for error in form.non_field_errors %}<p class="mb-0">{{ error }}</p>{% endfor %}
+            <div class="mb-3">
+                {% for error in form.non_field_errors %}<p class="text-danger text-sm mb-0">{{ error }}</p>{% endfor %}
             </div>
             {% endif %}
             {{ form.login|as_crispy_field }}

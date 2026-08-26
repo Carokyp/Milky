@@ -622,6 +622,14 @@ dd {
     font-size: var(--font-sm);
 }
 
+/* crispy-forms wraps field errors in a <p>, which the global `p { }`
+   rule above would otherwise override back to the default text size
+   and color, hiding the intended small red error style. */
+.invalid-feedback p {
+    font-size: inherit;
+    color: inherit;
+}
+
 select:invalid,
 select option[value=""] {
     color: var(--placeholder-color) !important;
