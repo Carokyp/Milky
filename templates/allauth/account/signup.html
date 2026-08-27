@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block head_title %}{% trans "Sign Up" %}{% endblock %}
+{% block head_title %}{% trans "Register" %}{% endblock %}
 
 {% block inner_content %}
 
@@ -10,7 +10,7 @@
 
     <!-- Sign up form -->
     <section class="col-12 col-md-6 p-4 d-flex flex-column" aria-label="{% trans 'Sign up form' %}">
-        <h1 class="logo-font text-h2 text-uppercase mb-1">{% trans "Sign Up" %}</h1>
+        <h1 class="logo-font text-h2 text-uppercase mb-1">{% trans "Register" %}</h1>
         <p class="text-muted text-sm mb-4">Join Milky, save your delivery info, track your orders and enjoy a sweeter checkout.</p>
 
         <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
@@ -19,7 +19,7 @@
             {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
             {% endif %}
-            <button type="submit" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold mb-2 mt-2">{% trans "Sign Up" %}</button>
+            <button type="submit" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold mb-2 mt-2">{% trans "Register" %}</button>
             <a class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center d-block mb-4" href="{% url 'account_login' %}">{% trans "Back to Login" %}</a>
         </form>
 
