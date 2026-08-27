@@ -11,7 +11,7 @@
         <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
         <li><a class="dropdown-item" href="{% url 'account_logout' %}">Sign Out</a></li>
         {% else %}
-        <li><a class="dropdown-item" href="{% url 'account_signup' %}">Register</a></li>
+        <li><a class="dropdown-item" href="{% url 'account_signup' %}">Sign Up</a></li>
         <li><a class="dropdown-item" href="{% url 'account_login' %}">Sign In</a></li>
         {% endif %}
     </ul>
