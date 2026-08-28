@@ -480,121 +480,134 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 1. The browser is redirected back from Stripe to `checkout_success`, which creates the `Order` + `OrderItem`s directly — this is the happy path.
 2. Independently, Stripe's `payment_intent.succeeded` webhook creates the same order from the PaymentIntent's metadata **if it doesn't already exist** (looked up by `stripe_pid`) — this is the reliability fallback, and it's also the only path that actually sends the confirmation and gift emails.
 
-### Skeleton
+#### Schema Characteristics
 
-No dedicated wireframe files were produced for this project — the responsive layout was designed and refined directly in the browser across the 768/1024/1440/1800px breakpoints.
-
-### Surface
-
-#### Visual Style
-
-**Design:**
-A warm, playful storefront built around soft rounded cards, layered product imagery, and a cream-and-brown color language. Product cards are composed from three stacked images (background, floating objects, can) for a bit of depth, and a rotating 3D can model anchors the home page hero.
-
-**Typography:**
-`Bebas Neue` is used for headings, `Poppins` for body text — both loaded from Google Fonts. Type sizes are fluid (`clamp()`-based) rather than jumping at fixed breakpoints, so headings and body text scale smoothly with the viewport.
-
-#### Colors
-The palette centers on warm cream backgrounds with brown text, gold for primary calls to action, and green for success/discount highlights.
-
-| Token | Hex | Use |
-|---|---|---|
-| `--light-cream` | `#faeade` | Page background |
-| `--brown` | `#523122` | Primary text |
-| `--light-brown` | `#8c5e4a` | Secondary text |
-| `--gold` | `#fbcb62` | Primary CTA buttons |
-| `--green` | `#198754` | Success states, discounts |
-| `--danger` | `#dc3545` | Errors |
-| `--card-background` | `#fafafa` | Card surfaces |
-| `--footer-background` | `#e9cfb7` | Footer |
-
-<p align="center">
-  <img src="docs/images/Color.png" alt="Milky color palette" style="width: 32%; max-width: 300px; height: auto;">
-</p>
+- **One relational database**, accessed only through the Django ORM and migrations — no raw SQL.
+- **Delete behaviour is chosen per relationship:** `CASCADE` for tightly-owned rows (an `Order`'s items, a `Customer`'s contacts, a `Product`'s reviews), and `SET_NULL` where a record should outlive its parent (a guest `Order` when its `Customer` is removed, a `Review` when its linked `Order` goes, a gifted `OrderItem` when the `Contact` is deleted).
+- **Money is stored as `DecimalField`**, never a float.
+- **Purchase data is snapshotted:** `OrderItem` copies the product's `sku` and `unit_price` at checkout, so later product edits never rewrite past orders.
+- **Totals are denormalised** onto `Order` (`order_total`, `delivery_cost`) and kept in sync by `save()` overrides on `Order` and `OrderItem`.
+- **Transient state stays out of the database:** the cart and the in-progress gift live in the session; the first row is written only when an order is placed.
+- **`User` ↔ `Customer` is a deliberate join model** (`UserCustomer`) rather than a `OneToOneField` — treated as 1:1 in code but not constrained at the database level.
 
 ## Features
 
-#### **Navigation**
-- **Public Navigation**: Home, All Products, Gift a Can, Sign In, Register
-- **Authenticated Navigation**: Home, All Products, Gift a Can, My Profile, Sign Out, plus **Products Management** for superusers only
+### Existing Features
+
+#### **Header & Navigation**
+
+- **Public Navigation:**
+  - Home
+  - All Products
+  - Gift a Can
+  - Cart
+  - Register
+  - Sign In
+
+- **Authenticated Navigation:**
+  - Home
+  - All Products
+  - Gift a Can
+  - Cart
+  - My Profile
+  - Sign Out
+  - Products Management *(superusers only)*
 
 <p align="center">
   <img src="docs/images/Navbar.png" alt="Milky navigation bar" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
-- Mobile navigation collapses into a menu with an auto-close-on-outside-click behavior
+- On mobile, the navigation collapses into a toggle menu that closes when you click outside it.
 
 #### **Home Page**
-- **Hero Section**: an animated, rotating 3D can (rendered with Three.js) over a brand watermark, with a "Shop Now" call to action
-- **Our Favorites**: a grid of the products flagged `featured`, each card built from three layered images and animated with a subtle mouse-tilt parallax effect; superusers see an Edit/Delete overlay on every card
-- **It's Still Good For You**: a benefits section with a stats card (Calcium / Protein / Vitamin D)
-- **Moments That Taste Better**: a lifestyle photo section
+
+- **Hero Section:**
+  - An animated, rotating 3D can (rendered with Three.js) over a brand watermark
+  - A "Shop Now" call to action
+- **Our Favorites:**
+  - A grid of the products flagged `featured`
+  - Each card is built from three layered images, with a subtle mouse-tilt parallax effect
+  - Superusers see an Edit / Delete overlay on every card
+- **It's Still Good For You:** a benefits section with a stats card (Calcium / Protein / Vitamin D)
+- **Moments That Taste Better:** a lifestyle photo section
 
 <p align="center">
   <img src="docs/images/Home.png" alt="Milky home page" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
 #### **All Products**
-- Full product grid using the same card component and superuser overlay as the home page
-- Each card links through to its product detail page
+
+- Full product grid, using the same card component and superuser overlay as the home page
+- Each card links through to its Product Detail Page
 
 <p align="center">
   <img src="docs/images/All_Products.png" alt="All products page" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
-#### **Product Detail**
-- Layered product image, with an "Coming Soon" state if a product isn't yet available, and an "Out of Stock" state at zero stock
-- Quantity selector and Add to Cart
-- Benefit highlight icons and a nutrition-facts table (per 100ml / per 330ml)
-- Paginated reviews (3 per page, loaded via AJAX without a full reload) with a star-rating display
-- A star-picker review form for authenticated users, or a "Sign In to leave a review" prompt for guests
+#### **Product Detail Page**
+
+- **Product image:** the layered can visual, with a "Coming Soon" state when a product isn't available yet and an "Out of Stock" state at zero stock
+- **Add to cart:** a quantity selector and an Add to Cart button
+- **Product info:** benefit highlight icons and a nutrition-facts table (per 100ml / per 330ml)
+- **Reviews:**
+  - Paginated 3 per page, loaded via AJAX with no full reload, each with a star-rating display
+  - A star-picker review form for signed-in users, or a "Sign In to leave a review" prompt for guests
 
 <p align="center">
   <img src="docs/images/Product_Detail.png" alt="Product detail page" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
 #### **Gift a Can**
-- **Logged out**: a promo landing page — hero image, a 3-step "how it works" explainer, and Sign In/Register calls to action
-- **Logged in**: a full gift form — a custom product picker, an optional personal message, and either a saved contact or new-friend fields
-- If a gift is already in the session, the page shows a locked state instead (one gift per order)
+
+- **Logged out:** a promo landing page — hero image, a 3-step "how it works" explainer, and Sign In / Register calls to action
+- **Logged in:** the full gift form —
+  - A custom product picker
+  - An optional personal message
+  - Either a saved contact or new-friend fields
+- **One gift per order:** if a gift is already in the session, the page shows a locked state instead
 
 <p align="center">
   <img src="docs/images/Gift_a_Can.png" alt="Gift a Can page" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
 #### **Cart**
-- Line items with an AJAX quantity stepper (clamped 1–99) and AJAX remove
-- A separate, non-editable gift line if a Gift a Can is in progress, with its own remove button
-- An order summary card (subtotal, delivery, gift discount, grand total) and a live free-delivery progress banner
-- **Empty state**: cart icon, "Your cart is empty" message, Shop Now button
+
+- **Line items:** an AJAX quantity stepper (clamped 1–99) and AJAX remove
+- **Gift line:** a separate, non-editable line if a Gift a Can is in progress, with its own remove button
+- **Order summary:** subtotal, delivery, gift discount, grand total, and a live free-delivery progress banner
+- **Empty state:** cart icon, "Your cart is empty" message, and a Shop Now button
 
 <p align="center">
   <img src="docs/images/Cart.png" alt="Cart page" style="width: 50%; max-width: 550px; height: auto;">
 </p>
 
-#### **Checkout**
-- Details / Delivery / Invoice / Payment sections, laid out in a two-column responsive layout from tablet width up, with a sticky order summary
-- "Same as delivery" checkbox that hides/shows the invoice fields
-- "Save this delivery info to my profile" checkbox for authenticated users, or a login/register prompt for guests
-- Stripe Payment Element, mounted only once it scrolls into view
-- Disabled "Complete Order" button until Stripe reports the payment form is ready
+#### **Checkout Page**
+
+- **Layout:** Details / Delivery / Invoice / Payment sections, in a two-column responsive layout from tablet width up, with a sticky order summary
+- **Same as delivery:** a checkbox that hides / shows the invoice fields
+- **Save details:** a "Save this delivery info to my profile" checkbox for signed-in users, or a login / register prompt for guests
+- **Payment:**
+  - Stripe Payment Element, mounted only once it scrolls into view
+  - The "Complete Order" button stays disabled until Stripe reports the form is ready
 
 <p align="center">
   <img src="docs/images/Checkout.png" alt="Checkout page" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
 #### **Order Confirmation**
-- Reference code, itemized line items, price recap, delivery address, and a "Continue Shopping" call to action
+
+- Reference code, itemised line items, price recap, delivery address, and a "Continue Shopping" call to action
 - The same template doubles as the order-detail view reached from the profile's Orders tab
 
 <p align="center">
   <img src="docs/images/Order_Confirmation.png" alt="Order confirmation page" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
-#### **Profile**
-- **My Profile**: edit name, surname, phone, address, city, postal code, and country
-- **Orders**: a list of past orders with a status badge (Pending / Completed / Cancelled), linking to the order detail view, or a "No orders found yet." empty state
-- **Contacts**: saved gift recipients, with inline edit-in-place, a delete-confirmation modal, an "Add a Friend" form, or a "No friends yet." empty state
+#### **Profile Page**
+
+- **My Profile:** edit name, surname, phone, address, city, postal code, and country
+- **Orders:** a list of past orders with a status badge (Pending / Completed / Cancelled) linking to the order detail view, or a "No orders found yet." empty state
+- **Contacts:** saved gift recipients, with inline edit-in-place, a delete-confirmation modal, an "Add a Friend" form, or a "No contacts yet." empty state
 - The active tab is remembered across redirects (for example, after adding a contact you land back on the Contacts tab)
 
 <p align="center">
