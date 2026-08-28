@@ -905,117 +905,303 @@ Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best 
 | Toast notifications pinned to the raw screen edge on screens wider than 1800px | Fixed | The toast wrapper used Bootstrap's `w-100` on a `position: fixed` element, which resolves against the viewport rather than the centered, max-width body. It's now capped at the same max content width and centered. |
 | Horizontal overflow on the home page on mobile | Fixed | Two Bootstrap `.row`s sat directly inside a `<section>` with no `.container` parent, so the default negative row gutters bled past the viewport edge. Wrapping both rows in `.container` fixed it. |
 | Account pages skipped from `<body>` straight to `<h2>`, with no `<h1>` anywhere on the page | Fixed | Promoted each account page's main heading to `<h1>`, with a sizing utility class so the visual size didn't change. |
-| `checkout/views.py` calls `reverse("products")` and `reverse("cart")`, but those URL names don't exist (they're `all_products` and `view_cart`) | Unresolved | Would raise `NoReverseMatch` if those specific redirect paths are hit (checking out with an empty cart, or a missing product during order confirmation). |
-| Hardcoded `DEBUG=True` and SQLite-only configuration | Unresolved | Not a bug in behavior, but a real gap before this project could go to production — see [Security & Current Limitations](#security--current-limitations). |
+| `checkout/views.py` called `reverse("products")` / `reverse("cart")` — URL names that don't exist | Fixed | Updated to the real names, `all_products` and `view_cart`. |
+| `DEBUG=True` hardcoded and SQLite-only configuration | Fixed | `settings.py` now reads `DEBUG` from the environment, connects to PostgreSQL via `DATABASE_URL`, and serves static / media from AWS S3 — see [Deployment](#deployment). |
+
+No known unresolved bugs at this time.
 
 ### Testing User Stories
 
-| User Story | How It's Fulfilled | Features/Pages Used |
-|------------|-------------------|---------------------|
-| As a new visitor, I want to see the product range and understand the brand. | The home page opens with a hero and a featured-products showcase; All Products shows the full catalogue. | Home page, All Products |
-| As a new visitor, I want to view a product's description, nutrition facts, and reviews. | The product detail page shows all three, plus a paginated review list. | Product Detail |
-| As a new visitor, I want to add products to my cart and check out as a guest. | The cart and checkout flows don't require an account; `Order.customer` is nullable for guest orders. | Cart, Checkout |
-| As a new visitor, I want to create an account so my details are saved for next time. | Registration via django-allauth, with delivery details saved to the `Customer` profile on request. | Register, Checkout ("save this delivery info") |
-| As an existing user, I want my checkout form pre-filled. | The checkout view builds the form from the signed-in user's saved `Customer` record. | Checkout |
-| As an existing user, I want to view my order history. | The profile's Orders tab lists past orders, linking to the reused confirmation template. | Profile — Orders tab |
-| As an existing user, I want to save a friend as a contact for gifting. | The profile's Contacts tab supports full CRUD on saved gift recipients. | Profile — Contacts tab, Gift a Can |
+All user stories from [User Stories](#user-stories) are validated below against the features that fulfil them.
+
+#### New Visitor Stories
+
+| User Story | How It's Fulfilled | Features / Pages Used |
+|---|---|---|
+| As a new visitor, I want to see the product range and understand the brand. | The home page opens with a hero and a featured-products showcase; All Products shows the full catalogue. | Home Page, All Products |
+| As a new visitor, I want to view a product's description, nutrition facts, and reviews. | The Product Detail Page shows all three, plus a paginated review list. | Product Detail Page |
+| As a new visitor, I want to add products to my cart and check out as a guest. | The cart and checkout flows don't require an account; `Order.customer` is nullable for guest orders. | Cart, Checkout Page |
+| As a new visitor, I want to create an account so my details are saved for next time. | Registration via django-allauth, with delivery details saved to the `Customer` profile on request. | Register, Checkout Page ("save this delivery info") |
+
+#### Existing User Stories
+
+| User Story | How It's Fulfilled | Features / Pages Used |
+|---|---|---|
+| As an existing user, I want my checkout form pre-filled. | The checkout view builds the form from the signed-in user's saved `Customer` record. | Checkout Page |
+| As an existing user, I want to view my order history. | The profile's Orders tab lists past orders, linking to the reused confirmation template. | Profile Page — Orders tab |
+| As an existing user, I want to save a friend as a contact for gifting. | The profile's Contacts tab supports full CRUD on saved gift recipients. | Profile Page — Contacts tab, Gift a Can |
 | As an existing user, I want to reset my password. | django-allauth's password reset flow. | Password Reset |
-| As an existing user, I want to leave a star rating and comment on a product. | The review form on the product detail page, restricted to authenticated users. | Product Detail |
-| As a user, I want clear confirmation before a destructive action. | Shared confirmation modals for product deletion and contact deletion. | Products Management, Profile — Contacts tab |
+| As an existing user, I want to leave a star rating and comment on a product. | The review form on the Product Detail Page, restricted to authenticated users. | Product Detail Page |
+
+#### All Users Stories
+
+| User Story | How It's Fulfilled | Features / Pages Used |
+|---|---|---|
+| As a user, I want clear confirmation before a destructive action. | Shared confirmation modals for product deletion and contact deletion. | Products Management, Profile Page — Contacts tab |
 | As a user, I want feedback after every action. | The toast notification system, plus inline form validation errors. | Site-wide |
-| As a user, I want the site to work well across devices. | Fluid typography and four custom breakpoints (768/1024/1440/1800px), verified manually across mobile, tablet, laptop, and wide desktop. | Site-wide |
+| As a user, I want the site to work well across devices. | Fluid typography and four custom breakpoints (768 / 1024 / 1440 / 1800px), verified manually across mobile, tablet, laptop, and wide desktop. | Site-wide |
 
-## Security & Current Limitations
+## Security
 
-- **Environment variables:** `SECRET_KEY`, `STRIPE_PUBLIC_KEY`, `STRIPE_SECRET_KEY`, and `STRIPE_WH_SECRET` are all read from environment variables (via a local, gitignored `env.py` in development), not hard-coded.
-- **CSRF protection:** Django's CSRF middleware is active; server-rendered forms include `{% csrf_token %}`, and the Stripe webhook endpoint is the only intentionally `@csrf_exempt` view (verified instead via the Stripe signature header).
-- **Authentication & access control:** views that mutate data are gated with `@login_required`; the Products Management views additionally check `request.user.is_superuser` before allowing add/edit/delete. Order confirmation pages are scoped so a guest can only view the order matching their own session, and an authenticated user can only view their own orders.
-- **Mandatory email verification:** `django-allauth` is configured with `ACCOUNT_EMAIL_VERIFICATION = "mandatory"`, so an account can't sign in until its email is confirmed.
+- **Secrets in environment variables:** `SECRET_KEY`, the three Stripe keys (`STRIPE_PUBLIC_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WH_SECRET`), the AWS credentials and the email credentials are all read from the environment — via a local, git-ignored `env.py` in development and Heroku config vars in production. Nothing sensitive is committed to the repo.
+- **`DEBUG` is environment-driven:** `DEBUG = "DEVELOPMENT" in os.environ`, so it is off in production. `ALLOWED_HOSTS` is limited to localhost and the Heroku app domain.
+- **CSRF protection:** Django's CSRF middleware is active and every server-rendered form includes `{% csrf_token %}`. The Stripe webhook is the only `@csrf_exempt` view — it is verified instead through the Stripe signature header (`STRIPE_WH_SECRET`).
+- **Authentication & access control:** account-only views (profile, contacts, reviews) are gated with `@login_required`; Products Management additionally goes through a `superuser_required` decorator (`add_product` / `edit_product` / `delete_product`). Cart and checkout stay open to guests by design, but no cart action writes to the database. Order pages are scoped so a guest can only see the order tied to their own session (`session["last_order"]`), and a signed-in user only orders linked to their own `Customer`.
+- **Mandatory email verification:** `ACCOUNT_EMAIL_VERIFICATION = "mandatory"` — a new account cannot sign in until its email is confirmed.
+- **Payment data:** card details are entered into Stripe's hosted Payment Element and never reach the Django server or database; only the Stripe PaymentIntent id is stored on the order.
+- **Passwords:** hashed with Django's default PBKDF2 hasher; the reset flow uses django-allauth's signed, time-limited email tokens.
 
-**Not yet production-configured** — this project currently runs as a local development app, and the following would need addressing before a real deployment:
-- `DEBUG = True` is hardcoded in `settings.py`, rather than driven by an environment variable.
-- `ALLOWED_HOSTS` only includes `localhost`/`127.0.0.1`.
-- The database is hardcoded to a local SQLite file — there's no `DATABASE_URL`/`dj_database_url` wiring for a hosted Postgres database yet.
-- Static files have no `STATIC_ROOT` or WhiteNoise configuration, and media (product images) is stored on the local filesystem rather than a cloud storage backend like Cloudinary or S3 — neither will work as-is on Heroku's ephemeral filesystem.
-- The email backend is the console backend (emails print to the terminal) — a real SMTP/transactional email provider would be needed in production.
-- `requirements.txt` doesn't yet include a WSGI server (`gunicorn`), static file serving (`whitenoise`), or a Postgres driver (`psycopg2`) — see the deployment guide below for what to add.
+### Could be hardened
+
+- No explicit `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE` or HSTS settings — Heroku serves the site over HTTPS, but Django is not yet told to require secure cookies or to redirect HTTP → HTTPS itself.
+- `django-allauth`'s `socialaccount` app is installed with no providers configured.
 
 ## Deployment
 
-### Heroku Deployment Guide
+The application is hosted on **Heroku**, with all static files and media stored on **AWS S3**, payments handled by **Stripe**, and transactional email sent through **Gmail**.
 
-**Milky** is a standard Django app and can be deployed on Heroku, but — as noted above — it isn't deployment-ready out of the box yet. This guide covers both what needs to be added first and the deployment steps themselves.
+### Heroku
 
-#### What to add before deploying
+The application was deployed to Heroku. The steps to deploy are as follows:
 
-1. Add these to `requirements.txt`:
+1. Log in to the [Heroku dashboard](https://dashboard.heroku.com/) for an overview of your apps.
+2. Click **New → Create new app**.
+3. Choose a unique app name and a region, then click **Create app**.
+4. Open the **Resources** tab, search the Add-ons bar for **Heroku Postgres**, and add it (an eco/mini plan is enough for this project). This sets a `DATABASE_URL` config var automatically. *(Any hosted PostgreSQL provider works — set `DATABASE_URL` yourself if you use one.)*
+5. Locally, install the database and server packages: `pip install dj-database-url psycopg2 gunicorn`, then `pip freeze > requirements.txt`.
+6. In `milky/settings.py`, `import dj_database_url` and switch `DATABASES` to use PostgreSQL in production and SQLite in development:
+
+   ```python
+   if "DATABASE_URL" in os.environ:
+       DATABASES = {
+           "default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
+       }
+   else:
+       DATABASES = {
+           "default": {
+               "ENGINE": "django.db.backends.sqlite3",
+               "NAME": BASE_DIR / "db.sqlite3",
+           }
+       }
    ```
-   gunicorn
-   whitenoise
-   dj-database-url
-   psycopg2-binary
-   ```
-   (Add `cloudinary` and `django-cloudinary-storage` too if you want product images stored off the local filesystem, which Heroku's ephemeral filesystem requires.)
-2. Add a `Procfile` at the project root:
+
+7. Add a `Procfile` in the project root:
+
    ```
    web: gunicorn milky.wsgi:application
    ```
-3. In `milky/settings.py`, switch `DEBUG` and `ALLOWED_HOSTS` to read from environment variables, wire up `dj_database_url.parse(os.environ.get("DATABASE_URL"))` in `DATABASES`, add WhiteNoise to `MIDDLEWARE` with `STATIC_ROOT` set, and configure a real `EMAIL_BACKEND`.
 
-#### Prerequisites
+8. Set `SECRET_KEY` and `DEBUG` to read from the environment:
 
-- A Heroku account
-- A hosted PostgreSQL database (Heroku Postgres, or an external provider)
-- A Stripe account (test or live keys)
-- A Cloudinary account, if you've added cloud media storage
-- The code pushed to a GitHub repository
-
-#### Environment Variables Required
-
-| Variable | Description |
-|----------|-------------|
-| `SECRET_KEY` | Django secret key — generate with `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"` |
-| `DATABASE_URL` | PostgreSQL connection string |
-| `STRIPE_PUBLIC_KEY` | Stripe publishable key |
-| `STRIPE_SECRET_KEY` | Stripe secret key |
-| `STRIPE_WH_SECRET` | Stripe webhook signing secret |
-| `CLOUDINARY_URL` | Only if cloud media storage has been added |
-
-#### Step-by-Step Deployment Instructions
-
-1. **Push code to GitHub**
-   ```bash
-   git push origin main
+   ```python
+   SECRET_KEY = os.environ.get("SECRET_KEY")
+   DEBUG = "DEVELOPMENT" in os.environ
    ```
-2. **Create a Heroku app** at [dashboard.heroku.com](https://dashboard.heroku.com) → "New" → "Create new app".
-3. **Connect the GitHub repository** under the app's "Deploy" tab.
-4. **Set the environment variables** above under "Settings" → "Reveal Config Vars".
-5. **Deploy** via "Deploy" tab → "Manual deploy" → "Deploy Branch".
-6. **Run migrations**: "More" → "Run console" → `python manage.py migrate`.
-7. **Create a superuser**: "More" → "Run console" → `python manage.py createsuperuser`.
-8. **Add the Stripe webhook endpoint** (`https://<your-app>.herokuapp.com/checkout/webhook/`) in the Stripe dashboard, and set `STRIPE_WH_SECRET` to the signing secret it gives you.
-9. **Open the app** and load the product fixtures if the database is empty: `python manage.py loaddata products/fixtures/products.json products/fixtures/reviews.json`.
 
-#### Production Checklist (Before Going Live)
-- `DEBUG = False`
-- `SECRET_KEY` set to a strong, random value
-- `DATABASE_URL` pointing at a real Postgres database
-- Static files collecting correctly (WhiteNoise + `collectstatic`)
-- Media storage configured (Cloudinary/S3, not the local filesystem)
-- A real email backend configured (not the console backend)
-- Stripe webhook endpoint registered and `STRIPE_WH_SECRET` set
-- HTTPS enabled (automatic on Heroku)
+9. Add the Heroku app's hostname to `ALLOWED_HOSTS`:
 
-**Note:** local (`localhost:8000/admin/`) and Heroku
-(`your-app.herokuapp.com/admin/`) use two separate databases — an account or
-order created on one will not appear in the other. Always check the admin
-that matches where the action actually happened.
+   ```python
+   ALLOWED_HOSTS = ["milky-app-839f694f035d.herokuapp.com", "localhost", "127.0.0.1"]
+   ```
+
+10. In Heroku **Settings → Reveal Config Vars**, add:
+    - `SECRET_KEY` — generate one with a [Django secret key generator](https://djecrety.ir/)
+    - `DISABLE_COLLECTSTATIC` = `1` (temporary — remove it once AWS S3 is configured below)
+11. Run migrations and create an admin account from the Heroku console (**More → Run console**):
+    - `python manage.py migrate`
+    - `python manage.py createsuperuser`
+12. Load the sample catalogue if the database is empty:
+    `python manage.py loaddata products/fixtures/products.json products/fixtures/reviews.json`
+13. Under the **Deploy** tab, connect the GitHub repository, then either **Deploy Branch** manually or **Enable Automatic Deploys** for `main`.
+14. Commit and push all the changes above to GitHub.
+
+> **Note:** local (`localhost:8000/admin/`) and Heroku (`.../admin/`) use two separate databases — an account or order created on one will not appear on the other.
+
+### Amazon Web Services (AWS)
+
+AWS S3 is used to store all static files and media. To configure it:
+
+1. Log in to AWS and open the **S3** service. Click **Create bucket**.
+2. Give the bucket a name (the project uses `milky-static`) and pick a region (`us-east-1`). Under **Object Ownership**, select **ACLs enabled** + **Bucket owner preferred**; under **Block Public Access**, **uncheck** "Block all public access" and tick the acknowledgement box, then **Create bucket**.
+3. Open the bucket → **Properties** → **Static website hosting** → **Edit** → **Enable** → **Host a static website**, with `index.html` as the index document and `error.html` as the error document.
+4. **Permissions → CORS → Edit**, and paste:
+
+   ```json
+   [
+       {
+           "AllowedHeaders": ["Authorization"],
+           "AllowedMethods": ["GET"],
+           "AllowedOrigins": ["*"],
+           "ExposeHeaders": []
+       }
+   ]
+   ```
+
+5. **Permissions → Bucket policy → Edit → Policy generator** (opens a new tab). Choose **S3 Bucket Policy**, set **Principal** to `*`, **Action** to `GetObject`, paste the bucket **ARN** (copied from the bucket policy page), click **Add Statement → Generate Policy**, and copy it back into the editor. Append `/*` to the `Resource` value before saving:
+
+   ```json
+   {
+       "Version": "2012-10-17",
+       "Id": "Policy...",
+       "Statement": [
+           {
+               "Sid": "Stmt...",
+               "Effect": "Allow",
+               "Principal": "*",
+               "Action": "s3:GetObject",
+               "Resource": "arn:aws:s3:::milky-static/*"
+           }
+       ]
+   }
+   ```
+
+6. **Permissions → Access control list (ACL) → Edit**: tick **List** under **Everyone (public access)**, acknowledge the warning, and save.
+7. Go to **IAM → User groups → Create group** (e.g. `manage-milky`).
+8. **IAM → Policies → Create policy → JSON tab → Actions → Import policy → AmazonS3FullAccess**. In the imported JSON, replace the single `Resource` value with an array of your bucket ARN twice — once plain, once with `/*`:
+
+   ```json
+   {
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Sid": "Statement1",
+               "Effect": "Allow",
+               "Action": ["s3:*"],
+               "Resource": [
+                   "arn:aws:s3:::milky-static",
+                   "arn:aws:s3:::milky-static/*"
+               ]
+           }
+       ]
+   }
+   ```
+
+   Name it (e.g. `milky-policy`), give it a description, and create it.
+9. Attach that policy to the group: **User groups → (your group) → Permissions → Add permissions → Attach policies**.
+10. **IAM → Users → Create user** (e.g. `milky-staticfiles-user`), add it to the group, and create it. Open the user → **Security credentials → Create access key → Application running outside AWS → Create access key**, then **Download .csv file** — the secret key is shown only once. In the CSV, the value **before** the comma is `AWS_ACCESS_KEY_ID`; everything **after** the comma (any `/` included) is `AWS_SECRET_ACCESS_KEY`.
+11. Locally, install the storage packages: `pip install boto3 django-storages`, then `pip freeze > requirements.txt`.
+12. Add `"storages"` to `INSTALLED_APPS`, and add this block to `settings.py`:
+
+    ```python
+    if "USE_AWS" in os.environ:
+        AWS_S3_OBJECT_PARAMETERS = {
+            "Expires": "Thu, 31 Dec 2099 20:00:00 GMT",
+            "CacheControl": "max-age=86400",
+        }
+
+        AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+        AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+        AWS_STORAGE_BUCKET_NAME = "milky-static"
+        AWS_REGION_NAME = "us-east-1"
+        AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+
+        STATICFILES_LOCATION = "static"
+        MEDIAFILES_LOCATION = "media"
+
+        # Django 4.2+ storage config
+        STORAGES = {
+            "default": {"BACKEND": "custom_storages.MediaStorage"},
+            "staticfiles": {"BACKEND": "custom_storages.StaticStorage"},
+        }
+
+        STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATICFILES_LOCATION}/"
+        MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIAFILES_LOCATION}/"
+    ```
+
+13. Create `custom_storages.py` in the project root:
+
+    ```python
+    from django.conf import settings
+    from storages.backends.s3boto3 import S3Boto3Storage
+
+
+    class StaticStorage(S3Boto3Storage):
+        location = settings.STATICFILES_LOCATION
+
+
+    class MediaStorage(S3Boto3Storage):
+        location = settings.MEDIAFILES_LOCATION
+    ```
+
+14. In Heroku Config Vars, add `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` from the CSV, add `USE_AWS` = `True`, and **remove** `DISABLE_COLLECTSTATIC`.
+15. Commit and push to GitHub. On the next build, `collectstatic` uploads the static files to S3.
+16. In the S3 bucket, create a `media/` folder and upload the product images, granting them public-read access.
+
+### Stripe
+
+1. Log in to [Stripe](https://dashboard.stripe.com/) and open **Developers → API keys**.
+2. Copy the **Publishable key** and **Secret key** into Heroku Config Vars as `STRIPE_PUBLIC_KEY` and `STRIPE_SECRET_KEY`.
+3. Go to **Developers → Webhooks → Add endpoint**. Set the URL to `https://<your-app>.herokuapp.com/checkout/webhook/` and select all events, then add the endpoint.
+4. Click **Reveal signing secret** and save it in Heroku Config Vars as `STRIPE_WH_SECRET`.
+
+### Emails
+
+`settings.py` uses the console email backend in development and Gmail SMTP in production:
+
+```python
+if "DEVELOPMENT" in os.environ:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    DEFAULT_FROM_EMAIL = "milky@example.com"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+    EMAIL_HOST = "smtp.gmail.com"
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASS")
+    DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_HOST_USER")
+```
+
+1. Use a personal Gmail account (not a CI student account — student accounts block SMTP sending).
+2. Gmail → **Settings → See all settings → Accounts and Import → Other Google Account settings → Security**.
+3. Turn on **2-Step Verification** (a phone number is required).
+4. Search the Google Account for **App passwords**, give the app a name, and click **Create**. Copy the 16-character password.
+5. Add Heroku Config Vars `EMAIL_HOST_USER` (the Gmail address) and `EMAIL_HOST_PASS` (the 16-character app password, no spaces).
+
+### Forking & Cloning the Repository
+
+**Fork**
+
+1. On the [repository page](https://github.com/Carokyp/Milky), click **Fork** (top right).
+2. GitHub creates a copy under your own account.
+
+**Clone & run locally**
+
+1. On the repo page, click the green **Code** button and copy the HTTPS URL.
+2. In a terminal, navigate to where you want the project and run `git clone https://github.com/Carokyp/Milky.git`
+3. `cd Milky`
+4. Create and activate a virtual environment: `python3 -m venv .venv && source .venv/bin/activate`
+5. Install the dependencies: `pip install -r requirements.txt`
+6. Create a git-ignored `env.py` in the project root:
+
+   ```python
+   import os
+
+   os.environ["SECRET_KEY"] = "any-dev-secret-key"
+   os.environ["DEVELOPMENT"] = "1"
+   os.environ["STRIPE_PUBLIC_KEY"] = "pk_test_..."
+   os.environ["STRIPE_SECRET_KEY"] = "sk_test_..."
+   os.environ["STRIPE_WH_SECRET"] = "whsec_..."
+   ```
+
+7. Apply migrations: `python manage.py migrate`
+8. Load the sample data: `python manage.py loaddata products/fixtures/products.json products/fixtures/reviews.json`
+9. Create a superuser: `python manage.py createsuperuser`
+10. Run the server: `python manage.py runserver`
 
 ## Credits
 
 ### Visual Design References
 
 *To be filled in — add any sites, apps, or mood boards that inspired Milky's visual direction here.*
+
+### Media
+
+- **Product can images** (the can layer on each product card) were generated with ChatGPT (image generation).
+- The **3D can model** on the home page hero was modelled by me in **Blender** and rendered in the browser with Three.js.
+- The **background and object layers** on the product cards, and the **hero / lifestyle photography**, were sourced from free stock-image sites and edited in **Adobe Photoshop** (background removal, cut-outs, colour adjustments).
+- **Icons:** [Font Awesome](https://fontawesome.com/)
+- **Fonts:** [Google Fonts](https://fonts.google.com/) — Bebas Neue, Poppins, Patrick Hand
 
 ### Code References
 
@@ -1036,3 +1222,9 @@ that matches where the action actually happened.
 #### **General References**
 - [Stack Overflow](https://stackoverflow.com/) — troubleshooting specific implementation issues
 - [Mozilla Developer Network (MDN)](https://developer.mozilla.org/) — web standards and API documentation
+
+### Acknowledgements
+
+- *Add your Code Institute mentor here.*
+- *Add tutors, cohort facilitators, or anyone who reviewed the project.*
+- *If the Stripe checkout / cart structure was based on a walkthrough project, credit it here.*
