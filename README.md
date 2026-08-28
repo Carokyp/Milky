@@ -615,33 +615,83 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 </p>
 
 #### **Products Management (Superuser Only)**
-- Add / Edit forms grouped into Info, Cart & Checkout Image, Product Card Visuals (the three layered images), and Stock & Visibility sections
-- Custom file-upload widgets showing the current image with a "Remove Image" option
-- Delete has no dedicated page — it's triggered from a shared confirmation modal, available on any product card
+
+- **Add / Edit forms**, grouped into sections: Info, Cart & Checkout Image, Product Card Visuals (the three layered images), and Stock & Visibility
+- **Custom file-upload widgets** showing the current image with a "Remove Image" option
+- **Delete** has no dedicated page — it's triggered from a shared confirmation modal, available on any product card
 
 <p align="center">
   <img src="docs/images/Products_Management.png" alt="Superuser products management" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
 #### **Authentication Pages** (django-allauth)
-- Register, Sign In, Sign Out, Password Reset (request/sent/confirm/done), Password Change, Password Set, and email address management
-- Mandatory email verification before a new account can sign in
-- "Remember Me" on Sign In controls session length only: checked keeps the session alive for 2 weeks even after closing the browser, unchecked ends it as soon as the browser closes. It does not pre-fill the form on a later visit — that's the browser's own password manager
-- Each branded auth page follows the same split layout: a form on one side, an illustration on the other (hidden below tablet width)
+
+All auth pages share the same split layout — a form on one side, an illustration on the other (hidden below tablet width).
+
+- **Register:** email, username and password; a verification email is sent, and the account can't sign in until the email is confirmed
+- **Sign In:** by email address and password
+  - "Remember Me" controls session length only — checked keeps the session alive for two weeks after the browser closes, unchecked ends it when the browser closes
+  - It doesn't pre-fill the form on a later visit — that's the browser's own password manager
+- **Sign Out:** a confirmation page before the session is cleared
+- **Password Reset:** request a link by email → open it → set a new password, with "sent" and "done" states in between
+- **Password Change / Set:** change the password from the account while signed in
+- **Email management:** add, remove, re-send verification, and set the primary email address
 
 <p align="center">
   <img src="docs/images/Login.png" alt="Sign in page" style="width: 60%; max-width: 900px; height: auto;">
 </p>
 
 #### **Toast Notification System**
-- Success, error, warning, and info variants, with context-specific titles and icons
+
+- Four variants — success, error, warning, info — with context-specific titles and icons
 - Adding a product to the cart shows a live mini-cart preview inside the toast itself
+- Fuller detail in [Technical Architecture → User Feedback](#user-feedback)
 
 <p align="center">
   <img src="docs/images/Toast.png" alt="Toast notification with mini-cart preview" style="width: 50%; max-width: 450px; height: auto;">
 </p>
 
+#### **Modals**
+
+Confirmation modals are shown before any destructive action, so nothing is deleted on a single click:
+
+- **Delete Product Modal:** shown to superusers before permanently deleting a product, from any page with a product card
+- **Delete Contact Modal:** shown before removing a saved gift recipient from the Contacts tab
+
+<p align="center">
+  <img src="docs/images/Delete_Modal.png" alt="Delete confirmation modal" style="width: 50%; max-width: 450px; height: auto;">
+</p>
+
+#### **Input Fields & Forms**
+
+- All forms render through `django-crispy-forms` with the `crispy-bootstrap5` pack, so fields, labels and help text share one style
+- Field errors show inline, right under the field they belong to; required fields are marked
+- `django-countries` provides the country dropdown on the delivery and invoice forms
+- **Custom widgets:**
+  - A file-upload widget that previews the current image with a "Remove" toggle (Products Management)
+  - A "Same as delivery" checkbox that shows / hides the invoice block (Checkout)
+  - A click / hover star picker (review form)
+  - A visual product picker (Gift a Can)
+- Stripe's Payment Element handles the card fields and surfaces its own inline card errors
+
+#### **Accessibility**
+
+- Semantic landmarks on every page: `<header>`, `<nav>`, `<main>`, `<footer>`, and `<html lang="en">`
+- Every `<img>` has an `alt` attribute
+- Icon-only controls carry text alternatives: `aria-label` on the footer social links and the mobile menu toggle, plus `aria-expanded` / `aria-controls` on the toggle
+- Toasts are announced to screen readers via `role="alert"`, `aria-live` and `aria-atomic`
+- Most pages lead with a single `<h1>`; the home page currently uses `<h1>` for each of its display section titles ("Our Favorites", "It's Still Good For You", …), which is a known heading-structure issue to tidy up
+- Dark-brown text on the cream background keeps body copy at a high contrast ratio
+
+#### **Base Templates**
+
+- `templates/base.html` is the single site-wide shell: `<head>` (fonts, Bootstrap, Font Awesome, `base.css`), the header / navbar, `{% block content %}`, the footer, and the toast container
+- Shared partials live in `templates/includes/`: `main_nav.html`, `mobile_nav.html`, the four toast variants, and `delete_product_modal.html`
+- `django-allauth`'s pages extend a themed `templates/allauth/` layout so they match the rest of the site
+- The custom error pages extend `templates/errors/base_error.html`
+
 #### **Footer**
+
 - Social media links (X, Instagram, Facebook), each with an accessible label
 - Copyright notice
 - Consistent across every page
@@ -650,7 +700,15 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
   <img src="docs/images/Footer.png" alt="Website footer" style="width: 70%; max-width: 1200px; height: auto;">
 </p>
 
-### Error Pages
+#### **Responsiveness**
+
+- Mobile-first, with custom breakpoints at 768px, 1024px, 1440px, and 1800px, plus a small tweak below 360px
+- Fluid typography via `clamp()` instead of hard jumps between breakpoints
+- The checkout page reflows into a two-column layout with a sticky order summary from tablet width up
+- The whole site is capped at a 1800px max content width and centred, so fixed elements (like the toast banner) align to the content edge, not the raw screen edge, on ultra-wide screens
+
+## Error Pages
+
 All four custom error pages share the same branded layout: a breakpoint-swapped illustration, the status code, a short title, a plain-language message, and a single "Back to Home" call to action.
 
 | Error Code | Title Shown | Message Shown |
@@ -667,11 +725,11 @@ All four custom error pages share the same branded layout: a breakpoint-swapped 
   <img src="docs/images/Error_500.png" alt="500 error page" style="width: 20%; max-width: 300px;">
 </p>
 
-#### **Responsiveness**
-- Mobile-first, with custom breakpoints at 768px, 1024px, 1440px, and 1800px, plus a small tweak below 360px
-- Fluid typography via `clamp()` instead of hard jumps between breakpoints
-- The checkout page reflows into a two-column layout with a sticky order summary from tablet width up
-- The whole site is capped at a 1800px max content width and centered, so fixed elements (like the toast banner) are aligned to the content edge, not the raw screen edge, on ultra-wide screens
+## Site Map
+
+<p align="center">
+  <img src="docs/images/sitemap.png" alt="Milky site map" style="width: 90%; max-width: 900px; height: auto;">
+</p>
 
 ## Future Features
 
@@ -693,90 +751,152 @@ All four custom error pages share the same branded layout: a breakpoint-swapped 
 
 ## Technologies Used
 
-__Languages Used__
+### Languages
 
 * [HTML5](https://en.wikipedia.org/wiki/HTML5)
 * [CSS](https://en.wikipedia.org/wiki/CSS)
 * [JavaScript](https://en.wikipedia.org/wiki/JavaScript)
 * [Python](https://en.wikipedia.org/wiki/Python_(programming_language))
 
-__Frameworks, Libraries & Tools Used__
+### Python Packages
 
-* [Django](https://www.djangoproject.com/): the web framework the whole project is built on
-* [django-allauth](https://docs.allauth.org/): authentication, registration, and email verification
-* [django-crispy-forms](https://django-crispy-forms.readthedocs.io/) + [crispy-bootstrap5](https://pypi.org/project/crispy-bootstrap5/): form rendering with the Bootstrap 5 template pack
-* [django-countries](https://pypi.org/project/django-countries/): country selection fields on delivery/invoice forms
-* [Stripe](https://stripe.com/docs) (Payment Element + webhooks): checkout and payment confirmation
-* [Bootstrap 5](https://getbootstrap.com/docs/5.3/getting-started/introduction/): responsive layout, utility classes, and the base for the crispy-forms template pack
-* [Font Awesome](https://fontawesome.com/): icons throughout the UI
-* [Google Fonts](https://fonts.google.com/): `Bebas Neue` and `Poppins`, the site's two typefaces
-* [Three.js](https://threejs.org/): renders and animates the 3D can model on the home page hero
-* [Pillow](https://pypi.org/project/pillow/): image handling for uploaded product photos
-* [GitHub](https://github.com/): source control and repository hosting
+Installed via `requirements.txt`:
+
+| Package | Purpose |
+|---|---|
+| [Django](https://www.djangoproject.com/) 6.0.4 | the web framework the whole project is built on |
+| [django-allauth](https://docs.allauth.org/) | authentication, registration, and mandatory email verification |
+| [django-crispy-forms](https://django-crispy-forms.readthedocs.io/) + [crispy-bootstrap5](https://pypi.org/project/crispy-bootstrap5/) | form rendering with the Bootstrap 5 template pack |
+| [django-countries](https://pypi.org/project/django-countries/) | country fields on the delivery / invoice forms |
+| [django-storages](https://django-storages.readthedocs.io/) + [boto3](https://pypi.org/project/boto3/) | static files and media on AWS S3 in production |
+| [stripe](https://pypi.org/project/stripe/) | Stripe Python SDK — Payment Element and webhook handling |
+| [dj-database-url](https://pypi.org/project/dj-database-url/) + [psycopg2](https://pypi.org/project/psycopg2/) | PostgreSQL connection in production |
+| [gunicorn](https://pypi.org/project/gunicorn/) | WSGI server used on Heroku |
+| [Pillow](https://pypi.org/project/pillow/) | image handling for uploaded product photos |
+| [Brotli](https://pypi.org/project/Brotli/) | compression for static assets served from S3 |
+
+Dev / QA tooling: [black](https://pypi.org/project/black/), [flake8](https://pypi.org/project/flake8/), [html5validator](https://pypi.org/project/html5validator/), [playwright](https://pypi.org/project/playwright/).
+
+### Frameworks, Libraries & Software
+
+* [Bootstrap 5](https://getbootstrap.com/docs/5.3/getting-started/introduction/): responsive layout, utility classes, and the base for the crispy-forms template pack (loaded via CDN)
+* [Font Awesome](https://fontawesome.com/): icons throughout the UI (loaded via CDN)
+* [Google Fonts](https://fonts.google.com/): `Bebas Neue`, `Poppins`, and `Patrick Hand`
+* [Blender](https://www.blender.org/): modelling the 3D can shown on the home page hero
+* [Three.js](https://threejs.org/): renders and animates that 3D can model in the browser
+* [Adobe Photoshop](https://www.adobe.com/products/photoshop.html): editing product-card and photographic images (cut-outs, background removal)
+* ChatGPT: generating the product can images
+* [Stripe](https://stripe.com/docs): checkout and payment processing
+* [Heroku](https://www.heroku.com/): application hosting
+* [AWS S3](https://aws.amazon.com/s3/): static file and media storage in production
+* [Git](https://git-scm.com/) & [GitHub](https://github.com/): version control and repository hosting
+* [Figma](https://www.figma.com/): wireframes and high-fidelity design
 * [Django Admin](https://docs.djangoproject.com/en/stable/ref/contrib/admin/): back-office management for products, reviews, and orders
 
 ## Testing
 
-Testing on this project has been manual so far, centered on the flows exercised while building and fixing features: authentication, CRUD, permissions, forms, UX, and responsive layout. **There is currently no automated test suite** — every app's `tests.py` is still the default Django stub, and no CI pipeline is configured.
+The tables below are the **manual test plan** for the project, covering authentication, CRUD, permissions, forms, UX, accessibility, and responsive layout. Each row is marked *To test* until it has been run and the result recorded. **There is no automated test suite** — every app's `tests.py` is still the default Django stub, and no CI pipeline is configured. `html5validator` and `playwright` are installed for the validator and browser checks (see below).
 
 ### Authentication
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Registration | Register with a new email and password | Account created, verification email sent (console backend in dev) | PASS |
-| Mandatory Email Verification | Try to sign in before verifying the email | Sign-in is blocked until the email is verified | PASS |
-| Sign In | Sign in with valid credentials | User is authenticated and redirected | PASS |
-| Invalid Sign In | Sign in with the wrong password | Error message shown, user stays on the sign-in page | PASS |
-| Password Reset | Request a reset link for a registered email | Reset flow completes and the new password works | PASS |
-| Sign Out | Click Logout in the navbar | User is signed out and redirected | PASS |
+| Registration | Register with a new email and password | Account created, verification email sent (console backend in dev) | To test |
+| Mandatory Email Verification | Try to sign in before verifying the email | Sign-in is blocked until the email is verified | To test |
+| Sign In | Sign in with valid credentials | User is authenticated and redirected | To test |
+| Invalid Sign In | Sign in with the wrong password | Error message shown, user stays on the sign-in page | To test |
+| Password Reset | Request a reset link for a registered email | Reset flow completes and the new password works | To test |
+| Sign Out | Click Logout in the navbar | User is signed out and redirected | To test |
 
 ### CRUD
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Add Product (superuser) | Fill in the product form and submit | Product created and immediately visible in the catalogue | PASS |
-| Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | PASS |
-| Delete Product (superuser) | Confirm deletion from the shared modal | Product removed from the catalogue | PASS |
-| Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | PASS |
-| Add / Edit / Delete Contact | Manage a saved gift recipient from the Contacts tab | Contact list updates immediately, in place | PASS |
-| Place Order | Complete checkout with a Stripe test card | Order created, confirmation page shown, order appears in Orders tab | PASS |
+| Add Product (superuser) | Fill in the product form and submit | Product created and immediately visible in the catalogue | To test |
+| Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | To test |
+| Delete Product (superuser) | Confirm deletion from the shared modal | Product removed from the catalogue | To test |
+| Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | To test |
+| Add / Edit / Delete Contact | Manage a saved gift recipient from the Contacts tab | Contact list updates immediately, in place | To test |
+| Place Order | Complete checkout with a Stripe test card | Order created, confirmation page shown, order appears in Orders tab | To test |
 
 ### Permissions
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Products Management Access | Visit `/products/add/` while logged out or as a non-superuser | Redirected home with an error message | PASS |
-| Profile Access | Visit `/profile/` while logged out | Redirected to sign in | PASS |
-| Own-Data Scoping | Try to view another user's order confirmation page directly | Access denied unless it's the current session's own order | PASS |
-| Guest Order Confirmation | View the confirmation page right after a guest checkout | Accessible, since the reference code matches the session | PASS |
+| Products Management Access | Visit `/products/add/` while logged out or as a non-superuser | Redirected home with an error message | To test |
+| Profile Access | Visit `/profile/` while logged out | Redirected to sign in | To test |
+| Own-Data Scoping | Try to view another user's order confirmation page directly | Access denied unless it's the current session's own order | To test |
+| Guest Order Confirmation | View the confirmation page right after a guest checkout | Accessible, since the reference code matches the session | To test |
 
 ### Forms
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Checkout Validation | Submit the checkout form with required fields missing | Inline validation errors shown, submission blocked | PASS |
-| Same as Delivery | Toggle the "same as delivery" checkbox at checkout | Invoice fields hide/show accordingly | PASS |
-| Gift Form Validation | Submit the Gift a Can form without selecting a product | Submission blocked client-side | PASS |
-| Review Rating Required | Submit the review form without picking a star rating | Submission blocked | PASS |
+| Checkout Validation | Submit the checkout form with required fields missing | Inline validation errors shown, submission blocked | To test |
+| Same as Delivery | Toggle the "same as delivery" checkbox at checkout | Invoice fields hide/show accordingly | To test |
+| Gift Form Validation | Submit the Gift a Can form without selecting a product | Submission blocked client-side | To test |
+| Review Rating Required | Submit the review form without picking a star rating | Submission blocked | To test |
 
 ### UX
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Cart Quantity Update | Use the +/- stepper on a cart line | Quantity and totals update in place via AJAX, no reload | PASS |
-| Toast Feedback | Add a product to the cart | Success toast appears with a live mini-cart preview | PASS |
-| Delete Confirmation | Click delete on a product (superuser) or a contact | Confirmation modal appears before anything is removed | PASS |
-| Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | PASS |
+| Cart Quantity Update | Use the +/- stepper on a cart line | Quantity and totals update in place via AJAX, no reload | To test |
+| Toast Feedback | Add a product to the cart | Success toast appears with a live mini-cart preview | To test |
+| Delete Confirmation | Click delete on a product (superuser) or a contact | Confirmation modal appears before anything is removed | To test |
+| Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | To test |
+
+### Accessibility
+
+| Test Label | Test Action | Expected Outcome | Test Outcome |
+|------------|-------------|------------------|--------------|
+| Keyboard navigation | Tab through the navbar, a product card, and the checkout form | Every interactive element is reachable and shows a visible focus state | *to test* |
+| Screen reader — toasts | Trigger a success and an error toast with a screen reader running | Both are announced through their `aria-live` region | *to test* |
+| Image alternatives | Inspect every `<img>` | Meaningful images have descriptive `alt`, decorative ones an empty `alt` | *to test* |
+| Heading order | Run an outline check on each page type | One `<h1>` per page, no skipped levels (note: home page currently has several `<h1>`s) | *to test* |
+| Colour contrast | Check brown-on-cream and brown-on-gold in a contrast checker | Meets WCAG AA for body text and buttons | *to test* |
+
+### Validator Testing
+
+| Tool | Target | Result |
+|------|--------|--------|
+| [W3C HTML Validator](https://validator.w3.org/) | Each rendered page (validated from view-source) | *to run — `html5validator` is installed* |
+| [W3C CSS Validator (Jigsaw)](https://jigsaw.w3.org/css-validator/) | `static/css/base.css` | *to run* |
+| [JSHint](https://jshint.com/) | Files in `static/js/` | *to run* |
+| [flake8](https://flake8.pycqa.org/) / [black](https://black.readthedocs.io/) | Python source (`max-line-length = 140`, see `setup.cfg`) | *to run* |
+
+Screenshots go in `docs/images/Testing/`.
+
+### Browser Compatibility
+
+| Browser | Version | Result |
+|---------|---------|--------|
+| Chrome | | *to test* |
+| Firefox | | *to test* |
+| Safari | | *to test* |
+| Edge | | *to test* |
 
 ### Responsive Design
 
 | Device Category | Screen Size | Test Result | Notes |
 |----------------|-------------|-------------|-------|
-| Mobile - Small | 390px × 844px | PASS | |
-| Tablet | 768px × 1024px | PASS | Checkout switches to its two-column layout here |
-| Tablet/Small Desktop | 1024px × 900px | PASS | |
-| Laptop | 1440px × 1000px | PASS | |
-| Desktop - Large | 2560px × 1300px | PASS | Verified the toast banner and body content stay aligned at the 1800px max content width |
+| Mobile - Small | 390px × 844px | To test | |
+| Tablet | 768px × 1024px | To test | Checkout switches to its two-column layout here |
+| Tablet/Small Desktop | 1024px × 900px | To test | |
+| Laptop | 1440px × 1000px | To test | |
+| Desktop - Large | 2560px × 1300px | To test | Check the toast banner and body content stay aligned at the 1800px max content width |
+
+### Performance
+
+Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best practices, and SEO. Reports are saved in `docs/images/LightHouse_Desktop/` and `docs/images/LightHouse_Mobile/`.
+
+| Page | Performance | Accessibility | Best Practices | SEO |
+|------|-------------|---------------|----------------|-----|
+| Home | | | | |
+| All Products | | | | |
+| Product Detail | | | | |
+| Cart | | | | |
+| Checkout | | | | |
 
 ### Bugs Found, Fixed, and Unresolved
 
