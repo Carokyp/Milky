@@ -4,28 +4,36 @@
   <img src="docs/images/readme-preview.png" alt="Milky responsive preview" width="100%">
 </p>
 
-**Live Application:** *Not yet deployed — see [Deployment](#deployment) for the Heroku setup guide and what's still needed to get there.*
+**Live Application:** https://milky-app-839f694f035d.herokuapp.com/
 
 ## About
 
-**Milky** is a Django e-commerce website for a milkshake-in-a-can drinks brand. Visitors can browse the product range, read and leave reviews, add cans to a cart, check out with Stripe, and create an account to save delivery details and view past orders. A standout feature is **Gift a Can**: any logged-in customer can send a can straight to a friend's address as part of their order, at a 10% discount, without needing the friend's own account.
+**Milky** is a Django e-commerce website for a milkshake-in-a-can drinks brand. Visitors can browse the product range, read and leave reviews, add cans to a cart, check out with Stripe, and create an account to save delivery details and view past orders. A standout feature is **Gift a Can**: any logged-in customer can send a can straight to a friend's address as part of their order, and gets 10% off, without needing the friend's own account.
+
+The site is deployed on Heroku, with static files and product images served from AWS S3 and transactional email sent over SMTP.
 
 ## Index – Table of Contents
+
 * [User Experience (UX)](#user-experience-ux)
    * [Strategy](#strategy)
+   * [User Stories](#user-stories)
    * [Scope](#scope)
    * [Structure](#structure)
    * [Skeleton](#skeleton)
+   * [Wireframes](#wireframes)
    * [Surface](#surface)
+
+* [Features](#features)
+
+* [Error Pages](#error-pages)
+
+* [Site Map](#site-map)
 
 * [Technical Architecture](#technical-architecture)
    * [Admin Page](#admin-page)
    * [CRUD Operations](#crud-operations)
    * [User Feedback](#user-feedback)
    * [Database Schema](#database-schema)
-
-* [Features](#features)
-   * [Error Pages](#error-pages)
 
 * [Future Features](#future-features)
 
@@ -37,18 +45,28 @@
    * [Permissions](#permissions)
    * [Forms](#forms)
    * [UX](#ux)
+   * [Accessibility](#accessibility-1)
+   * [Validator Testing](#validator-testing)
+   * [Browser Compatibility](#browser-compatibility)
    * [Responsive Design](#responsive-design)
+   * [Performance](#performance)
    * [Bugs Found, Fixed, and Unresolved](#bugs-found-fixed-and-unresolved)
    * [Testing User Stories](#testing-user-stories)
 
-* [Security & Current Limitations](#security--current-limitations)
+* [Security](#security)
 
 * [Deployment](#deployment)
-   * [Heroku Deployment Guide](#heroku-deployment-guide)
+   * [Heroku](#heroku)
+   * [Amazon Web Services (AWS)](#amazon-web-services-aws)
+   * [Stripe](#stripe)
+   * [Emails](#emails)
+   * [Forking & Cloning the Repository](#forking--cloning-the-repository)
 
 * [Credits](#credits)
    * [Visual Design References](#visual-design-references)
    * [Code References](#code-references)
+   * [Media](#media)
+   * [Acknowledgements](#acknowledgements)
 
 ## User Experience (UX)
 
@@ -69,7 +87,13 @@ With **Milky**, the goal was a warm, playful storefront for a single drinks bran
 - Send a can as a gift to a friend in a couple of clicks.
 - Manage delivery/invoice details and revisit past orders without re-entering everything.
 
-#### User stories
+#### Reasons for the website
+- Direct-to-consumer sales channel for the Milky brand.
+- Referral/gifting growth loop via Gift a Can.
+- Building a returning customer base through saved profiles and order history.
+- Collecting product reviews as social proof for new visitors.
+
+### User Stories
 
 **New Visitor**
 - As a new visitor, I want to see the product range and understand the brand, so I can decide if it's for me.
@@ -88,12 +112,6 @@ With **Milky**, the goal was a warm, playful storefront for a single drinks bran
 - As a user, I want clear confirmation before a destructive action (deleting a product, a saved contact) so I don't lose data by accident.
 - As a user, I want feedback (toasts, inline form errors) after every action, so I always know whether it worked.
 - As a user, I want the site to work well on my phone, tablet, and desktop.
-
-#### Reasons for the website
-- Direct-to-consumer sales channel for the Milky brand.
-- Referral/gifting growth loop via Gift a Can.
-- Building a returning customer base through saved profiles and order history.
-- Collecting product reviews as social proof for new visitors.
 
 ### Scope
 
@@ -142,13 +160,82 @@ Key sections and navigation flow:
 
 #### Technical Implementation
 - Django 6.0.4 with a multi-app architecture (`home`, `products`, `cart`, `checkout`, `accounts`).
-- SQLite database in development — not yet configured for a production database (see [Deployment](#deployment)).
+- SQLite in development; PostgreSQL in production, wired through `DATABASE_URL` / `dj-database-url` (see [Deployment](#deployment)).
 - Server-rendered templates with Bootstrap 5 utilities and `django-crispy-forms` (bootstrap5 pack).
 - Session-based cart and in-progress gift state; nothing is persisted until checkout completes.
 - Stripe Payment Element for payment, with a webhook handler as the reliability fallback that actually sends the confirmation and gift emails.
 - `django-allauth` for authentication, with mandatory email verification.
 - A single custom stylesheet (`static/css/base.css`) built around CSS custom properties, with fluid typography via `clamp()` and breakpoints at 768/1024/1440/1800px.
 - Three.js renders and animates the rotating 3D can model on the home page hero.
+
+### Skeleton
+
+The skeleton stage was about placement, before any colour or styling: a fixed
+navbar carrying the main links (Home, All Products, Gift a Can, Cart, and the
+account links once signed in), and the primary action button (Add to Cart,
+Checkout, Complete Order) kept low on the page where the eye finishes reading.
+These choices were worked out in the wireframes below.
+
+### Wireframes
+
+Wireframes and the high-fidelity design were both built in Figma:
+
+**[Milky — Figma file](https://www.figma.com/design/90A4C1NyUtrnebcMyJtTlb/MILKY?node-id=1-5049)**
+
+<details>
+<summary>Mobile wireframes</summary>
+
+<p align="center">
+  <img src="docs/images/wireframes/wireframes-mobile.png" alt="Milky mobile wireframes" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+</details>
+
+<details>
+<summary>Tablet wireframes</summary>
+
+<p align="center">
+  <img src="docs/images/wireframes/wireframes-tablet.png" alt="Milky tablet wireframes" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+</details>
+
+<details>
+<summary>Desktop wireframes</summary>
+
+<p align="center">
+  <img src="docs/images/wireframes/wireframes-desktop.png" alt="Milky desktop wireframes" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+</details>
+
+From the wireframes on, the layout was refined directly in the browser across
+the 768 / 1024 / 1440 / 1800px breakpoints.
+
+### Surface
+
+#### Visual Style
+
+**Design:**
+A warm, playful storefront built around soft rounded cards, layered product imagery, and a cream-and-brown color language. Product cards are composed from three stacked images (background, floating objects, can) for a bit of depth, and a rotating 3D can model anchors the home page hero.
+
+**Typography:**
+Three Google Fonts: `Bebas Neue` for headings, `Poppins` for body text, and `Patrick Hand` as a handwritten accent on a few decorative labels (such as the "It's Still Good For You" section). Type sizes are fluid (`clamp()`-based) rather than jumping at fixed breakpoints, so headings and body text scale smoothly with the viewport.
+
+#### Colors
+The palette centers on warm cream backgrounds with brown text, gold for primary calls to action, and green for success/discount highlights.
+
+| Token | Hex | Use |
+|---|---|---|
+| `--light-cream` | `#faeade` | Page background |
+| `--brown` | `#523122` | Primary text |
+| `--light-brown` | `#8c5e4a` | Secondary text |
+| `--gold` | `#fbcb62` | Primary CTA buttons |
+| `--green` | `#198754` | Success states, discounts |
+| `--danger` | `#dc3545` | Errors |
+| `--card-background` | `#fafafa` | Card surfaces |
+| `--footer-background` | `#e9cfb7` | Footer |
+
+<p align="center">
+  <img src="docs/images/Color.png" alt="Milky color palette" style="width: 32%; max-width: 300px; height: auto;">
+</p>
 
 ## Technical Architecture
 
