@@ -306,13 +306,13 @@ The Django admin interface manages the core catalogue and order data:
 - **Read / Update**: the "My Profile" tab of the account page
 - **Contacts (saved gift recipients)**: full create, read, update, and delete from the "Contacts" tab
 
-### **User Feedback**
+### User Feedback
 
 **Toast Notifications** (four variants, driven by Django's messages framework):
 - Success, error, warning, and info toasts, positioned as a fixed banner and capped at the site's max content width so they never sit past the page's right edge on wide screens
 - Success toasts adapt their title and icon by context (cart, cart update, cart removal, product, review, gift, order, profile, contact)
 - Adding an item to the cart shows a full mini-cart preview inline inside the toast: thumbnails, quantities, running total, and a free-delivery progress banner
-- Error and warning toasts stay open until dismissed; success and info toasts auto-hide after 6 seconds
+- Every toast has a manual close button and auto-hides after 6 seconds (`toast.js`)
 
 **Confirmation Modals** (triggered before destructive actions):
 - **Delete Product Modal**: shown to superusers before permanently deleting a product, from any page that shows a product card
@@ -320,9 +320,9 @@ The Django admin interface manages the core catalogue and order data:
 
 **Empty States**:
 - **Empty Cart**: "Your cart is empty" with a Shop Now call to action
-- **No Reviews**: prompts a logged-out visitor to log in before they can leave one
+- **No Reviews**: "No reviews yet" / "Be the first to share your thoughts!" on the product detail page
 - **No Orders**: "No orders found yet." on the profile's Orders tab
-- **No Contacts**: "No friends yet." on the profile's Contacts tab
+- **No Contacts**: "No contacts yet." on the profile's Contacts tab
 
 **Real-Time Feedback**:
 - AJAX quantity updates and removals in the cart, with totals and the free-delivery banner updating in place
@@ -336,7 +336,7 @@ The Django admin interface manages the core catalogue and order data:
 
 ### Database Schema
 
-The app uses Django's ORM, with SQLite in development.
+The app uses Django's ORM — SQLite in development, PostgreSQL in production.
 
 #### ERD — Entity Relationship Diagram
 
@@ -375,17 +375,16 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 ---
 
 **2. `accounts.UserCustomer`** — join table between `User` and `Customer`
-- **Foreign Keys:** `user` (→ `User`, `CASCADE`), `customer` (→ `Customer`, `CASCADE`)
-- **Fields:** `id`, `enabled` (BooleanField, default `True`)
-- **Note:** logically 1:1 (app code always does `.filter(user=...).first()`), but not enforced with a DB-level uniqueness constraint.
+- **Foreign Keys:** `user` (→ `auth.User`, `CASCADE`), `customer` (→ `Customer`, `CASCADE`)
+- **Fields:** just `id` and the two foreign keys
+- **Note:** logically 1:1 (app code always resolves it with `.filter(user=...).first()`), but not enforced with a DB-level uniqueness constraint.
 
 ---
 
 **3. `accounts.Customer`**
 - **Purpose:** the human profile behind an order — not tied 1:1 at the DB level, resolved via `UserCustomer`
-- **Fields:**
+- **Fields (all optional — the profile is filled in gradually):**
   - `name`, `surname` (CharField(255), blank)
-  - `display_name` (CharField(50), blank/null) — overrides the name shown on reviews, if set
   - `phone_number` (CharField(20), blank)
   - `address`, `city` (CharField(255), blank)
   - `county` (CharField(100), null/blank)
@@ -396,7 +395,10 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 **4. `accounts.Contact`** — a saved gift recipient ("friend")
 - **Foreign Key:** `customer` (→ `Customer`, `CASCADE`)
-- **Fields:** `name`, `surname` (CharField(255), required), `phone_number` (CharField(20), required), `email` (EmailField, required), `ip_address` (GenericIPAddressField, captured server-side at creation)
+- **Fields:** `name`, `surname` (CharField(255), required), `phone_number` (CharField(20), required), `email` (EmailField, required)
+- **Address (all required except `county`):** `address`, `city` (CharField(255)), `county` (CharField(100), null/blank), `postal_code` (CharField(20)), `country` (CountryField)
+- `ip_address` (GenericIPAddressField, captured server-side at creation)
+- **Note:** unlike `Customer`, a `Contact`'s address is required — it is created at the moment of an actual gift, not built up gradually.
 
 ---
 
@@ -407,8 +409,9 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
   - `flavor` (CharField(50), choices: chocolate, vanilla, fruity, caramel, nutty, special)
   - `description` (TextField, soft cap 500 chars)
   - `price` (DecimalField, 6 digits / 2 decimal places)
-  - `product_image` (ImageField) — legacy single image, used as a fallback
-  - `background_image`, `objects_image`, `can_image` (ImageField) — the three layered images used to build each product card
+  - `product_image` (ImageField, null/blank) — single image used on the detail page, cart, and checkout
+  - `product_image_url` (URLField, null/blank) — an alternative to uploading: point `product_image` at an external URL instead
+  - `background_image`, `objects_image`, `can_image` (ImageField, null/blank) — the three layered images used to build each product card
   - `stock` (PositiveIntegerField, nullable)
   - `is_available` (BooleanField, default `True`)
   - `featured` (BooleanField, default `False`) — shown on the home page
@@ -419,7 +422,8 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 **6. `products.Review`**
 - **Foreign Keys:** `product` (→ `Product`, `CASCADE`, `related_name="reviews"`), `order` (→ `checkout.Order`, `SET_NULL`, optional — links a review to the order that "earned" it)
-- **Fields:** `name`, `surname` (CharField(255), required), `rating` (PositiveIntegerField, 1–5, validated), `comment` (TextField(500), blank)
+- **Fields:** `name`, `surname` (CharField(255), required), `rating` (PositiveIntegerField, 1–5, `MinValueValidator`/`MaxValueValidator`), `comment` (TextField(500), blank/null)
+- No `Meta` ordering — reviews paginate in insertion order
 
 ---
 
@@ -431,7 +435,7 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
   - `status` (IntegerField, choices: 0 Pending / 1 Completed / 2 Cancelled)
   - `created_at` (DateTimeField, auto)
   - `order_total` (DecimalField) — sum of its items, recalculated automatically whenever an item is saved
-  - `delivery_cost` (DecimalField, default `0.00`) — recalculated on every save (free above £25, otherwise £3.99)
+  - `delivery_cost` (DecimalField, default `0.00`) — recalculated on every save (free from $25, otherwise $3.99)
   - `promo_discount_percent` (DecimalField, nullable) — set when the order includes a gift
   - Separate `delivery_*` (required) and `invoice_*` (optional) address blocks, plus `email` (required)
 - **Computed:** `grand_total` property = `order_total + delivery_cost`, minus the promo discount if set
