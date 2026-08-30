@@ -4,13 +4,26 @@
   <img src="docs/images/readme-preview.png" alt="Milky responsive preview" width="100%">
 </p>
 
-**Live Application:** https://milky-app-839f694f035d.herokuapp.com/
-
 ## About
 
-**Milky** is a Django e-commerce website for a milkshake-in-a-can drinks brand. Visitors can browse the product range, read and leave reviews, add cans to a cart, check out with Stripe, and create an account to save delivery details and view past orders. A standout feature is **Gift a Can**: any logged-in customer can send a can straight to a friend's address as part of their order, and gets 10% off, without needing the friend's own account.
+**Milky** is a full-stack B2C e-commerce website built with Django for a
+milkshake-in-a-can drinks brand. Visitors can browse the product range, read and
+leave reviews, add cans to a cart, and check out securely with Stripe.
+Registered customers get a profile that stores their delivery details and a full
+history of their past orders, so reordering a favourite takes only a few clicks.
 
-The site is deployed on Heroku, with static files and product images served from AWS S3 and transactional email sent over SMTP.
+A standout feature is **Gift a Can**: any logged-in customer can send a can
+straight to a friend's address as part of their own order and receive 10% off,
+without the friend needing an account of their own.
+
+On the other side of the shop, site administrators manage the entire product
+catalogue — creating, editing and removing cans, flavours and stock — directly
+from the front end, without ever touching the Django admin or the database.
+
+**Note:** This project was built for educational purposes as part of the
+[Code Institute](https://codeinstitute.net/) Full Stack Development programme.
+
+**Live Application:** [milky-app-839f694f035d.herokuapp.com](https://milky-app-839f694f035d.herokuapp.com/)
 
 ## Index – Table of Contents
 
@@ -73,6 +86,16 @@ The site is deployed on Heroku, with static files and product images served from
 ### Strategy
 
 With **Milky**, the goal was a warm, playful storefront for a single drinks brand that makes browsing flavors and checking out feel effortless, while giving the brand a low-friction way to turn customers into referrers through the Gift a Can feature.
+
+#### Target audience
+
+**Customers**
+- Shoppers who want to buy milkshake-in-a-can drinks online
+- Returning customers who want to track orders and reorder favourites quickly
+- People who want to send a drink as a gift to a friend or family member
+
+**Site owner**
+- A small drinks brand that needs to run its own shop — catalogue, stock and orders — from the browser, without developer help
 
 #### Business goals of the website
 - Present the product range attractively enough to drive purchases from a cold visit.
@@ -751,6 +774,16 @@ All four custom error pages share the same branded layout: a breakpoint-swapped 
 
 ## Technologies Used
 
+Milky is built with **Django 6** and served with server-side-rendered templates
+styled with **Bootstrap 5** for a responsive experience across mobile and
+desktop. Data is stored in **PostgreSQL** in production (SQLite in local
+development), and authentication is handled by **django-allauth** with email
+login. Static files and product images are served from **AWS S3** via
+django-storages. Payments run on **Stripe**, using a PaymentIntent and the
+embedded Stripe Payment Element, with an order-confirming webhook as the source
+of truth. Transactional email — order confirmations and gift notifications — is
+sent over SMTP. The application is deployed on **Heroku** with Gunicorn.
+
 ### Languages
 
 * [HTML5](https://en.wikipedia.org/wiki/HTML5)
@@ -796,6 +829,8 @@ Dev / QA tooling: [black](https://pypi.org/project/black/), [flake8](https://pyp
 ## Testing
 
 The tables below are the **manual test plan** for the project, covering authentication, CRUD, permissions, forms, UX, accessibility, and responsive layout. Each row is marked *To test* until it has been run and the result recorded. **There is no automated test suite** — every app's `tests.py` is still the default Django stub, and no CI pipeline is configured. `html5validator` and `playwright` are installed for the validator and browser checks (see below).
+
+Stripe runs in **test mode**, so checkout can be tested end to end without a real payment. Use card number `4242 4242 4242 4242` with any future expiry date, any 3-digit CVC and any postcode; more test cards are listed under [Deployment → Stripe](#stripe).
 
 ### Authentication
 
@@ -1133,6 +1168,20 @@ AWS S3 is used to store all static files and media. To configure it:
 2. Copy the **Publishable key** and **Secret key** into Heroku Config Vars as `STRIPE_PUBLIC_KEY` and `STRIPE_SECRET_KEY`.
 3. Go to **Developers → Webhooks → Add endpoint**. Set the URL to `https://<your-app>.herokuapp.com/checkout/webhook/` and select all events, then add the endpoint.
 4. Click **Reveal signing secret** and save it in Heroku Config Vars as `STRIPE_WH_SECRET`.
+
+The deployed site keeps Stripe in **test mode**, so no real payment is ever taken.
+
+**Test cards**
+
+| Card number | Result |
+|---|---|
+| `4242 4242 4242 4242` | Payment succeeds |
+| `4000 0000 0000 9995` | Payment declined (insufficient funds) |
+| `4000 0025 0000 3155` | Requires 3D Secure authentication |
+
+For any test card, use **any future expiry date**, **any 3-digit CVC** and **any
+postcode**. The full list is in the
+[Stripe testing docs](https://docs.stripe.com/testing).
 
 ### Emails
 
