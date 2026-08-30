@@ -7,17 +7,18 @@ def build_confirmation_email_context(request, order, contact_email):
     """Build the email context shared by the send and preview views."""
     items = [
         {
-            'item': item,
-            'image_url': request.build_absolute_uri(
-                item.product.product_image.url if item.product.product_image
-                else static('images/no-image.png')
+            "item": item,
+            "image_url": request.build_absolute_uri(
+                item.product.product_image.url
+                if item.product.product_image
+                else static("images/no-image.png")
             ),
         }
         for item in order.items.all()
     ]
     return {
-        'order': order,
-        'contact_email': contact_email,
-        'items': items,
+        "order": order,
+        "contact_email": contact_email,
+        "items": items,
         **build_email_font_urls(request),
     }

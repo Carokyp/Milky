@@ -8,13 +8,13 @@ def build_email_font_urls(request):
     that sends a styled HTML email (checkout, products...).
     """
     return {
-        'font_bebas_url': request.build_absolute_uri(
-            static('fonts/bebas-neue-regular.woff2')
+        "font_bebas_url": request.build_absolute_uri(
+            static("fonts/bebas-neue-regular.woff2")
         ),
-        'font_poppins_regular_url': request.build_absolute_uri(
-            static('fonts/poppins-regular.woff2')
+        "font_poppins_regular_url": request.build_absolute_uri(
+            static("fonts/poppins-regular.woff2")
         ),
-        'font_poppins_bold_url': request.build_absolute_uri(
-            static('fonts/poppins-bold.woff2')
+        "font_poppins_bold_url": request.build_absolute_uri(
+            static("fonts/poppins-bold.woff2")
         ),
     }

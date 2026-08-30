@@ -70,9 +70,12 @@ class GiftACanForm(forms.ModelForm):
         ]
 
         widgets = {
-            "email": forms.EmailInput(attrs={
-                "class": "form-control", "placeholder": "Friend's Email"
-            }),
+            "email": forms.EmailInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Friend's Email",
+                }
+            ),
             "name": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Name"}
             ),
@@ -83,7 +86,10 @@ class GiftACanForm(forms.ModelForm):
                 attrs={"class": "form-control", "placeholder": "Phone Number"}
             ),
             "address": forms.TextInput(
-                attrs={"class": "form-control", "placeholder": "Friend's Address"}
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Friend's Address",
+                }
             ),
             "postal_code": forms.TextInput(
                 attrs={"class": "form-control", "placeholder": "Postal Code"}

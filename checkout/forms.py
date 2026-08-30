@@ -61,12 +61,12 @@ class OrderForm(forms.ModelForm):
 
         for field in self.fields:
             if field in ("delivery_county", "invoice_county"):
-                self.fields[field].widget.attrs["class"] = (
-                    "form-control county-field"
-                )
-                self.fields[field].widget.attrs["placeholder"] = (
-                    placeholders[field]
-                )
+                self.fields[field].widget.attrs[
+                    "class"
+                ] = "form-control county-field"
+                self.fields[field].widget.attrs["placeholder"] = placeholders[
+                    field
+                ]
                 self.fields[field].label = False  # type: ignore
                 continue
 
@@ -82,9 +82,7 @@ class OrderForm(forms.ModelForm):
                     for code, name in choices_iterable
                     if code
                 ]
-                country_field.choices = [
-                    ("", "Country *"), *existing_choices
-                ]
+                country_field.choices = [("", "Country *"), *existing_choices]
                 continue
 
             if self.fields[field].required:
