@@ -19,14 +19,15 @@ from accounts.forms import GiftACanForm
 
 def superuser_required(view_func):
     """Redirect non-superusers to home with an error message."""
+
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
+        """Run the view only for superusers, otherwise redirect home."""
         if not request.user.is_superuser:
-            messages.error(
-                request, 'Sorry, only store owners can do that.'
-            )
-            return redirect(reverse('home'))
+            messages.error(request, "Sorry, only store owners can do that.")
+            return redirect(reverse("home"))
         return view_func(request, *args, **kwargs)
+
     return wrapper
 
 
@@ -71,49 +72,52 @@ def gift_page_view(request):
     products = Product.objects.filter(is_available=True)
     contacts = []
     customer = None
-    gift_in_progress = request.session.get('gift')
+    gift_in_progress = request.session.get("gift")
 
     if request.user.is_authenticated:
-        user_customer = UserCustomer.objects.filter(
-            user=request.user
-        ).first()
+        user_customer = UserCustomer.objects.filter(user=request.user).first()
         customer = user_customer.customer if user_customer else None
         if customer:
             contacts = customer.contact_set.all()  # type: ignore
 
     def render_gift_page(form):
-        return render(request, 'products/gift_page.html', {
-            'products': products,
-            'contacts': contacts,
-            'form': form,
-            'customer': customer,
-            'gift_in_progress': gift_in_progress,
-        })
+        """Render the gift page with the shared context and the given form."""
+        return render(
+            request,
+            "products/gift_page.html",
+            {
+                "products": products,
+                "contacts": contacts,
+                "form": form,
+                "customer": customer,
+                "gift_in_progress": gift_in_progress,
+            },
+        )
 
-    if request.method == 'POST':
+    if request.method == "POST":
         if not request.user.is_authenticated:
-            return redirect(reverse('account_login'))
+            return redirect(reverse("account_login"))
 
         if not customer:
             messages.warning(
                 request,
-                'Please complete your profile before gifting a can.',
+                "Please complete your profile before gifting a can.",
             )
-            return redirect(reverse('profile'))
+            return redirect(reverse("profile"))
 
         if gift_in_progress:
-            messages.error(request, 'You can only gift one can per order.')
-            return redirect(reverse('gift_page'))
+            messages.error(request, "You can only gift one can per order.")
+            return redirect(reverse("gift_page"))
 
-        product_id = request.POST.get('product_id')
+        product_id = request.POST.get("product_id")
         product = get_object_or_404(Product, pk=product_id)
 
         if not product.is_available:
-            messages.error(request, 'This product is not available.')
-            return redirect(reverse('gift_page'))
+            messages.error(request, "This product is not available.")
+            return redirect(reverse("gift_page"))
 
-        personal_message = request.POST.get('personal_message', '').strip()
-        existing_contact_id = request.POST.get('existing_contact')
+        personal_message = request.POST.get("personal_message", "").strip()
+        existing_contact_id = request.POST.get("existing_contact")
         form = GiftACanForm(request.POST)
 
         if existing_contact_id:
@@ -123,31 +127,32 @@ def gift_page_view(request):
         elif form.is_valid():
             contact = form.save(commit=False)
             contact.customer = customer
-            contact.ip_address = request.META.get('REMOTE_ADDR', '')
+            contact.ip_address = request.META.get("REMOTE_ADDR", "")
             contact.save()
         else:
             messages.error(
-                request, 'Failed to gift a can. Please check the form.'
+                request, "Failed to gift a can. Please check the form."
             )
             return render_gift_page(form)
 
-        request.session['gift'] = {
-            'product_id': str(product.id),  # type: ignore
-            'contact_id': contact.id,  # type: ignore
-            'personal_message': personal_message,
+        request.session["gift"] = {
+            "product_id": str(product.id),  # type: ignore
+            "contact_id": contact.id,  # type: ignore
+            "personal_message": personal_message,
         }
 
         messages.success(
             request,
             format_html(
-                '<strong>{}</strong> added to your cart for '
-                '<strong>{}</strong>! You get <strong>10% off</strong> '
-                'this order at checkout.',
-                product.name, contact.name,
+                "<strong>{}</strong> added to your cart for "
+                "<strong>{}</strong>! You get <strong>10% off</strong> "
+                "this order at checkout.",
+                product.name,
+                contact.name,
             ),
             extra_tags="gift",
         )
-        return redirect(reverse('view_cart'))
+        return redirect(reverse("view_cart"))
 
     form = GiftACanForm()
     return render_gift_page(form)
@@ -162,18 +167,19 @@ def preview_gift_email(request):
     Store-owner only. Shows real contact/customer data from the most
     recent gift.
     """
-    contact = Contact.objects.order_by('-id').first()
+    contact = Contact.objects.order_by("-id").first()
     product = Product.objects.filter(is_available=True).first()
     if not contact or not product:
-        return HttpResponse(
-            "No gift in the database yet — gift a can first."
-        )
+        return HttpResponse("No gift in the database yet — gift a can first.")
 
     context = build_gift_email_context(
-        request, product, contact.customer, contact,
-        "Enjoy this can, you deserve it!"
+        request,
+        product,
+        contact.customer,
+        contact,
+        "Enjoy this can, you deserve it!",
     )
-    html_body = render_to_string('products/gift_email_body.html', context)
+    html_body = render_to_string("products/gift_email_body.html", context)
     return HttpResponse(html_body)
 
 
@@ -181,22 +187,22 @@ def preview_gift_email(request):
 @superuser_required
 def add_product(request):
     """Create a new product (store owners only)."""
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save()
             messages.success(
-                request, 'Product added successfully!', extra_tags="product"
+                request, "Product added successfully!", extra_tags="product"
             )
-            return redirect(reverse('product_detail', args=[product.id]))
+            return redirect(reverse("product_detail", args=[product.id]))
         else:
             messages.error(
-                request, 'Failed to add product. Please check the form.'
+                request, "Failed to add product. Please check the form."
             )
     else:
         form = ProductForm()
 
-    return render(request, 'products/add_product.html', {'form': form})
+    return render(request, "products/add_product.html", {"form": form})
 
 
 @login_required
@@ -205,28 +211,28 @@ def edit_product(request, product_id):
     """Edit an existing product (store owners only)."""
     product = get_object_or_404(Product, pk=product_id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             form.save()
             messages.success(
                 request,
-                'Product updated successfully!',
+                "Product updated successfully!",
                 extra_tags="product",
             )
-            return redirect(reverse(
-                'product_detail', args=[product.id]  # type: ignore
-            ))
+            return redirect(
+                reverse("product_detail", args=[product.id])  # type: ignore
+            )
         else:
-            messages.error(request, 'Failed to update product.')
+            messages.error(request, "Failed to update product.")
     else:
         form = ProductForm(instance=product)
-        messages.info(request, f'You are editing {product.name}')
+        messages.info(request, f"You are editing {product.name}")
 
     return render(
         request,
-        'products/edit_product.html',
-        {'form': form, 'product': product},
+        "products/edit_product.html",
+        {"form": form, "product": product},
     )
 
 
@@ -237,9 +243,9 @@ def delete_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     product.delete()
     messages.success(
-        request, 'Product deleted successfully!', extra_tags="product"
+        request, "Product deleted successfully!", extra_tags="product"
     )
-    return redirect(reverse('all_products'))
+    return redirect(reverse("all_products"))
 
 
 @login_required
@@ -247,7 +253,7 @@ def add_review(request, product_id):
     """Add a review to a product, submitted by the logged-in user."""
     product = get_object_or_404(Product, pk=product_id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
@@ -258,12 +264,12 @@ def add_review(request, product_id):
             customer = user_customer.customer if user_customer else None
 
             review.name = (  # type: ignore
-                customer.name if customer and customer.name
+                customer.name
+                if customer and customer.name
                 else request.user.username
             )
             review.surname = (  # type: ignore
-                customer.surname if customer and customer.surname
-                else ''
+                customer.surname if customer and customer.surname else ""
             )
 
             review.product = product
@@ -274,13 +280,13 @@ def add_review(request, product_id):
                 review.order = order
             review.save()
             messages.success(
-                request, 'Review added successfully!', extra_tags="review"
+                request, "Review added successfully!", extra_tags="review"
             )
         else:
             messages.error(
-                request, 'Failed to add review. Please check the form.'
+                request, "Failed to add review. Please check the form."
             )
 
-    return redirect(reverse(
-        'product_detail', args=[product.id]  # type: ignore
-    ))
+    return redirect(
+        reverse("product_detail", args=[product.id])  # type: ignore
+    )

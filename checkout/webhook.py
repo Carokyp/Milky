@@ -1,3 +1,5 @@
+# Based on the Code Institute "Boutique Ado" walkthrough (Stripe webhook
+# listener), modified to route only the PaymentIntent events this app handles.
 import stripe
 
 from django.conf import settings

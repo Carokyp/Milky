@@ -1,3 +1,5 @@
+# Adapted from the Code Institute "Boutique Ado" walkthrough (bag context
+# processor), extended here with the Gift a Can session item and its discount.
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.conf import settings
@@ -38,12 +40,14 @@ def cart_contents(request):
         product = get_object_or_404(Product, pk=product_id)
         total += quantity * product.price
         product_count += quantity
-        cart_items.append({
-            "product_id": product_id,
-            "quantity": quantity,
-            "product": product,
-            "subtotal": quantity * product.price,
-        })
+        cart_items.append(
+            {
+                "product_id": product_id,
+                "quantity": quantity,
+                "product": product,
+                "subtotal": quantity * product.price,
+            }
+        )
 
     gift_item = gift_item_from_session(request)
     if gift_item:

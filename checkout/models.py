@@ -1,3 +1,6 @@
+# Order and OrderItem follow the Code Institute "Boutique Ado" walkthrough
+# (reference code, totals kept in sync by save() overrides), with fields added
+# for the promo discount and Gift a Can (is_gift, gift_contact, gift_message).
 import uuid
 from decimal import Decimal
 
@@ -67,9 +70,7 @@ class Order(models.Model):
     delivery_address = models.CharField(max_length=255)
     delivery_city = models.CharField(max_length=100)
     delivery_county = models.CharField(max_length=100, null=True, blank=True)
-    delivery_postcode = models.CharField(
-        max_length=20, null=True, blank=True
-    )
+    delivery_postcode = models.CharField(max_length=20, null=True, blank=True)
     delivery_country = CountryField(max_length=100)
 
     email = models.EmailField(max_length=254)

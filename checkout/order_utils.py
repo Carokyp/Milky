@@ -18,6 +18,7 @@ def build_order_kwargs(order_data, customer, gift):
     same_as_delivery = order_data.get("same_as_delivery", True)
 
     def invoice(field_suffix):
+        """Return the invoice value for a field, or the delivery one."""
         delivery_value = order_data.get(f"delivery_{field_suffix}", "")
         if same_as_delivery:
             return delivery_value
@@ -43,8 +44,7 @@ def build_order_kwargs(order_data, customer, gift):
         "invoice_postcode": invoice("postcode"),
         "invoice_country": invoice("country"),
         "promo_discount_percent": (
-            Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE))
-            if gift else None
+            Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) if gift else None
         ),
     }
 

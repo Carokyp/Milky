@@ -12,6 +12,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     """
 
     def send_mail(self, template_prefix, email, context):
+        """Merge the shared email font URLs into the context, then send."""
         request = allauth_context.request
         if request is not None:
             context = {**context, **build_email_font_urls(request)}

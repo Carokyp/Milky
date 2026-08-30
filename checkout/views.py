@@ -1,3 +1,5 @@
+# Adapted from the Code Institute "Boutique Ado" walkthrough (checkout views),
+# modified for the Stripe Payment Element, Gift a Can and the promo discount.
 import json
 
 import stripe
@@ -74,9 +76,7 @@ def checkout(request):
         return redirect(reverse("all_products"))
 
     if request.user.is_authenticated:
-        user_customers = UserCustomer.objects.filter(
-            user=request.user
-        ).first()
+        user_customers = UserCustomer.objects.filter(user=request.user).first()
         customer = user_customers.customer if user_customers else None
 
         if not customer:
@@ -121,9 +121,7 @@ def checkout(request):
                 "delivery_postcode": form.cleaned_data.get(
                     "delivery_postcode", ""
                 ),
-                "delivery_country": str(
-                    form.cleaned_data["delivery_country"]
-                ),
+                "delivery_country": str(form.cleaned_data["delivery_country"]),
                 "email": (
                     request.user.email
                     if request.user.is_authenticated
@@ -139,9 +137,7 @@ def checkout(request):
                     "invoice_address", ""
                 ),
                 "invoice_city": form.cleaned_data.get("invoice_city", ""),
-                "invoice_county": form.cleaned_data.get(
-                    "invoice_county", ""
-                ),
+                "invoice_county": form.cleaned_data.get("invoice_county", ""),
                 "invoice_postcode": form.cleaned_data.get(
                     "invoice_postcode", ""
                 ),
@@ -189,9 +185,7 @@ def checkout_success(request):
         return redirect(reverse("checkout"))
 
     if request.user.is_authenticated:
-        user_customers = UserCustomer.objects.filter(
-            user=request.user
-        ).first()
+        user_customers = UserCustomer.objects.filter(user=request.user).first()
         customer = user_customers.customer if user_customers else None
     else:
         customer = None
@@ -245,13 +239,12 @@ def checkout_success(request):
         format_html(
             "Order <strong>{}</strong> placed successfully! You will "
             "receive a confirmation email at <strong>{}</strong> shortly.",
-            order.reference_code, order.email,
+            order.reference_code,
+            order.email,
         ),
         extra_tags="order",
     )
-    return redirect(
-        reverse("order_confirmation", args=[order.reference_code])
-    )
+    return redirect(reverse("order_confirmation", args=[order.reference_code]))
 
 
 def order_confirmation(request, reference_code):
@@ -268,9 +261,7 @@ def order_confirmation(request, reference_code):
             return redirect(reverse("home"))
         order = get_object_or_404(Order, reference_code=reference_code)
 
-    return render(
-        request, "checkout/checkout_success.html", {"order": order}
-    )
+    return render(request, "checkout/checkout_success.html", {"order": order})
 
 
 # TODO: Remove before deployment
@@ -282,8 +273,8 @@ def preview_confirmation_email(request):
     order.
     """
     if not request.user.is_superuser:
-        messages.error(request, 'Sorry, only store owners can do that.')
-        return redirect(reverse('home'))
+        messages.error(request, "Sorry, only store owners can do that.")
+        return redirect(reverse("home"))
 
     order = Order.objects.order_by("-created_at").first()
     if not order:

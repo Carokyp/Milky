@@ -1,3 +1,6 @@
+# Adapted from the Code Institute "Boutique Ado" walkthrough (StripeWHHandler),
+# modified for the Payment Element flow, the Gift a Can email and the promo
+# discount. The webhook is the source of truth for order status and emails.
 import json
 from decimal import Decimal
 
@@ -31,17 +34,16 @@ class StripeWHHandler:
         """Send the user a confirmation email."""
         customer_email = order.email
         subject = render_to_string(
-            'checkout/confirmation_email_subject.txt',
-            {'order': order}
+            "checkout/confirmation_email_subject.txt", {"order": order}
         )
         context = build_confirmation_email_context(
             self.request, order, settings.DEFAULT_FROM_EMAIL
         )
         body = render_to_string(
-            'checkout/confirmation_email_body.txt', context
+            "checkout/confirmation_email_body.txt", context
         )
         html_body = render_to_string(
-            'checkout/confirmation_email_body.html', context
+            "checkout/confirmation_email_body.html", context
         )
         send_mail(
             subject,
@@ -53,29 +55,31 @@ class StripeWHHandler:
 
     def _send_gift_email(self, order):
         """Send the gift-a-can email to the friend, if this order has one."""
-        gift_item = OrderItem.objects.filter(
-            order=order, is_gift=True
-        ).select_related('gift_contact', 'product').first()
+        gift_item = (
+            OrderItem.objects.filter(order=order, is_gift=True)
+            .select_related("gift_contact", "product")
+            .first()
+        )
         if not gift_item or not gift_item.gift_contact:
             return
 
         contact = gift_item.gift_contact
         product = gift_item.product
         subject = render_to_string(
-            'products/gift_email_subject.txt',
-            {'product': product, 'customer': order.customer}
+            "products/gift_email_subject.txt",
+            {"product": product, "customer": order.customer},
         )
         body = render_to_string(
-            'products/gift_email_body.txt',
+            "products/gift_email_body.txt",
             {
-                'product': product,
-                'customer': order.customer,
-                'contact': contact,
-                'personal_message': gift_item.gift_message,
+                "product": product,
+                "customer": order.customer,
+                "contact": contact,
+                "personal_message": gift_item.gift_message,
             },
         )
         html_body = render_to_string(
-            'products/gift_email_body.html',
+            "products/gift_email_body.html",
             build_gift_email_context(
                 self.request,
                 product,
@@ -149,7 +153,7 @@ class StripeWHHandler:
             return HttpResponse(
                 content=(
                     f'Webhook received: {event["type"]} | '
-                    'SUCCESS: Order already in database'
+                    "SUCCESS: Order already in database"
                 ),
                 status=200,
             )

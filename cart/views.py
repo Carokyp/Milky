@@ -1,3 +1,5 @@
+# Adapted from the Code Institute "Boutique Ado" walkthrough (bag views),
+# extended here for the Gift a Can flow and AJAX (JSON) responses.
 from decimal import Decimal
 
 from django.conf import settings
@@ -48,9 +50,7 @@ def _cart_totals_json(request, cart):
     delivery_cost = Decimal(str(settings.DELIVERY_COST))
 
     if total < free_delivery_threshold:
-        remaining = (free_delivery_threshold - total).quantize(
-            Decimal("0.01")
-        )
+        remaining = (free_delivery_threshold - total).quantize(Decimal("0.01"))
         delivery = delivery_cost
     else:
         remaining = Decimal("0.00")
@@ -59,12 +59,10 @@ def _cart_totals_json(request, cart):
     grand_total = (total + delivery).quantize(Decimal("0.01"))
 
     if gift_item:
-        discount_rate = (
-            Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) / 100
+        discount_rate = Decimal(str(settings.PROMO_DISCOUNT_PERCENTAGE)) / 100
+        grand_total = (grand_total * (1 - discount_rate)).quantize(
+            Decimal("0.01")
         )
-        grand_total = (
-            grand_total * (1 - discount_rate)
-        ).quantize(Decimal("0.01"))
 
     total = total.quantize(Decimal("0.01"))
 
@@ -84,8 +82,8 @@ def add_to_cart(request, product_id):
 
         # Verify that the product is available before adding to cart
         if not product.is_available:
-            messages.error(request, 'This product is not available.')
-            return redirect(reverse('product_detail', args=[product_id]))
+            messages.error(request, "This product is not available.")
+            return redirect(reverse("product_detail", args=[product_id]))
 
         quantity = _parse_quantity(request.POST.get("quantity"))
         quantity = max(1, quantity)
