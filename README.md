@@ -12,20 +12,21 @@ leave reviews, add cans to a cart, and check out securely with Stripe.
 Registered customers get a profile that stores their delivery details and a full
 history of their past orders, so reordering a favourite takes only a few clicks.
 
-A standout feature is **Gift a Can**: any logged-in customer can send a can
-straight to a friend's address as part of their own order and receive 10% off,
-without the friend needing an account of their own.
+A standout feature is **Gift a Can**: any logged-in customer can add a can to
+their order as a gift, name a friend as the recipient, leave a message and get
+10% off. When the payment succeeds, the friend gets an email letting them know,
+no account needed on their side.
 
 On the other side of the shop, site administrators manage the entire product
-catalogue — creating, editing and removing cans, flavours and stock — directly
-from the front end, without ever touching the Django admin or the database.
+catalogue (creating, editing and removing cans, flavours and stock)
+directly from the front end, without ever touching the Django admin or the database.
 
 **Note:** This project was built for educational purposes as part of the
 [Code Institute](https://codeinstitute.net/) Full Stack Development programme.
 
-**Live Application:** [milky-app-839f694f035d.herokuapp.com](https://milky-app-839f694f035d.herokuapp.com/)
+**[View the live application](https://milky-app-839f694f035d.herokuapp.com/)**
 
-## Index – Table of Contents
+## Table of Contents
 
 * [User Experience (UX)](#user-experience-ux)
    * [Strategy](#strategy)
@@ -85,44 +86,40 @@ from the front end, without ever touching the Django admin or the database.
 
 ### Strategy
 
-With **Milky**, the goal was a warm, playful storefront for a single drinks brand that makes browsing flavors and checking out feel effortless, while giving the brand a low-friction way to turn customers into referrers through the Gift a Can feature.
+**Milky** is a warm, playful storefront for a single milkshake-in-a-can drinks brand. The strategy has two sides: make browsing flavours and checking out feel effortless for the customer, and give the brand a low-friction way to turn buyers into referrers through the Gift a Can feature.
 
 #### Target audience
 
 **Customers**
-- Shoppers who want to buy milkshake-in-a-can drinks online
-- Returning customers who want to track orders and reorder favourites quickly
+- Shoppers who buy novelty drinks online
+- Returning customers reordering a favourite and tracking past orders
 - People who want to send a drink as a gift to a friend or family member
+- People who discovered the brand through a gifted can and are coming back to buy
+  for themselves
 
 **Site owner**
-- A small drinks brand that needs to run its own shop — catalogue, stock and orders — from the browser, without developer help
+- A small drinks brand managing its own catalogue, stock and orders from the browser without developer help
 
 #### Business goals of the website
-- Present the product range attractively enough to drive purchases from a cold visit.
-- Keep checkout friction low — guests can buy without an account, Stripe handles payment.
+- Present the product range well enough to convert a first-time visitor into a buyer.
+- Keep checkout friction low, guests can buy without an account, and Stripe handles payment.
 - Turn one-time buyers into repeat customers by saving delivery info and order history behind an account.
 - Use Gift a Can as a built-in referral loop: a customer gets 10% off, a friend gets a free introduction to the brand.
 
 #### Customer goals of the website
-- Quickly understand what Milky is and see the available flavors.
-- Get enough detail (description, nutrition facts, reviews) to decide before buying.
+- Quickly understand what Milky is and see the available flavours.
+- Get enough detail (description, nutritional information, reviews) to decide before buying.
 - Add products to a cart and check out quickly, with or without creating an account.
 - Send a can as a gift to a friend in a couple of clicks.
 - Manage delivery/invoice details and revisit past orders without re-entering everything.
-
-#### Reasons for the website
-- Direct-to-consumer sales channel for the Milky brand.
-- Referral/gifting growth loop via Gift a Can.
-- Building a returning customer base through saved profiles and order history.
-- Collecting product reviews as social proof for new visitors.
 
 ### User Stories
 
 **New Visitor**
 - As a new visitor, I want to see the product range and understand the brand, so I can decide if it's for me.
-- As a new visitor, I want to view a product's description, nutrition facts, and reviews, so I can make an informed choice.
+- As a new visitor, I want to view a product's description, nutritional information, and customer reviews, so I can make an informed choice.
 - As a new visitor, I want to add products to my cart and check out as a guest, so I don't have to register just to buy something.
-- As a new visitor, I want to create an account, so my delivery details are saved for next time.
+- As a new visitor, I want to create an account, so I can save my delivery details and reuse them at checkout next time.
 
 **Existing User**
 - As an existing user, I want to sign in and see my checkout form pre-filled with my saved details, so re-ordering is fast.
@@ -138,72 +135,81 @@ With **Milky**, the goal was a warm, playful storefront for a single drinks bran
 
 ### Scope
 
-#### In scope Features:
+#### In Scope
 - Product catalogue with a featured selection on the home page and a full grid on All Products.
-- Product detail page: nutrition facts, benefit highlights, paginated reviews, and a review submission form for authenticated users.
+- Product detail page: nutritional information, benefit highlights, paginated reviews, and a review submission form for authenticated users.
 - Session-based cart (add / update quantity / remove) with a live free-delivery progress banner, no account required.
 - Gift a Can: pick a product and a recipient (saved contact or a new one), add an optional message, get 10% off the order.
-- Stripe Payment Element checkout, with delivery + optional separate invoice address.
+- Stripe Payment Element checkout, with a delivery address and an optional separate invoice address.
 - Order confirmation page, reused as the order-detail view from the account's order history.
+- Transactional emails: an HTML order-confirmation email to the buyer and a "you've been gifted a can" email to the recipient, both sent when the Stripe webhook confirms payment.
 - Account system (django-allauth): register, sign in/out, mandatory email verification, password reset/change, email management.
 - Profile page with three tabs: edit personal details, view order history, manage saved gift contacts (full CRUD).
 - Superuser-only Products Management: add, edit, and delete products directly from the storefront UI.
 - Toast notification system (success / error / warning / info) with a dynamic mini-cart preview on "added to cart" toasts.
 - Custom branded 404 / 403 / 405 / 500 error pages.
 
-#### Out of scope Features:
+#### Out of Scope
 - Product search, filtering, or sorting.
 - Wishlists or saved-for-later items.
 - Subscriptions / recurring orders.
 - Multiple gift recipients per order (currently limited to one gift per order).
+- Shipping a gifted can to the recipient's own address (the recipient's address is saved, but the order still ships to the buyer).
 - Editing or deleting an existing review once submitted.
 - Self-service account deletion.
-- Social login (Google/Facebook) — allauth is installed but no providers are configured.
+- Social login (Google/Facebook). allauth is installed but no providers are configured.
 - Real-time order tracking or shipping notifications.
 - Loyalty points or a rewards program.
 - Live chat support.
+- Automatic stock management, decrementing a product's stock on purchase and blocking orders above the available quantity.
+- Discount or promo codes at checkout (Gift a Can's 10% is applied automatically).
+- Guest order look-up, letting a guest retrieve a past order without an account.
 
 ### Structure
 
-The home page leads with a hero (an animated 3D can rendered with Three.js) and a "Shop Now" call to action, followed by a featured-products showcase and a nutrition/benefits section. From there, the flow is intentionally linear: browse products → view a product's detail page → add to cart → check out. A persistent navbar keeps Home, All Products, and Gift a Can within reach at all times, with the authenticated links (Profile, Products Management for superusers, Logout) appearing once signed in.
+The home page leads with a hero (an animated 3D can rendered with Three.js) and a "Shop Now" call to action, followed by a featured-products showcase, a nutrition/benefits section, and a closing lifestyle section. From there, the flow is intentionally linear: browse products → view a product's detail page → add to cart → check out. A persistent navbar keeps Home, All Products, Gift a Can, and the cart within reach at all times (collapsing to a burger menu and a dropdown on smaller screens), with the authenticated links (My Profile, Products Management for superusers, Sign Out) appearing once signed in. A footer with brand imagery and social links sits on every page.
 
-Milky is a multi-page application (MPA) with server-side rendering via Django — each route renders a dedicated template rather than switching views inside a single-page app. The cart and the in-progress gift selection both live in the session rather than the database, so nothing is written to the database until an order is actually placed.
+Milky is a multi-page application (MPA) with server-side rendering via Django, each route renders a dedicated template rather than switching views inside a single-page app, with a few AJAX-enhanced interactions (cart quantity, review pagination). The cart and the in-progress gift selection live in the session, not the database.
 
 Key sections and navigation flow:
-- Home: hero with 3D can, featured products, nutrition/benefits section.
+- Home: hero with 3D can, featured products, nutrition/benefits section, lifestyle section.
 - All Products: full catalogue grid.
-- Product Detail: description, nutrition facts, reviews, add to cart.
+- Product Detail: description, nutritional information, reviews, add to cart.
 - Gift a Can: promo landing page for guests, full gift form for logged-in users.
 - Cart: line items, gift line (if any), order summary.
-- Checkout: delivery/invoice form + Stripe Payment Element.
+- Checkout: delivery and invoice form with the Stripe Payment Element.
 - Order Confirmation: reused for both the post-checkout success page and the profile's order-history detail view.
 - Auth: register, sign in, password reset, email verification (django-allauth).
 - Profile: My Profile / Orders / Contacts tabs.
 - Products Management (superuser only): add/edit/delete products.
+- Footer: brand imagery and social links (X, Instagram, Facebook), on every page.
 
 #### Technical Implementation
 - Django 6.0.4 with a multi-app architecture (`home`, `products`, `cart`, `checkout`, `accounts`).
 - SQLite in development; PostgreSQL in production, wired through `DATABASE_URL` / `dj-database-url` (see [Deployment](#deployment)).
+- Static files and media served from AWS S3 in production via `django-storages` and a small `custom_storages.py`.
 - Server-rendered templates with Bootstrap 5 utilities and `django-crispy-forms` (bootstrap5 pack).
-- Session-based cart and in-progress gift state; nothing is persisted until checkout completes.
+- Session-based cart and in-progress gift selection; neither is written to the database until an order is placed.
 - Stripe Payment Element for payment, with a webhook handler as the reliability fallback that actually sends the confirmation and gift emails.
+- Transactional emails rendered from HTML and plain-text templates, with a shared stylesheet (`templates/emails/_email_styles.css`) and helpers in `milky/email_utils.py`.
 - `django-allauth` for authentication, with mandatory email verification.
 - A single custom stylesheet (`static/css/base.css`) built around CSS custom properties, with fluid typography via `clamp()` and breakpoints at 768/1024/1440/1800px.
-- Three.js renders and animates the rotating 3D can model on the home page hero.
+- Three.js renders the home-page hero can: a glTF model on a transparent WebGL canvas, lit with an image-based studio environment and given a continuous gentle left-right swing (no user interaction). It resizes with its container.
 
 ### Skeleton
 
-The skeleton stage was about placement, before any colour or styling: a fixed
+The skeleton stage was about placement, before any colour or styling, a fixed
 navbar carrying the main links (Home, All Products, Gift a Can, Cart, and the
-account links once signed in), and the primary action button (Add to Cart,
-Checkout, Complete Order) kept low on the page where the eye finishes reading.
-These choices were worked out in the wireframes below.
+account links once signed in), and the primary action button (Add to Cart at the
+end of the product block, Checkout at the foot of the cart summary, Complete
+Order at the end of the checkout form) placed where the eye finishes reading each
+step. These choices were worked out in the wireframes below.
 
 ### Wireframes
 
 Wireframes and the high-fidelity design were both built in Figma:
 
-**[Milky — Figma file](https://www.figma.com/design/90A4C1NyUtrnebcMyJtTlb/MILKY?node-id=1-5049)**
+**[Milky Figma file](https://www.figma.com/design/90A4C1NyUtrnebcMyJtTlb/MILKY?node-id=1-5049)**
 
 <details>
 <summary>Mobile wireframes</summary>
@@ -237,7 +243,7 @@ the 768 / 1024 / 1440 / 1800px breakpoints.
 #### Visual Style
 
 **Design:**
-A warm, playful storefront built around soft rounded cards, layered product imagery, and a cream-and-brown color language. Product cards are composed from three stacked images (background, floating objects, can) for a bit of depth, and a rotating 3D can model anchors the home page hero.
+A warm, playful storefront built around soft rounded cards, pill-shaped buttons, and a cream-and-brown colour language warmed with gold call-to-action accents. Product cards are composed from three stacked images (background, floating objects, and the can itself) layered for depth, with the product name set in bold uppercase over a soft gradient. On hover, the object and can layers drift with the cursor in a parallax effect against the fixed background. The home page hero is anchored by a rotating 3D can, and recurring decorative motifs (flowing wave dividers between sections, bubble shapes, and hand-drawn commas and arrows) carry the brand's lighthearted tone throughout.
 
 **Typography:**
 Three Google Fonts: `Bebas Neue` for headings, `Poppins` for body text, and `Patrick Hand` as a handwritten accent on a few decorative labels (such as the "It's Still Good For You" section). Type sizes are fluid (`clamp()`-based) rather than jumping at fixed breakpoints, so headings and body text scale smoothly with the viewport.
@@ -257,7 +263,7 @@ The palette centers on warm cream backgrounds with brown text, gold for primary 
 | `--footer-background` | `#e9cfb7` | Footer |
 
 <p align="center">
-  <img src="docs/images/Color.png" alt="Milky color palette" style="width: 32%; max-width: 300px; height: auto;">
+  <img src="docs/images/Color.png" alt="Milky colour palette" style="width: 32%; max-width: 300px; height: auto;">
 </p>
 
 ## Technical Architecture
@@ -267,8 +273,9 @@ The palette centers on warm cream backgrounds with brown text, gold for primary 
 The Django admin interface manages the core catalogue and order data:
 
 **Products:**
-- List view with name, flavor, SKU, price, stock, and thumbnail
-- Filter by availability and flavor
+- List view with name, flavour, SKU, price, stock, and the product image field (ordered by SKU)
+- Filter by availability and flavour
+- No search box configured
 - Full add/edit/delete access to every product field, including the three layered card images
 
 <p align="center">
@@ -276,27 +283,34 @@ The Django admin interface manages the core catalogue and order data:
 </p>
 
 **Reviews:**
-- List view with reviewer name, product, a ★/☆ star display, and a truncated comment
-- Search by reviewer name or product, filter by rating or product
-- Reviewer's username resolved and shown via the linked order, where one exists
+- Each row shows the reviewer's name and surname, their account username, the product, the star rating, and a short preview of the comment
+- Sorted by rating, highest first
+- Search by reviewer name, surname, or product
+- Filter by rating or product
+- The username column is blank unless the review is tied to an order from that account
 
 <p align="center">
   <img src="docs/images/Django/Django_Reviews.png" alt="Django admin review management" style="width: 70%; max-width: 700px; height: auto;">
 </p>
 
 **Orders:**
-- List view with reference code, customer, email, status, date, and totals
-- Search by reference code or customer name, filter by status or date
+- List view with reference code, customer (guests flagged), email, status, date, order total and delivery cost (newest first)
+- Search by reference code or customer name
+- Filter by status or date
 - Grouped fieldsets (Order Info / Financials / Delivery Details / Invoice Details), with computed fields like `grand_total` shown read-only
-- Inline, editable order items with a custom "same as delivery" admin widget that copies delivery details into the invoice fields
-- Editing or deleting order items in the admin automatically recalculates the parent order's total
+- Order line items are editable inline, with unit price, line total and SKU shown read-only
+- Editing or deleting line items automatically recalculates the parent order's total
+- A JS-injected "Same as delivery address" checkbox on the Invoice fieldset copies the delivery fields across when ticked and clears them when unticked, and self-checks on load when the two already match
 
 <p align="center">
   <img src="docs/images/Django/Django_Orders.png" alt="Django admin order management" style="width: 70%; max-width: 700px; height: auto;">
 </p>
 
-**Customers, Contacts & Users:**
-- Registered in the admin (create/view/edit/delete), using Django's default list views — no custom search or filtering configured for these three yet.
+**Customers, Contacts & account links:**
+- `Customer` is the delivery/billing profile behind an order
+- `Contact` is one saved gift recipient (a "friend") belonging to a customer
+- `UserCustomer` is the link row joining a `User` to their `Customer`
+- All three use the default Django admin, with no custom list display, search or filtering. The `User` model keeps Django's built-in admin.
 
 ### CRUD Operations
 
@@ -304,37 +318,39 @@ The Django admin interface manages the core catalogue and order data:
 
 #### **Products**
 - **Create / Update / Delete**: superusers only, directly from the storefront (Products Management), or via the Django admin
-- **Read**: everyone — home page (featured), All Products (full catalogue), and the product detail page
+- **Read**: everyone, on the home page (featured selection), All Products (full catalogue), and the product detail page
 
 #### **Reviews**
 - **Create**: authenticated users, from the product detail page
 - **Read**: everyone, paginated 3 per page on the product detail page
-- **Update / Delete**: not available to the review's author from the front end; superusers can edit or delete any review via the Django admin
+- **Update / Delete**: not available to the review's author from the front end, superusers can edit or delete any review via the Django admin
 
 #### **Cart (session-based, no database record)**
-- **Create / Update / Delete**: add a product, change its quantity, or remove it — all reflected instantly (AJAX) without a page reload
+- **Create / Update / Delete**: add a product, change its quantity, or remove it, all reflected instantly (AJAX) without a page reload
 
 #### **Gift a Can**
-- **Create**: pick a product and a recipient, held in the session until the order is placed — limited to one gift per order
+- **Create**: pick a product and a recipient, held in the session until the order is placed, limited to one gift per order
 - **Read**: the gift line is shown in the cart and at checkout alongside the regular items
 - **Delete**: removable from the cart before checkout to free up the "one gift" slot
 
 #### **Orders**
-- **Create**: created on successful Stripe payment (either via the browser return flow or, as a reliability fallback, via the Stripe webhook)
+- **Create**: created on successful Stripe payment. The browser return flow creates it first as Pending, if that flow is interrupted, the Stripe webhook creates it instead as a reliability fallback.
 - **Read**: the order confirmation page, and the "Orders" tab of the account profile
-- **Update**: order status only, via the Django admin (Pending / Completed / Cancelled) or automatically on a failed payment webhook
+- **Update**: order status only (Pending / Completed / Cancelled). The `payment_intent.succeeded` webhook moves an order to Completed and sends the emails, the `payment_intent.payment_failed` webhook moves it to Cancelled; a staff user can also set the status by hand in the Django admin.
 
-#### **Account (Customer profile & saved Contacts)**
-- **Create**: a `Customer` record is created automatically the first time a signed-in user reaches checkout or their profile
+#### **Account (Customer profile)**
+- **Create**: a `Customer` record is created automatically the first time a signed-in user reaches checkout, or the first time they save the "My Profile" form
 - **Read / Update**: the "My Profile" tab of the account page
-- **Contacts (saved gift recipients)**: full create, read, update, and delete from the "Contacts" tab
+
+#### **Contacts (saved gift recipients)**
+- **Create / Read / Update / Delete**: full CRUD from the "Contacts" tab of the account page
 
 ### User Feedback
 
 **Toast Notifications** (four variants, driven by Django's messages framework):
 - Success, error, warning, and info toasts, positioned as a fixed banner and capped at the site's max content width so they never sit past the page's right edge on wide screens
-- Success toasts adapt their title and icon by context (cart, cart update, cart removal, product, review, gift, order, profile, contact)
-- Adding an item to the cart shows a full mini-cart preview inline inside the toast: thumbnails, quantities, running total, and a free-delivery progress banner
+- Each of the four variants has its own icon, success toasts also adapt their title by context (cart, cart update, cart removal, product, review, gift, order, profile, contact)
+- Cart toasts show a full mini-cart preview inline inside the toast: thumbnails, quantities, running total, a free-delivery progress banner, and a checkout button
 - Every toast has a manual close button and auto-hides after 6 seconds (`toast.js`)
 
 **Confirmation Modals** (triggered before destructive actions):
@@ -350,7 +366,7 @@ The Django admin interface manages the core catalogue and order data:
 **Real-Time Feedback**:
 - AJAX quantity updates and removals in the cart, with totals and the free-delivery banner updating in place
 - AJAX-paginated reviews on the product detail page (no full page reload)
-- Interactive star-rating picker on the review form (click/hover to set 1–5 stars)
+- Interactive star-rating picker on the review form (click/hover to set 1-5 stars)
 - The Stripe Payment Element mounts lazily, only once the payment section scrolls into view
 
 **Form Validation Errors**:
@@ -359,33 +375,37 @@ The Django admin interface manages the core catalogue and order data:
 
 ### Database Schema
 
-The app uses Django's ORM — SQLite in development, PostgreSQL in production.
+The app uses Django's ORM, with SQLite in development and PostgreSQL in production.
 
-#### ERD — Entity Relationship Diagram
+#### Entity Relationship Diagram (ERD)
 
 ```
 USER ||--o{ USERCUSTOMER : "linked via"
 USERCUSTOMER }o--|| CUSTOMER : "resolves to"
 CUSTOMER ||--o{ CONTACT : "has"
-CUSTOMER ||--o{ ORDER : "places"
+CUSTOMER |o--o{ ORDER : "places (guest orders have none)"
 ORDER ||--o{ ORDERITEM : "contains"
 PRODUCT ||--o{ ORDERITEM : "ordered as"
 PRODUCT ||--o{ REVIEW : "receives"
-ORDER ||--o{ REVIEW : "credits (optional)"
-CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
+ORDER |o--o{ REVIEW : "credits (optional)"
+CONTACT |o--o{ ORDERITEM : "gifted to (optional)"
 ```
 
 <p align="center">
   <img src="docs/images/ERD.png" alt="Milky ERD" style="width: 100%; max-width: 1000px; height: auto;">
 </p>
 
-**ERD note:** `User` ↔ `Customer` is resolved through an explicit `UserCustomer` join model rather than a `OneToOneField`. It isn't enforced as 1:1 at the database level, but the application always looks it up as if it were (`.filter(user=request.user).first()`).
+**ERD note:** a user account and its `Customer` profile are linked by a separate `UserCustomer` row (two foreign keys), not by a `OneToOneField`. Nothing in the database stops a user having more than one `Customer`, but the code always reads the link with `.filter(user=request.user).first()`, so in practice it behaves as one-to-one.
 
-**Legend:**
-- **Solid line** — enforced One-to-One (via `OneToOneField`)
-- **Dashed line** — ForeignKey relationship 1:N
-- **PK** — Primary Key
-- **FK** — Foreign Key
+**Legend (crow's-foot notation):** the two symbols next to each entity read as (minimum, maximum) participation.
+- `||` one and only one
+- `|o` zero or one (optional foreign key)
+- `o{` zero or many
+- `{` / `}` is the "crow's foot" (many); `--` is the relationship line
+- **PK**: Primary Key
+- **FK**: Foreign Key
+
+Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly one `USER`, and a `USER` has zero or many `USERCUSTOMER` rows.
 
 ---
 
@@ -397,16 +417,18 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 ---
 
-**2. `accounts.UserCustomer`** — join table between `User` and `Customer`
-- **Foreign Keys:** `user` (→ `auth.User`, `CASCADE`), `customer` (→ `Customer`, `CASCADE`)
+**2. `accounts.UserCustomer`**: join table between `User` and `Customer`
+- **Foreign Keys:**
+  - `user` (to `auth.User`, `CASCADE`): the login account
+  - `customer` (to `Customer`, `CASCADE`): the profile that account owns
 - **Fields:** just `id` and the two foreign keys
-- **Note:** logically 1:1 (app code always resolves it with `.filter(user=...).first()`), but not enforced with a DB-level uniqueness constraint.
+- **Constraint:** none. The `(user, customer)` pair is not made unique, so the schema would allow two rows for the same user. The app relies on `.filter(user=...).first()` to treat the link as 1:1.
 
 ---
 
 **3. `accounts.Customer`**
-- **Purpose:** the human profile behind an order — not tied 1:1 at the DB level, resolved via `UserCustomer`
-- **Fields (all optional — the profile is filled in gradually):**
+- **Purpose:** the human profile behind an order, not tied 1:1 at the DB level, resolved via `UserCustomer`
+- **Fields (all optional, the profile is filled in gradually):**
   - `name`, `surname` (CharField(255), blank)
   - `phone_number` (CharField(20), blank)
   - `address`, `city` (CharField(255), blank)
@@ -416,57 +438,65 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 ---
 
-**4. `accounts.Contact`** — a saved gift recipient ("friend")
-- **Foreign Key:** `customer` (→ `Customer`, `CASCADE`)
+**4. `accounts.Contact`**: a saved gift recipient ("friend")
+- **Foreign Key:** `customer` (to `Customer`, `CASCADE`): the account that saved this recipient; deleting the customer deletes their contacts
 - **Fields:** `name`, `surname` (CharField(255), required), `phone_number` (CharField(20), required), `email` (EmailField, required)
 - **Address (all required except `county`):** `address`, `city` (CharField(255)), `county` (CharField(100), null/blank), `postal_code` (CharField(20)), `country` (CountryField)
 - `ip_address` (GenericIPAddressField, captured server-side at creation)
-- **Note:** unlike `Customer`, a `Contact`'s address is required — it is created at the moment of an actual gift, not built up gradually.
+- **Note:** unlike `Customer`, a `Contact`'s address is required. It is created at the moment of an actual gift, not built up gradually.
 
 ---
 
 **5. `products.Product`**
 - **Fields:**
-  - `sku` (CharField(255), unique, auto-generated `MILK-XXXXXX`)
+  - `sku` (CharField(255))
   - `name` (CharField(255), required)
-  - `flavor` (CharField(50), choices: chocolate, vanilla, fruity, caramel, nutty, special)
+  - `flavor` (CharField(50), null/blank, choices: chocolate, vanilla, fruity, caramel, nutty, special)
   - `description` (TextField, soft cap 500 chars)
   - `price` (DecimalField, 6 digits / 2 decimal places)
-  - `product_image` (ImageField, null/blank) — single image used on the detail page, cart, and checkout
-  - `product_image_url` (URLField, null/blank) — an alternative to uploading: point `product_image` at an external URL instead
-  - `background_image`, `objects_image`, `can_image` (ImageField, null/blank) — the three layered images used to build each product card
+  - `product_image` (ImageField, null/blank): single image used on the detail page, cart, and checkout
+  - `product_image_url` (URLField, null/blank): an alternative to uploading, point `product_image` at an external URL instead
+  - `background_image`, `objects_image`, `can_image` (ImageField, null/blank): the three layered images used to build each product card
   - `stock` (PositiveIntegerField, nullable)
   - `is_available` (BooleanField, default `True`)
-  - `featured` (BooleanField, default `False`) — shown on the home page
+  - `featured` (BooleanField, default `False`): shown on the home page
   - `display_order` (PositiveIntegerField, default `0`)
+- **Constraint:** `sku` is unique. If left blank it is auto-filled by `generate_sku()` as `MILK-` plus 6 hex characters
 - **Meta:** ordered by `display_order`, then `name`
 
 ---
 
 **6. `products.Review`**
-- **Foreign Keys:** `product` (→ `Product`, `CASCADE`, `related_name="reviews"`), `order` (→ `checkout.Order`, `SET_NULL`, optional — links a review to the order that "earned" it)
-- **Fields:** `name`, `surname` (CharField(255), required), `rating` (PositiveIntegerField, 1–5, `MinValueValidator`/`MaxValueValidator`), `comment` (TextField(500), blank/null)
-- No `Meta` ordering — reviews paginate in insertion order
+- **Foreign Keys:**
+  - `product` (to `Product`, `CASCADE`, `related_name="reviews"`): the product being reviewed; deleting the product deletes its reviews
+  - `order` (to `checkout.Order`, `SET_NULL`, optional): links a review to the order that "earned" it, used to resolve the reviewer's account; kept even if that order is later deleted
+- **Fields:** `name`, `surname` (CharField(255), required), `rating` (PositiveIntegerField), `comment` (TextField(500), blank/null)
+- **Constraint:** `rating` must be 1-5 (`MinValueValidator(1)` / `MaxValueValidator(5)`)
+- No `Meta` ordering; the product page lists them newest-first via `order_by("-id")`
 
 ---
 
 **7. `checkout.Order`**
-- **Foreign Key:** `customer` (→ `accounts.Customer`, `SET_NULL`, nullable — guest orders have no linked customer)
+- **Foreign Key:** `customer` (to `accounts.Customer`, `SET_NULL`, nullable): the account that placed the order; null for guest checkouts, and kept null if the customer is later deleted
 - **Fields:**
-  - `reference_code` (CharField(100), unique, auto-generated `ORDER-XXXXXXXX`)
+  - `reference_code` (CharField(100))
   - `stripe_pid` (CharField(254), nullable)
   - `status` (IntegerField, choices: 0 Pending / 1 Completed / 2 Cancelled)
   - `created_at` (DateTimeField, auto)
-  - `order_total` (DecimalField) — sum of its items, recalculated automatically whenever an item is saved
-  - `delivery_cost` (DecimalField, default `0.00`) — recalculated on every save (free from $25, otherwise $3.99)
-  - `promo_discount_percent` (DecimalField, nullable) — set when the order includes a gift
-  - Separate `delivery_*` (required) and `invoice_*` (optional) address blocks, plus `email` (required)
+  - `order_total` (DecimalField): sum of its items, recalculated automatically whenever an item is saved
+  - `delivery_cost` (DecimalField, default `0.00`): recalculated on every save (free from $25, otherwise $3.99)
+  - `promo_discount_percent` (DecimalField, nullable): set when the order includes a gift
+  - Separate `delivery_*` (mostly required, `county` and `postcode` optional) and `invoice_*` (optional) address blocks, plus `email` (required)
+- **Constraint:** `reference_code` is unique and non-editable, auto-generated by `generate_reference_code()` as `ORDER-` plus 8 hex characters
 - **Computed:** `grand_total` property = `order_total + delivery_cost`, minus the promo discount if set
 
 ---
 
 **8. `checkout.OrderItem`**
-- **Foreign Keys:** `order` (→ `Order`, `CASCADE`, `related_name="items"`), `product` (→ `Product`, `CASCADE`), `gift_contact` (→ `accounts.Contact`, `SET_NULL`, optional)
+- **Foreign Keys:**
+  - `order` (to `Order`, `CASCADE`, `related_name="items"`): the order this line belongs to; deleting the order deletes its items
+  - `product` (to `Product`, `CASCADE`): the product bought on this line
+  - `gift_contact` (to `accounts.Contact`, `SET_NULL`, optional): set only on the single gift line, points to the friend who is notified by email
 - **Fields:** `sku`, `unit_price` (snapshotted from the product at purchase time), `quantity`, `total_price` (auto-computed), `is_gift` (BooleanField, default `False`), `gift_message` (TextField, blank)
 - **Side effect:** saving an `OrderItem` also recalculates and re-saves its parent `Order`'s `order_total`
 
@@ -476,42 +506,48 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 | Relationship | Models involved | Type | Enforcement |
 |---|---|---|---|
-| User ↔ Customer | User, UserCustomer, Customer | Effectively One-to-One | Join model, app-enforced only |
-| Customer → Contact | Customer, Contact | One-to-Many | `ForeignKey` + `CASCADE` |
-| Customer → Order | Customer, Order | One-to-Many | `ForeignKey` + `SET_NULL` |
-| Order → OrderItem | Order, OrderItem | One-to-Many | `ForeignKey` + `CASCADE` |
-| Product → OrderItem | Product, OrderItem | One-to-Many | `ForeignKey` + `CASCADE` |
-| Product → Review | Product, Review | One-to-Many | `ForeignKey` + `CASCADE` |
-| Order → Review | Order, Review | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
-| Contact → OrderItem | Contact, OrderItem | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
+| User / Customer | User, UserCustomer, Customer | Effectively One-to-One | Join model, app-enforced only |
+| Customer to Contact | Customer, Contact | One-to-Many | `ForeignKey` + `CASCADE` |
+| Customer to Order | Customer, Order | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
+| Order to OrderItem | Order, OrderItem | One-to-Many | `ForeignKey` + `CASCADE` |
+| Product to OrderItem | Product, OrderItem | One-to-Many | `ForeignKey` + `CASCADE` |
+| Product to Review | Product, Review | One-to-Many | `ForeignKey` + `CASCADE` |
+| Order to Review | Order, Review | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
+| Contact to OrderItem | Contact, OrderItem | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
 
 ---
 
 #### Data Flow Examples
 
-**Example 1 — First checkout**
+**Example 1: First checkout**
 1. A signed-in user with no `Customer` yet reaches checkout.
 2. A blank `Customer` and its `UserCustomer` link are created automatically.
-3. The delivery form is saved back onto that `Customer` if "save this delivery info" is checked.
+3. The delivery form is saved back onto that `Customer` if "Save this delivery info to my profile" is checked.
 
-**Example 2 — Gift a Can**
+**Example 2: Gift a Can**
 1. The user picks a product and a recipient (existing `Contact`, or creates a new one) on the Gift a Can page.
-2. The selection is held in `request.session['gift']` — nothing is written to the database yet.
+2. The selection (product, recipient, message) is held in `request.session['gift']`, so no order exists yet. A brand-new `Contact`, if one is entered rather than picked, is saved at this point.
 3. On successful payment, an `OrderItem` is created with `is_gift=True` and `gift_contact` set, and a gift confirmation email is sent to the recipient.
 
-**Example 3 — Order creation has two paths**
-1. The browser is redirected back from Stripe to `checkout_success`, which creates the `Order` + `OrderItem`s directly — this is the happy path.
-2. Independently, Stripe's `payment_intent.succeeded` webhook creates the same order from the PaymentIntent's metadata **if it doesn't already exist** (looked up by `stripe_pid`) — this is the reliability fallback, and it's also the only path that actually sends the confirmation and gift emails.
+**Example 3: Order creation has two paths**
+1. The browser is redirected back from Stripe to `checkout_success`, which creates the `Order` and its `OrderItem`s directly. This is the happy path.
+2. Independently, Stripe's `payment_intent.succeeded` webhook creates the same order from the PaymentIntent's metadata **if it doesn't already exist** (looked up by `stripe_pid`). This is the reliability fallback, and it's also the only path that actually sends the confirmation and gift emails.
 
 #### Schema Characteristics
 
-- **One relational database**, accessed only through the Django ORM and migrations — no raw SQL.
-- **Delete behaviour is chosen per relationship:** `CASCADE` for tightly-owned rows (an `Order`'s items, a `Customer`'s contacts, a `Product`'s reviews), and `SET_NULL` where a record should outlive its parent (a guest `Order` when its `Customer` is removed, a `Review` when its linked `Order` goes, a gifted `OrderItem` when the `Contact` is deleted).
-- **Money is stored as `DecimalField`**, never a float.
-- **Purchase data is snapshotted:** `OrderItem` copies the product's `sku` and `unit_price` at checkout, so later product edits never rewrite past orders.
-- **Totals are denormalised** onto `Order` (`order_total`, `delivery_cost`) and kept in sync by `save()` overrides on `Order` and `OrderItem`.
-- **Transient state stays out of the database:** the cart and the in-progress gift live in the session; the first row is written only when an order is placed.
-- **`User` ↔ `Customer` is a deliberate join model** (`UserCustomer`) rather than a `OneToOneField` — treated as 1:1 in code but not constrained at the database level.
+| Characteristic | Implementation | Benefit |
+|---|---|---|
+| Single database, ORM only | Django ORM and migrations, no raw SQL | Portable from SQLite (dev) to PostgreSQL (prod) |
+| Explicit join model | `UserCustomer` links `User` and `Customer` instead of a `OneToOneField` | 1:1 in code, not constrained in the schema |
+| Deliberate `on_delete` | `CASCADE` for owned rows (order items, contacts, reviews); `SET_NULL` for `Order.customer`, `Review.order`, `OrderItem.gift_contact` | Related rows are cleaned up without destroying order history |
+| Unique constraints | `Product.sku` and `Order.reference_code`, both auto-generated | No duplicate SKUs or order references |
+| Validated range | `Review.rating` bounded 1-5 by `MinValueValidator` / `MaxValueValidator` | Ratings can't go out of range |
+| Choice fields | `Product.flavor` (6 choices), `Order.status` (Pending / Completed / Cancelled) | Data validation, powers admin filtering |
+| Decimal money | `DecimalField` on every price and total, never a float | Exact currency arithmetic |
+| Snapshotted line items | `OrderItem` copies `sku` and `unit_price` at checkout | Product edits never rewrite past orders (deletion still cascades) |
+| Denormalised totals | `order_total` / `delivery_cost` stored on `Order`, resynced by `save()` overrides on `Order` and `OrderItem` | Totals ready for templates and admin without recomputing |
+| Timestamp | `Order.created_at` (`auto_now_add`) | Order list sorts newest-first |
+| Session-only transient state | Cart and in-progress gift selection live in `request.session` | The cart and gift selection never become database rows on their own |
 
 ## Features
 
@@ -582,12 +618,13 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 #### **Gift a Can**
 
-- **Logged out:** a promo landing page — hero image, a 3-step "how it works" explainer, and Sign In / Register calls to action
-- **Logged in:** the full gift form —
+- **Logged out:** a promo landing page with a hero image, a 3-step "how it works" explainer, and Sign In / Register calls to action
+- **Logged in:** the full gift form, made of:
   - A custom product picker
   - An optional personal message
   - Either a saved contact or new-friend fields
 - **One gift per order:** if a gift is already in the session, the page shows a locked state instead
+- **After payment:** the recipient gets a "you've been gifted a can" email, including the buyer's personal message
 
 <p align="center">
   <img src="docs/images/Gift_a_Can.png" alt="Gift a Can page" style="width: 60%; max-width: 900px; height: auto;">
@@ -595,7 +632,7 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 #### **Cart**
 
-- **Line items:** an AJAX quantity stepper (clamped 1–99) and AJAX remove
+- **Line items:** an AJAX quantity stepper (clamped 1-99) and AJAX remove
 - **Gift line:** a separate, non-editable line if a Gift a Can is in progress, with its own remove button
 - **Order summary:** subtotal, delivery, gift discount, grand total, and a live free-delivery progress banner
 - **Empty state:** cart icon, "Your cart is empty" message, and a Shop Now button
@@ -619,7 +656,8 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 #### **Order Confirmation**
 
-- Reference code, itemised line items, price recap, delivery address, and a "Continue Shopping" call to action
+- Reference code, itemised line items, price recap, delivery address, and a "Continue Shopping" call to action (a "Back to Profile" button replaces it when the page is opened from the profile)
+- An HTML order-confirmation email is sent to the buyer once the Stripe webhook confirms payment
 - The same template doubles as the order-detail view reached from the profile's Orders tab
 
 <p align="center">
@@ -639,9 +677,9 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 #### **Products Management (Superuser Only)**
 
-- **Add / Edit forms**, grouped into sections: Info, Cart & Checkout Image, Product Card Visuals (the three layered images), and Stock & Visibility
+- **Add / Edit forms**, grouped into sections: Info, Stock & Visibility, Cart & Checkout Image, and Product Card Visuals (the three layered images)
 - **Custom file-upload widgets** showing the current image with a "Remove Image" option
-- **Delete** has no dedicated page — it's triggered from a shared confirmation modal, available on any product card
+- **Delete** has no dedicated page. It's triggered from a shared confirmation modal, available on any product card
 
 <p align="center">
   <img src="docs/images/Products_Management.png" alt="Superuser products management" style="width: 60%; max-width: 900px; height: auto;">
@@ -649,12 +687,12 @@ CONTACT ||--o{ ORDERITEM : "gifted to (optional)"
 
 #### **Authentication Pages** (django-allauth)
 
-All auth pages share the same split layout — a form on one side, an illustration on the other (hidden below tablet width).
+All auth pages share the same split layout: a form on one side, an illustration on the other (hidden below tablet width).
 
 - **Register:** email, username and password; a verification email is sent, and the account can't sign in until the email is confirmed
 - **Sign In:** by email address and password
-  - "Remember Me" controls session length only — checked keeps the session alive for two weeks after the browser closes, unchecked ends it when the browser closes
-  - It doesn't pre-fill the form on a later visit — that's the browser's own password manager
+  - "Remember Me" controls session length only. Checked keeps the session alive for two weeks and survives the browser closing; unchecked ends it as soon as the browser closes
+  - It doesn't pre-fill the form on a later visit; that's the browser's own password manager
 - **Sign Out:** a confirmation page before the session is cleared
 - **Password Reset:** request a link by email → open it → set a new password, with "sent" and "done" states in between
 - **Password Change / Set:** change the password from the account while signed in
@@ -666,9 +704,8 @@ All auth pages share the same split layout — a form on one side, an illustrati
 
 #### **Toast Notification System**
 
-- Four variants — success, error, warning, info — with context-specific titles and icons
-- Adding a product to the cart shows a live mini-cart preview inside the toast itself
-- Fuller detail in [Technical Architecture → User Feedback](#user-feedback)
+- Four variants (success, error, warning, info), each with its own icon; success toasts also vary their title by context
+- Cart toasts show a live mini-cart preview inside the toast itself
 
 <p align="center">
   <img src="docs/images/Toast.png" alt="Toast notification with mini-cart preview" style="width: 50%; max-width: 450px; height: auto;">
@@ -703,7 +740,7 @@ Confirmation modals are shown before any destructive action, so nothing is delet
 - Every `<img>` has an `alt` attribute
 - Icon-only controls carry text alternatives: `aria-label` on the footer social links and the mobile menu toggle, plus `aria-expanded` / `aria-controls` on the toggle
 - Toasts are announced to screen readers via `role="alert"`, `aria-live` and `aria-atomic`
-- Most pages lead with a single `<h1>`; the home page currently uses `<h1>` for each of its display section titles ("Our Favorites", "It's Still Good For You", …), which is a known heading-structure issue to tidy up
+- Most pages lead with a single `<h1>`. The home page currently uses `<h1>` for each of its display section titles ("Our Favorites", "It's Still Good For You", …), which is a known heading-structure issue to tidy up
 - Dark-brown text on the cream background keeps body copy at a high contrast ratio
 
 #### **Base Templates**
@@ -756,21 +793,32 @@ All four custom error pages share the same branded layout: a breakpoint-swapped 
 
 ## Future Features
 
-- **Product search, filtering, and sorting** on the All Products page
-- **Wishlists** — save a product for later without adding it to the cart
-- **Subscriptions** — recurring delivery of a favorite flavor
-- **Multiple gift recipients per order**, instead of the current one-gift limit
-- **Editable/deletable reviews** from the front end, for the reviewer
-- **Self-service account deletion**
-- **Social login** (Google/Facebook) — `django-allauth` already supports it, no providers are configured yet
-- **Order tracking / shipping notifications**
-- **A loyalty or rewards program**
-- **Live chat support**
-- **Multiple photos per review**
-- **Shipping a gifted can to the recipient's own address** — the friend's
-  address is now collected and saved on the Contact, but the order itself
-  still ships to the buyer's address; there's no support yet for a single
-  order having two different delivery addresses
+The following are planned for future releases, grouped by area:
+
+**Shopping & Discovery**
+- Product search, filtering, and sorting on the All Products page
+- Wishlists: save a product for later without adding it to the cart
+- Subscriptions: recurring delivery of a favourite flavour
+
+**Checkout & Orders**
+- Automatic stock management: decrement stock on purchase and block orders above the available quantity
+- Discount / promo codes at checkout, beyond the automatic Gift a Can discount
+- Order tracking and shipping notifications
+- Guest order look-up: retrieve a past order without an account
+
+**Gift a Can**
+- Multiple gift recipients per order, instead of the current one-gift limit
+- Shipping a gifted can to the recipient's own address: the address is already collected on the `Contact`, but the order still ships to the buyer, and one order cannot yet carry two delivery addresses
+
+**Reviews**
+- Editable and deletable reviews from the front end, for the reviewer
+- Multiple photos per review
+
+**Accounts & Engagement**
+- Social login (Google / Facebook): `django-allauth` already supports it, no providers are configured yet
+- Self-service account deletion
+- A loyalty or rewards program
+- Live chat support
 
 ## Technologies Used
 
@@ -781,7 +829,7 @@ development), and authentication is handled by **django-allauth** with email
 login. Static files and product images are served from **AWS S3** via
 django-storages. Payments run on **Stripe**, using a PaymentIntent and the
 embedded Stripe Payment Element, with an order-confirming webhook as the source
-of truth. Transactional email — order confirmations and gift notifications — is
+of truth. Transactional email (order confirmations and gift notifications) is
 sent over SMTP. The application is deployed on **Heroku** with Gunicorn.
 
 ### Languages
@@ -802,13 +850,12 @@ Installed via `requirements.txt`:
 | [django-crispy-forms](https://django-crispy-forms.readthedocs.io/) + [crispy-bootstrap5](https://pypi.org/project/crispy-bootstrap5/) | form rendering with the Bootstrap 5 template pack |
 | [django-countries](https://pypi.org/project/django-countries/) | country fields on the delivery / invoice forms |
 | [django-storages](https://django-storages.readthedocs.io/) + [boto3](https://pypi.org/project/boto3/) | static files and media on AWS S3 in production |
-| [stripe](https://pypi.org/project/stripe/) | Stripe Python SDK — Payment Element and webhook handling |
+| [stripe](https://pypi.org/project/stripe/) | Stripe Python SDK, for the Payment Element and webhook handling |
 | [dj-database-url](https://pypi.org/project/dj-database-url/) + [psycopg2](https://pypi.org/project/psycopg2/) | PostgreSQL connection in production |
 | [gunicorn](https://pypi.org/project/gunicorn/) | WSGI server used on Heroku |
 | [Pillow](https://pypi.org/project/pillow/) | image handling for uploaded product photos |
-| [Brotli](https://pypi.org/project/Brotli/) | compression for static assets served from S3 |
 
-Dev / QA tooling: [black](https://pypi.org/project/black/), [flake8](https://pypi.org/project/flake8/), [html5validator](https://pypi.org/project/html5validator/), [playwright](https://pypi.org/project/playwright/).
+Dev / QA tooling: [black](https://pypi.org/project/black/), [flake8](https://pypi.org/project/flake8/), [html5validator](https://pypi.org/project/html5validator/).
 
 ### Frameworks, Libraries & Software
 
@@ -817,20 +864,27 @@ Dev / QA tooling: [black](https://pypi.org/project/black/), [flake8](https://pyp
 * [Google Fonts](https://fonts.google.com/): `Bebas Neue`, `Poppins`, and `Patrick Hand`
 * [Blender](https://www.blender.org/): modelling the 3D can shown on the home page hero
 * [Three.js](https://threejs.org/): renders and animates that 3D can model in the browser
-* [Adobe Photoshop](https://www.adobe.com/products/photoshop.html): editing product-card and photographic images (cut-outs, background removal)
-* ChatGPT: generating the product can images
+* [ChatGPT](https://chatgpt.com/): generating the product can images and a flat texture map for the 3D can model
+* [Adobe Photoshop](https://www.adobe.com/products/photoshop.html): building the layered product-card artwork, cutting out each element (background, floating objects, can) onto its own layer and positioning them individually, plus general photo editing
+* [Claude](https://claude.ai/): checking spelling and wording in code comments and the README
 * [Stripe](https://stripe.com/docs): checkout and payment processing
 * [Heroku](https://www.heroku.com/): application hosting
 * [AWS S3](https://aws.amazon.com/s3/): static file and media storage in production
-* [Git](https://git-scm.com/) & [GitHub](https://github.com/): version control and repository hosting
+* [GitHub](https://github.com/): version control and repository hosting
 * [Figma](https://www.figma.com/): wireframes and high-fidelity design
 * [Django Admin](https://docs.djangoproject.com/en/stable/ref/contrib/admin/): back-office management for products, reviews, and orders
+* [W3C HTML Validator](https://validator.w3.org/): validating the rendered HTML of every page
+* [W3C CSS Validator (Jigsaw)](https://jigsaw.w3.org/css-validator/): validating `static/css/base.css`
+* [JSHint](https://jshint.com/): linting the scripts in `static/js/`
+* [CI Python Linter](https://pep8ci.herokuapp.com/): checking the Python source for PEP 8 compliance
+* [WAVE](https://wave.webaim.org/): accessibility evaluation of each page type
+* [Lighthouse](https://developer.chrome.com/docs/lighthouse/): performance, accessibility, best-practices, and SEO audits
 
 ## Testing
 
-The tables below are the **manual test plan** for the project, covering authentication, CRUD, permissions, forms, UX, accessibility, and responsive layout. Each row is marked *To test* until it has been run and the result recorded. **There is no automated test suite** — every app's `tests.py` is still the default Django stub, and no CI pipeline is configured. `html5validator` and `playwright` are installed for the validator and browser checks (see below).
+The tables below are the **manual test plan** for the project, covering authentication, CRUD, permissions, forms, UX, accessibility, and responsive layout. **There is no automated test suite.** Every app's `tests.py` is still the default Django stub, and no CI pipeline is configured. `html5validator` is installed for the validator checks below.
 
-Stripe runs in **test mode**, so checkout can be tested end to end without a real payment. Use card number `4242 4242 4242 4242` with any future expiry date, any 3-digit CVC and any postcode; more test cards are listed under [Deployment → Stripe](#stripe).
+Stripe runs in **test mode**, so checkout can be tested end to end without a real payment. Use card number `4242 4242 4242 4242` with any future expiry date, any 3-digit CVC and any postcode. More test cards are listed under [Deployment → Stripe](#stripe).
 
 ### Authentication
 
@@ -841,7 +895,9 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Sign In | Sign in with valid credentials | User is authenticated and redirected | To test |
 | Invalid Sign In | Sign in with the wrong password | Error message shown, user stays on the sign-in page | To test |
 | Password Reset | Request a reset link for a registered email | Reset flow completes and the new password works | To test |
-| Sign Out | Click Logout in the navbar | User is signed out and redirected | To test |
+| Password Change | Change the password from the account while signed in | New password works, old one is rejected | To test |
+| Email Management | Add an email, set it primary, resend verification from the account | Each action succeeds and the email list updates | To test |
+| Sign Out | Click Sign Out in the navbar | User is signed out and redirected | To test |
 
 ### CRUD
 
@@ -858,10 +914,14 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Products Management Access | Visit `/products/add/` while logged out or as a non-superuser | Redirected home with an error message | To test |
+| Products Management (non-superuser) | Visit `/products/add/` while signed in as a non-superuser | Redirected home with an error message | To test |
+| Products Management (logged out) | Visit `/products/add/` while logged out | Redirected to the sign-in page | To test |
 | Profile Access | Visit `/profile/` while logged out | Redirected to sign in | To test |
 | Own-Data Scoping | Try to view another user's order confirmation page directly | Access denied unless it's the current session's own order | To test |
 | Guest Order Confirmation | View the confirmation page right after a guest checkout | Accessible, since the reference code matches the session | To test |
+| Review While Logged Out | Open a product detail page while logged out | Review form is replaced by a "Sign In to leave a review" prompt | To test |
+| Gift Form While Logged Out | Submit the Gift a Can form while logged out | Redirected to sign in | To test |
+| Contact Ownership | Edit or delete another user's saved contact via its URL | 404, the contact is scoped to its owner | To test |
 
 ### Forms
 
@@ -871,6 +931,8 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Same as Delivery | Toggle the "same as delivery" checkbox at checkout | Invoice fields hide/show accordingly | To test |
 | Gift Form Validation | Submit the Gift a Can form without selecting a product | Submission blocked client-side | To test |
 | Review Rating Required | Submit the review form without picking a star rating | Submission blocked | To test |
+| Contact Form Validation | Submit the "Add a Friend" form with required fields missing | Inline errors shown, submission blocked | To test |
+| Registration Rules | Register with mismatched or too-weak passwords | allauth validation errors shown, account not created | To test |
 
 ### UX
 
@@ -880,27 +942,64 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Toast Feedback | Add a product to the cart | Success toast appears with a live mini-cart preview | To test |
 | Delete Confirmation | Click delete on a product (superuser) or a contact | Confirmation modal appears before anything is removed | To test |
 | Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | To test |
+| Free-Delivery Banner | Change the cart total above and below the threshold | The progress banner updates live to match | To test |
+| Unavailable Product | Open a product with `is_available` off or zero stock | Add to Cart is replaced by a disabled "Coming Soon" / "Out of Stock" button | To test |
+| Mobile Nav Dismiss | Open the mobile menu, then click outside it or open the account dropdown | The menu closes | To test |
+| Gift Locked State | Open Gift a Can with a gift already in the cart | The page shows a locked state instead of the form | To test |
+| Empty States | View the cart, a product with no reviews, and the Orders / Contacts tabs while empty | Each shows its dedicated empty-state message | To test |
 
 ### Accessibility
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
 | Keyboard navigation | Tab through the navbar, a product card, and the checkout form | Every interactive element is reachable and shows a visible focus state | *to test* |
-| Screen reader — toasts | Trigger a success and an error toast with a screen reader running | Both are announced through their `aria-live` region | *to test* |
+| Screen reader, toasts | Trigger a success and an error toast with a screen reader running | Both are announced through their `aria-live` region | *to test* |
 | Image alternatives | Inspect every `<img>` | Meaningful images have descriptive `alt`, decorative ones an empty `alt` | *to test* |
 | Heading order | Run an outline check on each page type | One `<h1>` per page, no skipped levels (note: home page currently has several `<h1>`s) | *to test* |
 | Colour contrast | Check brown-on-cream and brown-on-gold in a contrast checker | Meets WCAG AA for body text and buttons | *to test* |
+| WAVE | Run [WAVE](https://wave.webaim.org/) on each page type | No errors; contrast and ARIA warnings reviewed | *to test* |
 
 ### Validator Testing
 
 | Tool | Target | Result |
 |------|--------|--------|
-| [W3C HTML Validator](https://validator.w3.org/) | Each rendered page (validated from view-source) | *to run — `html5validator` is installed* |
+| [W3C HTML Validator](https://validator.w3.org/) | Each rendered page (validated from view-source) | *to run; `html5validator` is installed* |
 | [W3C CSS Validator (Jigsaw)](https://jigsaw.w3.org/css-validator/) | `static/css/base.css` | *to run* |
 | [JSHint](https://jshint.com/) | Files in `static/js/` | *to run* |
-| [flake8](https://flake8.pycqa.org/) / [black](https://black.readthedocs.io/) | Python source (`max-line-length = 140`, see `setup.cfg`) | *to run* |
+| [flake8](https://flake8.pycqa.org/) / [black](https://black.readthedocs.io/) | Python source (79-char lines, `setup.cfg` + `pyproject.toml`) | *to run* |
+| [CI Python Linter](https://pep8ci.herokuapp.com/) | Python source (strict PEP 8, 79-char lines) | *to run* |
 
-Screenshots go in `docs/images/Testing/`.
+<details>
+<summary>HTML validation</summary>
+
+<p align="center">
+  <img src="docs/images/Testing/validator-html.png" alt="W3C HTML validator results" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+</details>
+
+<details>
+<summary>CSS validation</summary>
+
+<p align="center">
+  <img src="docs/images/Testing/validator-css.png" alt="W3C CSS validator results" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+</details>
+
+<details>
+<summary>JavaScript validation</summary>
+
+<p align="center">
+  <img src="docs/images/Testing/validator-js.png" alt="JSHint results" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+</details>
+
+<details>
+<summary>Python validation</summary>
+
+<p align="center">
+  <img src="docs/images/Testing/validator-python.png" alt="CI Python Linter results" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+</details>
 
 ### Browser Compatibility
 
@@ -915,11 +1014,13 @@ Screenshots go in `docs/images/Testing/`.
 
 | Device Category | Screen Size | Test Result | Notes |
 |----------------|-------------|-------------|-------|
-| Mobile - Small | 390px × 844px | To test | |
-| Tablet | 768px × 1024px | To test | Checkout switches to its two-column layout here |
-| Tablet/Small Desktop | 1024px × 900px | To test | |
-| Laptop | 1440px × 1000px | To test | |
-| Desktop - Large | 2560px × 1300px | To test | Check the toast banner and body content stay aligned at the 1800px max content width |
+| Mobile - Very Small | 320px × 568px | Pass | iPhone 5 / SE (1st gen); a small below-360px CSS tweak keeps text and buttons from clipping |
+| Mobile - Small | 390px × 844px | Pass | |
+| Tablet | 768px × 1024px | Pass | Checkout switches to its two-column layout here |
+| Tablet/Small Desktop | 1024px × 900px | Pass | |
+| Laptop | 1440px × 1000px | Pass | |
+| Desktop - Large | 2560px × 1300px | Pass | Toast banner and body content stay aligned at the 1800px max content width |
+| Desktop - 5K | 5120px × 2880px | Pass | Content stays capped and centred at the 1800px max width; layout matches the 2560px case |
 
 ### Performance
 
@@ -937,11 +1038,14 @@ Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best 
 
 | Bug | Status | Notes |
 |-----|--------|-------|
-| Toast notifications pinned to the raw screen edge on screens wider than 1800px | Fixed | The toast wrapper used Bootstrap's `w-100` on a `position: fixed` element, which resolves against the viewport rather than the centered, max-width body. It's now capped at the same max content width and centered. |
-| Horizontal overflow on the home page on mobile | Fixed | Two Bootstrap `.row`s sat directly inside a `<section>` with no `.container` parent, so the default negative row gutters bled past the viewport edge. Wrapping both rows in `.container` fixed it. |
-| Account pages skipped from `<body>` straight to `<h2>`, with no `<h1>` anywhere on the page | Fixed | Promoted each account page's main heading to `<h1>`, with a sizing utility class so the visual size didn't change. |
-| `checkout/views.py` called `reverse("products")` / `reverse("cart")` — URL names that don't exist | Fixed | Updated to the real names, `all_products` and `view_cart`. |
-| `DEBUG=True` hardcoded and SQLite-only configuration | Fixed | `settings.py` now reads `DEBUG` from the environment, connects to PostgreSQL via `DATABASE_URL`, and serves static / media from AWS S3 — see [Deployment](#deployment). |
+| On screens wider than 1800px the toast messages stuck to the far right edge of the browser instead of lining up with the page content | Fixed | The toast wrapper was `w-100` on a `position: fixed` element, so its width resolved against the viewport, not the centred max-width body. Capped it at the site's max content width and centred it. |
+| The home page could be scrolled sideways a little on mobile | Fixed | Two Bootstrap `.row`s sat directly in a `<section>` with no `.container`, so the rows' negative gutter margins bled past the viewport. Wrapping both rows in `.container` fixed it. |
+| Opening the checkout page auto-scrolled the view down to the Stripe card fields | Fixed | The payment form carried an `autofocus`, which pulled the viewport to it as the Payment Element mounted. Removed the autofocus and reset the scroll position on load (`checkout/forms.py`, `static/js/checkout.js`). |
+| The toast container blocked clicks on links and buttons across the whole page | Fixed | The wrapper is `position: fixed` and full-width, so it sat over the page even with no toast showing. Added `pointer-events: none` on the wrapper and `pointer-events: auto` on the toasts themselves. |
+| After the move to Django 6, static and media files 404'd on Heroku | Fixed | Django 6 dropped `STATICFILES_STORAGE` / `DEFAULT_FILE_STORAGE`; the S3 backends now go in the new `STORAGES` dict, and `STATIC_ROOT` had to be set for `collectstatic` in the build. |
+| A disabled "Add to Cart" button still let an unavailable product be added through a direct POST | Fixed | `add_to_cart` didn't re-check `is_available` server-side. Added the check so the add is rejected with an error message. |
+| A product URL with a non-numeric id (e.g. `/products/abc/`) reached the view and raised a 500 | Fixed | The route used `<product_id>` with no converter changed to `<int:product_id>`. |
+| Using the cart stepper to drop an item's quantity to 0 deleted the whole line | Fixed | Quantity is now clamped to a minimum of 1. Removal is only via the explicit remove button. |
 
 No known unresolved bugs at this time.
 
@@ -953,18 +1057,18 @@ All user stories from [User Stories](#user-stories) are validated below against 
 
 | User Story | How It's Fulfilled | Features / Pages Used |
 |---|---|---|
-| As a new visitor, I want to see the product range and understand the brand. | The home page opens with a hero and a featured-products showcase; All Products shows the full catalogue. | Home Page, All Products |
-| As a new visitor, I want to view a product's description, nutrition facts, and reviews. | The Product Detail Page shows all three, plus a paginated review list. | Product Detail Page |
-| As a new visitor, I want to add products to my cart and check out as a guest. | The cart and checkout flows don't require an account; `Order.customer` is nullable for guest orders. | Cart, Checkout Page |
+| As a new visitor, I want to see the product range and understand the brand. | The home page opens with a hero and a featured-products showcase, all Products shows the full catalogue. | Home Page, All Products |
+| As a new visitor, I want to view a product's description, nutritional information, and customer reviews. | The Product Detail Page shows all three, plus a paginated review list. | Product Detail Page |
+| As a new visitor, I want to add products to my cart and check out as a guest. | The cart and checkout flows don't require an account. `Order.customer` is nullable for guest orders. | Cart, Checkout Page |
 | As a new visitor, I want to create an account so my details are saved for next time. | Registration via django-allauth, with delivery details saved to the `Customer` profile on request. | Register, Checkout Page ("save this delivery info") |
 
 #### Existing User Stories
 
 | User Story | How It's Fulfilled | Features / Pages Used |
 |---|---|---|
-| As an existing user, I want my checkout form pre-filled. | The checkout view builds the form from the signed-in user's saved `Customer` record. | Checkout Page |
-| As an existing user, I want to view my order history. | The profile's Orders tab lists past orders, linking to the reused confirmation template. | Profile Page — Orders tab |
-| As an existing user, I want to save a friend as a contact for gifting. | The profile's Contacts tab supports full CRUD on saved gift recipients. | Profile Page — Contacts tab, Gift a Can |
+| As an existing user, I want to sign in and see my checkout form pre-filled with my saved details. | The checkout view builds the form from the signed-in user's saved `Customer` record. | Checkout Page |
+| As an existing user, I want to view my order history. | The profile's Orders tab lists past orders, linking to the reused confirmation template. | Profile Page, Orders tab |
+| As an existing user, I want to save a friend as a contact for gifting. | The profile's Contacts tab supports full CRUD on saved gift recipients. | Profile Page Contacts tab, Gift a Can |
 | As an existing user, I want to reset my password. | django-allauth's password reset flow. | Password Reset |
 | As an existing user, I want to leave a star rating and comment on a product. | The review form on the Product Detail Page, restricted to authenticated users. | Product Detail Page |
 
@@ -972,23 +1076,24 @@ All user stories from [User Stories](#user-stories) are validated below against 
 
 | User Story | How It's Fulfilled | Features / Pages Used |
 |---|---|---|
-| As a user, I want clear confirmation before a destructive action. | Shared confirmation modals for product deletion and contact deletion. | Products Management, Profile Page — Contacts tab |
+| As a user, I want clear confirmation before a destructive action. | Shared confirmation modals for product deletion and contact deletion. | Products Management, Profile Page Contacts tab |
 | As a user, I want feedback after every action. | The toast notification system, plus inline form validation errors. | Site-wide |
 | As a user, I want the site to work well across devices. | Fluid typography and four custom breakpoints (768 / 1024 / 1440 / 1800px), verified manually across mobile, tablet, laptop, and wide desktop. | Site-wide |
 
 ## Security
 
-- **Secrets in environment variables:** `SECRET_KEY`, the three Stripe keys (`STRIPE_PUBLIC_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WH_SECRET`), the AWS credentials and the email credentials are all read from the environment — via a local, git-ignored `env.py` in development and Heroku config vars in production. Nothing sensitive is committed to the repo.
+- **Secrets in environment variables:** `SECRET_KEY`, the three Stripe keys (`STRIPE_PUBLIC_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WH_SECRET`), the AWS credentials and the email credentials are all read from the environment, via a local, git-ignored `env.py` in development and Heroku config vars in production. Nothing sensitive is committed to the repo.
 - **`DEBUG` is environment-driven:** `DEBUG = "DEVELOPMENT" in os.environ`, so it is off in production. `ALLOWED_HOSTS` is limited to localhost and the Heroku app domain.
-- **CSRF protection:** Django's CSRF middleware is active and every server-rendered form includes `{% csrf_token %}`. The Stripe webhook is the only `@csrf_exempt` view — it is verified instead through the Stripe signature header (`STRIPE_WH_SECRET`).
+- **CSRF protection:** Django's CSRF middleware is active and every server-rendered form includes `{% csrf_token %}`. The Stripe webhook is the only `@csrf_exempt` view; it is verified instead through the Stripe signature header (`STRIPE_WH_SECRET`).
 - **Authentication & access control:** account-only views (profile, contacts, reviews) are gated with `@login_required`; Products Management additionally goes through a `superuser_required` decorator (`add_product` / `edit_product` / `delete_product`). Cart and checkout stay open to guests by design, but no cart action writes to the database. Order pages are scoped so a guest can only see the order tied to their own session (`session["last_order"]`), and a signed-in user only orders linked to their own `Customer`.
-- **Mandatory email verification:** `ACCOUNT_EMAIL_VERIFICATION = "mandatory"` — a new account cannot sign in until its email is confirmed.
-- **Payment data:** card details are entered into Stripe's hosted Payment Element and never reach the Django server or database; only the Stripe PaymentIntent id is stored on the order.
+- **Mandatory email verification:** `ACCOUNT_EMAIL_VERIFICATION = "mandatory"`, so a new account cannot sign in until its email is confirmed.
+- **Payment data:** card details are entered into Stripe's Payment Element (card fields rendered in a Stripe-controlled iframe) and never reach the Django server or database; only the Stripe PaymentIntent id is stored on the order.
 - **Passwords:** hashed with Django's default PBKDF2 hasher; the reset flow uses django-allauth's signed, time-limited email tokens.
 
 ### Could be hardened
 
-- No explicit `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE` or HSTS settings — Heroku serves the site over HTTPS, but Django is not yet told to require secure cookies or to redirect HTTP → HTTPS itself.
+- No explicit `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE` or HSTS settings. Heroku serves the site over HTTPS, but Django is not yet told to require secure cookies or to redirect HTTP to HTTPS itself.
+- `django.middleware.clickjacking.XFrameOptionsMiddleware` was removed from the middleware stack, so no `X-Frame-Options` header is sent and the site can be framed by any origin.
 - `django-allauth`'s `socialaccount` app is installed with no providers configured.
 
 ## Deployment
@@ -999,12 +1104,11 @@ The application is hosted on **Heroku**, with all static files and media stored 
 
 The application was deployed to Heroku. The steps to deploy are as follows:
 
-1. Log in to the [Heroku dashboard](https://dashboard.heroku.com/) for an overview of your apps.
-2. Click **New → Create new app**.
-3. Choose a unique app name and a region, then click **Create app**.
-4. Open the **Resources** tab, search the Add-ons bar for **Heroku Postgres**, and add it (an eco/mini plan is enough for this project). This sets a `DATABASE_URL` config var automatically. *(Any hosted PostgreSQL provider works — set `DATABASE_URL` yourself if you use one.)*
-5. Locally, install the database and server packages: `pip install dj-database-url psycopg2 gunicorn`, then `pip freeze > requirements.txt`.
-6. In `milky/settings.py`, `import dj_database_url` and switch `DATABASES` to use PostgreSQL in production and SQLite in development:
+1. Log in to the [Heroku dashboard](https://dashboard.heroku.com/) and click **New → Create new app**.
+2. Choose a unique app name and a region, then click **Create app**. Note the app's `<name>.herokuapp.com` URL.
+3. On the **Resources** tab, search the Add-ons bar for **Heroku Postgres** and add the **Essential-0** plan (the smallest Postgres plan; Heroku no longer offers a free tier). This sets a `DATABASE_URL` config var automatically. *(Any hosted PostgreSQL provider works; set `DATABASE_URL` yourself if you use one.)*
+4. Locally, install the database and server packages: `pip install dj-database-url psycopg2 gunicorn`, then `pip freeze > requirements.txt`.
+5. In `milky/settings.py`, `import dj_database_url` and switch `DATABASES` to use PostgreSQL in production and SQLite in development:
 
    ```python
    if "DATABASE_URL" in os.environ:
@@ -1020,37 +1124,39 @@ The application was deployed to Heroku. The steps to deploy are as follows:
        }
    ```
 
-7. Add a `Procfile` in the project root:
-
-   ```
-   web: gunicorn milky.wsgi:application
-   ```
-
-8. Set `SECRET_KEY` and `DEBUG` to read from the environment:
+6. Set `SECRET_KEY` and `DEBUG` to read from the environment:
 
    ```python
    SECRET_KEY = os.environ.get("SECRET_KEY")
    DEBUG = "DEVELOPMENT" in os.environ
    ```
 
-9. Add the Heroku app's hostname to `ALLOWED_HOSTS`:
+7. Add the Heroku app's hostname (from step 2) to `ALLOWED_HOSTS`:
 
    ```python
    ALLOWED_HOSTS = ["milky-app-839f694f035d.herokuapp.com", "localhost", "127.0.0.1"]
    ```
 
-10. In Heroku **Settings → Reveal Config Vars**, add:
-    - `SECRET_KEY` — generate one with a [Django secret key generator](https://djecrety.ir/)
-    - `DISABLE_COLLECTSTATIC` = `1` (temporary — remove it once AWS S3 is configured below)
-11. Run migrations and create an admin account from the Heroku console (**More → Run console**):
+8. Add a `Procfile` in the project root:
+
+   ```
+   web: gunicorn milky.wsgi:application
+   ```
+
+   The repo also pins the Python version with a `.python-version` file (`3.13.5`), which Heroku reads at build time.
+
+9. In Heroku **Settings → Reveal Config Vars**, add:
+   - `SECRET_KEY`: generate one with a [Django secret key generator](https://djecrety.ir/)
+   - `DISABLE_COLLECTSTATIC` = `1` (temporary; remove it once AWS S3 is configured below)
+10. Commit and push all of the above to GitHub.
+11. On the **Deploy** tab, connect the GitHub repository, then either **Deploy Branch** manually or **Enable Automatic Deploys** for `main`.
+12. Once the first build succeeds, open **More → Run console** and set up the database:
     - `python manage.py migrate`
     - `python manage.py createsuperuser`
-12. Load the sample catalogue if the database is empty:
+13. Still in the console, load the sample catalogue if the database is empty:
     `python manage.py loaddata products/fixtures/products.json products/fixtures/reviews.json`
-13. Under the **Deploy** tab, connect the GitHub repository, then either **Deploy Branch** manually or **Enable Automatic Deploys** for `main`.
-14. Commit and push all the changes above to GitHub.
 
-> **Note:** local (`localhost:8000/admin/`) and Heroku (`.../admin/`) use two separate databases — an account or order created on one will not appear on the other.
+> **Note:** local (`localhost:8000/admin/`) and Heroku (`.../admin/`) use two separate databases, so an account or order created on one will not appear on the other.
 
 ### Amazon Web Services (AWS)
 
@@ -1058,7 +1164,7 @@ AWS S3 is used to store all static files and media. To configure it:
 
 1. Log in to AWS and open the **S3** service. Click **Create bucket**.
 2. Give the bucket a name (the project uses `milky-static`) and pick a region (`us-east-1`). Under **Object Ownership**, select **ACLs enabled** + **Bucket owner preferred**; under **Block Public Access**, **uncheck** "Block all public access" and tick the acknowledgement box, then **Create bucket**.
-3. Open the bucket → **Properties** → **Static website hosting** → **Edit** → **Enable** → **Host a static website**, with `index.html` as the index document and `error.html` as the error document.
+3. Open the bucket → **Properties** → **Static website hosting** → **Edit** → **Enable** → **Host a static website**, with `index.html` as the index document and `error.html` as the error document. *(Optional: the app serves files from the REST endpoint `milky-static.s3.amazonaws.com`, not the website endpoint, so this step isn't strictly required.)*
 4. **Permissions → CORS → Edit**, and paste:
 
    ```json
@@ -1092,7 +1198,7 @@ AWS S3 is used to store all static files and media. To configure it:
 
 6. **Permissions → Access control list (ACL) → Edit**: tick **List** under **Everyone (public access)**, acknowledge the warning, and save.
 7. Go to **IAM → User groups → Create group** (e.g. `manage-milky`).
-8. **IAM → Policies → Create policy → JSON tab → Actions → Import policy → AmazonS3FullAccess**. In the imported JSON, replace the single `Resource` value with an array of your bucket ARN twice — once plain, once with `/*`:
+8. **IAM → Policies → Create policy → JSON tab → Actions → Import policy → AmazonS3FullAccess**. In the imported JSON, replace the single `Resource` value with an array of your bucket ARN twice, once plain and once with `/*`:
 
    ```json
    {
@@ -1113,7 +1219,7 @@ AWS S3 is used to store all static files and media. To configure it:
 
    Name it (e.g. `milky-policy`), give it a description, and create it.
 9. Attach that policy to the group: **User groups → (your group) → Permissions → Add permissions → Attach policies**.
-10. **IAM → Users → Create user** (e.g. `milky-staticfiles-user`), add it to the group, and create it. Open the user → **Security credentials → Create access key → Application running outside AWS → Create access key**, then **Download .csv file** — the secret key is shown only once. In the CSV, the value **before** the comma is `AWS_ACCESS_KEY_ID`; everything **after** the comma (any `/` included) is `AWS_SECRET_ACCESS_KEY`.
+10. **IAM → Users → Create user** (e.g. `milky-staticfiles-user`), add it to the group, and create it. Open the user → **Security credentials → Create access key → Application running outside AWS → Create access key**, then **Download .csv file** (the secret key is shown only once). In the CSV, the value **before** the comma is `AWS_ACCESS_KEY_ID`; everything **after** the comma (any `/` included) is `AWS_SECRET_ACCESS_KEY`.
 11. Locally, install the storage packages: `pip install boto3 django-storages`, then `pip freeze > requirements.txt`.
 12. Add `"storages"` to `INSTALLED_APPS`, and add this block to `settings.py`:
 
@@ -1201,8 +1307,8 @@ else:
     DEFAULT_FROM_EMAIL = os.environ.get("EMAIL_HOST_USER")
 ```
 
-1. Use a personal Gmail account (not a CI student account — student accounts block SMTP sending).
-2. Gmail → **Settings → See all settings → Accounts and Import → Other Google Account settings → Security**.
+1. Use a personal Gmail account (not a CI student account, which blocks SMTP sending).
+2. Go to your [Google Account](https://myaccount.google.com/) → **Security**.
 3. Turn on **2-Step Verification** (a phone number is required).
 4. Search the Google Account for **App passwords**, give the app a name, and click **Create**. Copy the 16-character password.
 5. Add Heroku Config Vars `EMAIL_HOST_USER` (the Gmail address) and `EMAIL_HOST_PASS` (the 16-character app password, no spaces).
@@ -1242,38 +1348,47 @@ else:
 
 ### Visual Design References
 
-*To be filled in — add any sites, apps, or mood boards that inspired Milky's visual direction here.*
+Drinks-brand storefronts and design concepts that informed Milky's playful, layered visual direction:
+
+- [Johnny's Dirty Soda](https://www.johnnysdirtysoda.com/)
+- [More Nutrition](https://more-nutrition.webflow.io/)
+- [Drink Charlie's](https://www.drinkcharlies.com/#products)
+- [SPYLT](https://www.spylt.com/)
+- [Mana Yerba Mate](https://en.manayerbamate.com/)
+- [Drinks E-commerce Web Design (Dribbble)](https://dribbble.com/shots/27172705-Drinks-E-commerce-Web-Design)
+- [Drink PE E-Commerce Website (Dribbble)](https://dribbble.com/shots/26471668-Drink-PE-E-Commerce-Website)
 
 ### Media
 
-- **Product can images** (the can layer on each product card) were generated with ChatGPT (image generation).
-- The **3D can model** on the home page hero was modelled by me in **Blender** and rendered in the browser with Three.js.
-- The **background and object layers** on the product cards, and the **hero / lifestyle photography**, were sourced from free stock-image sites and edited in **Adobe Photoshop** (background removal, cut-outs, colour adjustments).
-- **Icons:** [Font Awesome](https://fontawesome.com/)
-- **Fonts:** [Google Fonts](https://fonts.google.com/) — Bebas Neue, Poppins, Patrick Hand
+- **Generated with ChatGPT** (image generation): the product can images (the can layer on each product card), the illustration-style images (`can-kitchen`, `gift-a-can`, `gift-a-can-login`, `group-enjoying-drinks`), the auth-page illustrations (`login`, `logout`, `register`, `forgot-password`, `verify-email`), the error-page illustrations (`error-desktop`, `error-mobile`), and the texture map baked into the 3D can model.
+- The **3D can model** on the home page hero was modelled by me in **Blender** (ChatGPT only made the texture) and rendered in the browser with **Three.js**.
+- **Icons** (nutrition icons and decorative marks in `static/images/`): [Flaticon](https://www.flaticon.com/) (free licence, attribution required). UI icons (navbar, toasts, social links) are [Font Awesome](https://fontawesome.com/).
+- **Backgrounds and decorative layers** (home and section backgrounds, gradients, the product-card "objects" layer, brand marks): free stock imagery, and elements assembled by me in **Adobe Photoshop** (cut-outs, background removal, colour adjustments, layering).
+- **Fonts:** [Google Fonts](https://fonts.google.com/): Bebas Neue, Poppins, Patrick Hand
 
 ### Code References
 
+This project incorporates code patterns and techniques from various sources, with modifications to fit the project's specific requirements. Below are the primary references used during development:
+
+#### **Walkthrough Project**
+- **Code Institute:** this project is based on Code Institute's walkthrough project **Boutique Ado**, "Building an E-Commerce Platform".
+
 #### **Backend - Django**
-- [Django Official Documentation](https://docs.djangoproject.com/) — core framework, models, views, forms
-- [django-allauth Documentation](https://docs.allauth.org/) — authentication, registration, and email verification flows
-- [Django ORM Relationships](https://docs.djangoproject.com/en/stable/topics/db/models/) — ForeignKey/OneToOne relationships and cascade behavior
-- [Django Admin Documentation](https://docs.djangoproject.com/en/stable/ref/contrib/admin/) — custom `ModelAdmin` configuration, inlines, and `save_formset` overrides
+- [Django Official Documentation](https://docs.djangoproject.com/): core framework, models, views, forms
+- [django-allauth Documentation](https://docs.allauth.org/): authentication, registration, and email verification flows
+- [Django ORM Relationships](https://docs.djangoproject.com/en/stable/topics/db/models/): ForeignKey/OneToOne relationships and cascade behavior
+- [Django Admin Documentation](https://docs.djangoproject.com/en/stable/ref/contrib/admin/): custom `ModelAdmin` configuration, inlines, and `save_formset` overrides
 
 #### **Payments**
-- [Stripe Payment Element Documentation](https://stripe.com/docs/payments/payment-element) — client-side integration
-- [Stripe Webhooks Documentation](https://stripe.com/docs/webhooks) — server-side payment confirmation and signature verification
+- [Stripe Payment Element Documentation](https://stripe.com/docs/payments/payment-element): client-side integration
+- [Stripe Webhooks Documentation](https://stripe.com/docs/webhooks): server-side payment confirmation and signature verification
 
 #### **JavaScript**
-- [Three.js Documentation](https://threejs.org/docs/) — loading and animating the 3D can model
-- [Intersection Observer API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) — lazy-mounting the Stripe Payment Element
+- [Three.js Documentation](https://threejs.org/docs/): loading and animating the 3D can model
+- [Intersection Observer API (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API): lazy-mounting the Stripe Payment Element
 
 #### **General References**
-- [Stack Overflow](https://stackoverflow.com/) — troubleshooting specific implementation issues
-- [Mozilla Developer Network (MDN)](https://developer.mozilla.org/) — web standards and API documentation
+- [Stack Overflow](https://stackoverflow.com/): troubleshooting specific implementation issues
+- [Mozilla Developer Network (MDN)](https://developer.mozilla.org/): web standards and API documentation
+- [W3Schools](https://www.w3schools.com/): web development tutorials and reference
 
-### Acknowledgements
-
-- *Add your Code Institute mentor here.*
-- *Add tutors, cohort facilitators, or anyone who reviewed the project.*
-- *If the Stripe checkout / cart structure was based on a walkthrough project, credit it here.*
