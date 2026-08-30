@@ -17,11 +17,14 @@ def profile_view(request):
     user_customers = UserCustomer.objects.filter(user=request.user).first()
     customer = user_customers.customer if user_customers else None
     orders = Order.objects.filter(customer=customer) if customer else None
-    contacts = list(customer.contact_set.all()) if customer else []  # type: ignore
+    if customer:
+        contacts = list(customer.contact_set.all())  # type: ignore
+    else:
+        contacts = []
     for contact in contacts:
         contact.edit_form = GiftACanForm(instance=contact)
     contact_form = GiftACanForm()
-    active_tab = request.session.pop('profile_active_tab', 'profile')
+    active_tab = request.session.pop("profile_active_tab", "profile")
 
     if request.method == "POST":
         form = CustomerForm(request.POST, instance=customer)
@@ -56,12 +59,16 @@ def orders_history_view(request, reference_code):
     order = get_object_or_404(
         Order,
         reference_code=reference_code,
-        customer__usercustomer__user=request.user
+        customer__usercustomer__user=request.user,
     )
-    return render(request, 'checkout/checkout_success.html', {
-        'order': order,
-        'from_profile': True,
-    })
+    return render(
+        request,
+        "checkout/checkout_success.html",
+        {
+            "order": order,
+            "from_profile": True,
+        },
+    )
 
 
 @login_required
@@ -71,24 +78,24 @@ def add_contact_view(request):
     customer = user_customer.customer if user_customer else None
 
     if not customer:
-        messages.error(request, 'Please complete your profile first.')
-        return redirect('profile')
+        messages.error(request, "Please complete your profile first.")
+        return redirect("profile")
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = GiftACanForm(request.POST)
         if form.is_valid():
             contact = form.save(commit=False)
             contact.customer = customer
-            contact.ip_address = request.META.get('REMOTE_ADDR', '')
+            contact.ip_address = request.META.get("REMOTE_ADDR", "")
             contact.save()
             messages.success(
-                request, 'Contact added successfully.', extra_tags="contact"
+                request, "Contact added successfully.", extra_tags="contact"
             )
         else:
-            messages.error(request, 'Failed to add contact.')
+            messages.error(request, "Failed to add contact.")
 
-    request.session['profile_active_tab'] = 'contacts'
-    return redirect('profile')
+    request.session["profile_active_tab"] = "contacts"
+    return redirect("profile")
 
 
 @login_required
@@ -98,20 +105,20 @@ def edit_contact_view(request, contact_id):
         Contact, id=contact_id, customer__usercustomer__user=request.user
     )
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = GiftACanForm(request.POST, instance=contact)
         if form.is_valid():
             form.save()
             messages.success(
                 request,
-                'Contact updated successfully.',
+                "Contact updated successfully.",
                 extra_tags="contact",
             )
         else:
-            messages.error(request, 'Failed to update contact.')
+            messages.error(request, "Failed to update contact.")
 
-    request.session['profile_active_tab'] = 'contacts'
-    return redirect('profile')
+    request.session["profile_active_tab"] = "contacts"
+    return redirect("profile")
 
 
 @login_required
@@ -124,8 +131,8 @@ def delete_contact_view(request, contact_id):
     messages.success(
         request, "Contact deleted successfully.", extra_tags="contact"
     )
-    request.session['profile_active_tab'] = 'contacts'
-    return redirect('profile')
+    request.session["profile_active_tab"] = "contacts"
+    return redirect("profile")
 
 
 # TODO: Remove before deployment
@@ -136,18 +143,18 @@ def preview_confirmation_signup_email(request):
     a dummy activation link, since previewing shouldn't create a real key.
     """
     if not request.user.is_superuser:
-        messages.error(request, 'Sorry, only store owners can do that.')
-        return redirect(reverse('home'))
+        messages.error(request, "Sorry, only store owners can do that.")
+        return redirect(reverse("home"))
 
     context = {
-        'user': request.user,
-        'activate_url': request.build_absolute_uri(
-            reverse('account_confirm_email', args=['preview-key'])
+        "user": request.user,
+        "activate_url": request.build_absolute_uri(
+            reverse("account_confirm_email", args=["preview-key"])
         ),
         **build_email_font_urls(request),
     }
     html_body = render_to_string(
-        'account/email/email_confirmation_signup_message.html', context
+        "account/email/email_confirmation_signup_message.html", context
     )
     return HttpResponse(html_body)
 
@@ -160,37 +167,17 @@ def preview_account_already_exists_email(request):
     a dummy reset link, since previewing shouldn't create a real one.
     """
     if not request.user.is_superuser:
-        messages.error(request, 'Sorry, only store owners can do that.')
-        return redirect(reverse('home'))
+        messages.error(request, "Sorry, only store owners can do that.")
+        return redirect(reverse("home"))
 
     context = {
-        'email': request.user.email,
-        'password_reset_url': request.build_absolute_uri(
-            reverse('account_reset_password')
+        "email": request.user.email,
+        "password_reset_url": request.build_absolute_uri(
+            reverse("account_reset_password")
         ),
         **build_email_font_urls(request),
     }
     html_body = render_to_string(
-        'account/email/account_already_exists_message.html', context
+        "account/email/account_already_exists_message.html", context
     )
     return HttpResponse(html_body)
-
-
-def handler404(request, exception):
-    """Render the custom 404 error page."""
-    return render(request, 'errors/404.html', status=404)
-
-
-def handler403(request, exception):
-    """Render the custom 403 error page."""
-    return render(request, 'errors/403.html', status=403)
-
-
-def handler405(request, exception):
-    """Render the custom 405 error page."""
-    return render(request, 'errors/405.html', status=405)
-
-
-def handler500(request):
-    """Render the custom 500 error page."""
-    return render(request, 'errors/500.html', status=500)

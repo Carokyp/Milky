@@ -12,23 +12,28 @@ def index(request):
 
 # TODO: Remove test views before deployment
 
+
 def test_404(request):
-    from accounts.views import handler404
+    from milky.views import handler404
+
     return handler404(request, Exception())
 
 
 def test_403(request):
-    from accounts.views import handler403
+    from milky.views import handler403
+
     return handler403(request, Exception())
 
 
 def test_405(request):
-    from accounts.views import handler405
+    from milky.views import handler405
+
     return handler405(request, Exception())
 
 
 def test_500(request):
-    from accounts.views import handler500
+    from milky.views import handler500
+
     return handler500(request)
 
 

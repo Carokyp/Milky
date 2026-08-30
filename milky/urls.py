@@ -21,10 +21,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 # Custom error handlers, used site-wide by Django for the matching HTTP errors.
-handler404 = 'accounts.views.handler404'
-handler403 = 'accounts.views.handler403'
-handler405 = 'accounts.views.handler405'
-handler500 = 'accounts.views.handler500'
+handler404 = "milky.views.handler404"
+handler403 = "milky.views.handler403"
+handler405 = "milky.views.handler405"
+handler500 = "milky.views.handler500"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
