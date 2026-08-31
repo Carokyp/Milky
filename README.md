@@ -929,7 +929,8 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 |------------|-------------|------------------|--------------|
 | Checkout Validation | Submit the checkout form with required fields missing | Inline validation errors shown, submission blocked | Pass |
 | Same as Delivery | Toggle the "same as delivery" checkbox at checkout | Invoice fields hide/show accordingly | Pass |
-| Gift Form Validation | Submit the Gift a Can form without selecting a can | Submission blocked client-side, with a "Please choose a can" message under the picker | To test |
+| Gift Form Validation | Submit the Gift a Can form without selecting a can | Submission blocked client-side, with a "Please choose a can" message under the picker | Pass |
+| Gift to a Saved Contact | Send a gift, picking a saved contact instead of a new friend | The gift is added to the cart | Pass |
 | Contact Form Validation | Submit the "Add a Friend" form with required fields missing | Inline errors shown, submission blocked | Pass |
 | Registration Rules | Register with mismatched or too-weak passwords | allauth validation errors shown, account not created | Pass |
 
