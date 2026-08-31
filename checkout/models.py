@@ -133,7 +133,9 @@ class OrderItem(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name="items"
     )
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    # PROTECT so a product that has been ordered can't be deleted, which
+    # would erase line items from past orders.
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
 
     # Snapshot of the product at the time of purchase.
     sku = models.CharField(max_length=255, null=True, blank=True)

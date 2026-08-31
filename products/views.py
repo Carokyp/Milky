@@ -3,6 +3,7 @@ from functools import wraps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import ProtectedError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -32,8 +33,8 @@ def superuser_required(view_func):
 
 
 def all_products(request):
-    """Display all products."""
-    products = Product.objects.all()
+    """Display the available products."""
+    products = Product.objects.filter(is_available=True)
 
     context = {
         "products": products,
@@ -239,12 +240,20 @@ def edit_product(request, product_id):
 @login_required
 @superuser_required
 def delete_product(request, product_id):
-    """Delete a product (store owners only)."""
+    """Delete a product, unless it is referenced by past orders."""
     product = get_object_or_404(Product, pk=product_id)
-    product.delete()
-    messages.success(
-        request, "Product deleted successfully!", extra_tags="product"
-    )
+    try:
+        product.delete()
+        messages.success(
+            request, "Product deleted successfully!", extra_tags="product"
+        )
+    except ProtectedError:
+        messages.error(
+            request,
+            f'"{product.name}" is in past orders and cannot be deleted. '
+            "Uncheck its availability to hide it from the shop instead.",
+            extra_tags="product",
+        )
     return redirect(reverse("all_products"))
 
 

@@ -41,8 +41,6 @@ directly from the front end, without ever touching the Django admin or the datab
 
 * [Error Pages](#error-pages)
 
-* [Site Map](#site-map)
-
 * [Technical Architecture](#technical-architecture)
    * [Admin Page](#admin-page)
    * [CRUD Operations](#crud-operations)
@@ -495,7 +493,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 **8. `checkout.OrderItem`**
 - **Foreign Keys:**
   - `order` (to `Order`, `CASCADE`, `related_name="items"`): the order this line belongs to; deleting the order deletes its items
-  - `product` (to `Product`, `CASCADE`): the product bought on this line
+  - `product` (to `Product`, `PROTECT`): the product bought on this line; a product that has been ordered can't be deleted
   - `gift_contact` (to `accounts.Contact`, `SET_NULL`, optional): set only on the single gift line, points to the friend who is notified by email
 - **Fields:** `sku`, `unit_price` (snapshotted from the product at purchase time), `quantity`, `total_price` (auto-computed), `is_gift` (BooleanField, default `False`), `gift_message` (TextField, blank)
 - **Side effect:** saving an `OrderItem` also recalculates and re-saves its parent `Order`'s `order_total`
@@ -510,7 +508,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 | Customer to Contact | Customer, Contact | One-to-Many | `ForeignKey` + `CASCADE` |
 | Customer to Order | Customer, Order | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
 | Order to OrderItem | Order, OrderItem | One-to-Many | `ForeignKey` + `CASCADE` |
-| Product to OrderItem | Product, OrderItem | One-to-Many | `ForeignKey` + `CASCADE` |
+| Product to OrderItem | Product, OrderItem | One-to-Many | `ForeignKey` + `PROTECT` |
 | Product to Review | Product, Review | One-to-Many | `ForeignKey` + `CASCADE` |
 | Order to Review | Order, Review | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
 | Contact to OrderItem | Contact, OrderItem | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
@@ -539,7 +537,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 |---|---|---|
 | Single database, ORM only | Django ORM and migrations, no raw SQL | Portable from SQLite (dev) to PostgreSQL (prod) |
 | Explicit join model | `UserCustomer` links `User` and `Customer` instead of a `OneToOneField` | 1:1 in code, not constrained in the schema |
-| Deliberate `on_delete` | `CASCADE` for owned rows (order items, contacts, reviews); `SET_NULL` for `Order.customer`, `Review.order`, `OrderItem.gift_contact` | Related rows are cleaned up without destroying order history |
+| Deliberate `on_delete` | `CASCADE` for owned rows (order items, contacts, reviews); `SET_NULL` for `Order.customer`, `Review.order`, `OrderItem.gift_contact`; `PROTECT` for `OrderItem.product` | Related rows are cleaned up without destroying order history; a product that has been ordered can't be deleted |
 | Unique constraints | `Product.sku` and `Order.reference_code`, both auto-generated | No duplicate SKUs or order references |
 | Validated range | `Review.rating` bounded 1-5 by `MinValueValidator` / `MaxValueValidator` | Ratings can't go out of range |
 | Choice fields | `Product.flavor` (6 choices), `Order.status` (Pending / Completed / Cancelled) | Data validation, powers admin filtering |
@@ -605,7 +603,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### **Product Detail Page**
 
-- **Product image:** the layered can visual (or the no-image placeholder if the product has no card background), with a "Coming Soon" state when a product isn't available yet and an "Out of Stock" state at zero stock
+- **Product image:** the layered can visual (or the no-image placeholder if the product has no card background), with an "Out of Stock" state at zero stock and a "Coming Soon" state for an unavailable product reached by direct link (unavailable products are hidden from the catalogue and home page)
 - **Add to cart:** a quantity selector and an Add to Cart button
 - **Product info:** benefit highlight icons and a nutrition-facts table (per 100ml / per 330ml)
 - **Reviews:**
@@ -786,12 +784,6 @@ All four custom error pages share the same branded layout: a breakpoint-swapped 
   <img src="docs/images/Error_500.png" alt="500 error page" style="width: 20%; max-width: 300px;">
 </p>
 
-## Site Map
-
-<p align="center">
-  <img src="docs/images/sitemap.png" alt="Milky site map" style="width: 90%; max-width: 900px; height: auto;">
-</p>
-
 ## Future Features
 
 The following are planned for future releases, grouped by area:
@@ -907,13 +899,16 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
 | Add Product (superuser) | Fill in the product form and submit | Product created and immediately visible in the catalogue | Pass |
-| Add Product with no images (superuser) | Submit the product form leaving the image fields empty | Product is created; All Products and the home page show the no-image placeholder for it instead of erroring | To test |
-| Add Product with image URL only (superuser) | Fill in the Image URL field, leave the upload empty | Product is created; the linked image shows as the cart, checkout and confirmation thumbnail | To test |
-| Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | To test |
-| Delete Product (superuser) | Confirm deletion from the shared modal | Product removed from the catalogue | To test |
-| Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | To test |
-| Add / Edit / Delete Contact | Manage a saved gift recipient from the Contacts tab | Contact list updates immediately, in place | To test |
-| Place Order | Complete checkout with a Stripe test card | Order created, confirmation page shown, order appears in Orders tab | To test |
+| Add Product with no images (superuser) | Submit the product form leaving the image fields empty | Product is created; All Products and the home page show the no-image placeholder for it instead of erroring | Pass |
+| Add Product with image URL only (superuser) | Fill in the Image URL field, leave the upload empty | Product is created; the linked image shows as the cart, checkout and confirmation thumbnail | Pass |
+| Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | Pass |
+| Delete Product (superuser) | Confirm deletion of a product that has never been ordered | Product removed from the catalogue | Pass |
+| Delete Ordered Product (superuser) | Try to delete a product that appears in a past order | Deletion blocked with an error message; the product and the past orders are untouched | To test |
+| Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | Pass |
+| Add / Edit / Delete Contact | Manage a saved gift recipient from the Contacts tab | Contact list updates immediately, in place | Pass |
+| Edit Profile Details | Change name, phone or address in the My Profile tab and save | Success toast, the new values persist on reload | Pass |
+| Remove Gift from Cart | Add a Gift a Can, then remove it from the cart | The gift line disappears and the "one gift per order" slot is freed | Pass |
+| Place Order | Complete checkout with a Stripe test card | Order created, confirmation page shown, order appears in Orders tab | Pass |
 
 ### Permissions
 
@@ -948,7 +943,8 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Delete Confirmation | Click delete on a product (superuser) or a contact | Confirmation modal appears before anything is removed | To test |
 | Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | To test |
 | Free-Delivery Banner | Change the cart total above and below the threshold | The progress banner updates live to match | To test |
-| Unavailable Product | Open a product with `is_available` off or zero stock | Add to Cart is replaced by a disabled "Coming Soon" / "Out of Stock" button | To test |
+| Unavailable Product | Turn off a product's `is_available`, then check the catalogue and open its detail page directly | It no longer appears on All Products or the home page; its detail page shows a disabled "Coming Soon" button | To test |
+| Zero-Stock Product | Open a product with `stock` at 0 | Add to Cart is replaced by a disabled "Out of Stock" button | To test |
 | Product card with partial layers | View a product with only a card background, and one with background + can | The card renders with whatever layers are present; hovering it causes no JS error | To test |
 | Mobile Nav Dismiss | Open the mobile menu, then click outside it or open the account dropdown | The menu closes | To test |
 | Gift Locked State | Open Gift a Can with a gift already in the cart | The page shows a locked state instead of the form | To test |
