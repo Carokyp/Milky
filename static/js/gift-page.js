@@ -80,18 +80,38 @@
     const newFields = document.getElementById('new-contact-fields');
 
     if (contactSelect && newFields) {
+        // Every control inside the new-friend block, including the
+        // country <select>. Their original required state is stored so it
+        // can be restored when the block is shown again.
+        const newControls = newFields.querySelectorAll(
+            'input, select, textarea'
+        );
+        newControls.forEach(function (el) {
+            el.dataset.wasRequired = el.required ? '1' : '';
+        });
+
         /**
-         * Shows the new-contact fields when no existing contact is
-         * selected, hiding them (and dropping their "required" validation)
-         * otherwise.
+         * Hides the new-friend fields (and drops their "required"
+         * validation) when an existing contact is picked, and restores
+         * them otherwise.
          */
-        contactSelect.addEventListener('change', function () {
-            if (this.value) {
+        function toggleNewContactFields() {
+            if (contactSelect.value) {
                 newFields.style.display = 'none';
-                newFields.querySelectorAll('input').forEach(function (input) { input.removeAttribute('required'); });
+                newControls.forEach(function (el) {
+                    el.removeAttribute('required');
+                });
             } else {
                 newFields.style.display = '';
+                newControls.forEach(function (el) {
+                    if (el.dataset.wasRequired) {
+                        el.setAttribute('required', '');
+                    }
+                });
             }
-        });
+        }
+
+        contactSelect.addEventListener('change', toggleNewContactFields);
+        toggleNewContactFields();
     }
 })();
