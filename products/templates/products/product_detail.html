@@ -64,7 +64,7 @@
 
                         <div class="d-flex flex-column gap-2">
                             {% if not product.is_available %}
-                            <button class="btn-milky btn rounded-pill text-uppercase py-3 w-100 disabled" disabled>Coming Soon</button>
+                            <button class="btn-milky btn rounded-pill text-uppercase py-3 w-100 disabled" disabled>Currently Unavailable</button>
                             {% elif product.stock == 0 %}
                             <button class="btn-milky btn rounded-pill text-uppercase py-3 w-100 disabled" disabled>Out of Stock</button>
                             {% else %}

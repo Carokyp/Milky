@@ -603,7 +603,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### **Product Detail Page**
 
-- **Product image:** the layered can visual (or the no-image placeholder if the product has no card background), with an "Out of Stock" state at zero stock and a "Coming Soon" state for an unavailable product reached by direct link (unavailable products are hidden from the catalogue and home page)
+- **Product image:** the layered can visual (or the no-image placeholder if the product has no card background), with an "Out of Stock" state at zero stock and a "Currently Unavailable" state for a hidden product reached by direct link (unavailable products are hidden from the catalogue and home page)
 - **Add to cart:** a quantity selector and an Add to Cart button
 - **Product info:** benefit highlight icons and a nutrition-facts table (per 100ml / per 330ml)
 - **Reviews:**
@@ -943,7 +943,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Delete Confirmation | Click delete on a product (superuser) or a contact | Confirmation modal appears before anything is removed | To test |
 | Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | To test |
 | Free-Delivery Banner | Change the cart total above and below the threshold | The progress banner updates live to match | To test |
-| Unavailable Product | Turn off a product's `is_available`, then check the catalogue and open its detail page directly | It no longer appears on All Products or the home page; its detail page shows a disabled "Coming Soon" button | To test |
+| Unavailable Product | Turn off a product's `is_available`, then check the catalogue and open its detail page directly | It no longer appears on All Products or the home page; its detail page shows a disabled "Currently Unavailable" button | To test |
 | Zero-Stock Product | Open a product with `stock` at 0 | Add to Cart is replaced by a disabled "Out of Stock" button | To test |
 | Product card with partial layers | View a product with only a card background, and one with background + can | The card renders with whatever layers are present; hovering it causes no JS error | To test |
 | Mobile Nav Dismiss | Open the mobile menu, then click outside it or open the account dropdown | The menu closes | To test |
