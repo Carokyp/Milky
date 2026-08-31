@@ -186,6 +186,7 @@ Key sections and navigation flow:
 - Django 6.0.4 with a multi-app architecture (`home`, `products`, `cart`, `checkout`, `accounts`).
 - SQLite in development; PostgreSQL in production, wired through `DATABASE_URL` / `dj-database-url` (see [Deployment](#deployment)).
 - Static files and media served from AWS S3 in production via `django-storages` and a small `custom_storages.py`.
+- Photographic and illustrated assets (site imagery and product-card layers) are stored as WebP to keep page weight down; small UI icons stay as PNG.
 - Server-rendered templates with Bootstrap 5 utilities and `django-crispy-forms` (bootstrap5 pack).
 - Session-based cart and in-progress gift selection; neither is written to the database until an order is placed.
 - Stripe Payment Element for payment, with a webhook handler as the reliability fallback that actually sends the confirmation and gift emails.
