@@ -903,7 +903,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Add Product with image URL only (superuser) | Fill in the Image URL field, leave the upload empty | Product is created; the linked image shows as the cart, checkout and confirmation thumbnail | Pass |
 | Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | Pass |
 | Delete Product (superuser) | Confirm deletion of a product that has never been ordered | Product removed from the catalogue | Pass |
-| Delete Ordered Product (superuser) | Delete a product that appears in a past order | The product is hidden from the shop (`is_available` off) instead of deleted; the past orders keep their line items; a warning toast explains why | To test |
+| Delete Ordered Product (superuser) | Delete a product that appears in a past order | The product is hidden from the shop (`is_available` off) instead of deleted; the past orders keep their line items; a warning toast explains why | Pass |
 | Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | Pass |
 | Add / Edit / Delete Contact | Manage a saved gift recipient from the Contacts tab | Contact list updates immediately, in place | Pass |
 | Edit Profile Details | Change name, phone or address in the My Profile tab and save | Success toast, the new values persist on reload | Pass |
@@ -927,12 +927,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Checkout Validation | Submit the checkout form with required fields missing | Inline validation errors shown, submission blocked | To test |
-| Same as Delivery | Toggle the "same as delivery" checkbox at checkout | Invoice fields hide/show accordingly | To test |
-| Gift Form Validation | Submit the Gift a Can form without selecting a product | Submission blocked client-side | To test |
-| Review Rating Required | Submit the review form without picking a star rating | Submission blocked | To test |
-| Contact Form Validation | Submit the "Add a Friend" form with required fields missing | Inline errors shown, submission blocked | To test |
-| Registration Rules | Register with mismatched or too-weak passwords | allauth validation errors shown, account not created | To test |
+| Checkout Validation | Submit the checkout form with required fields missing | Inline validation errors shown, submission blocked | Pass |
+| Same as Delivery | Toggle the "same as delivery" checkbox at checkout | Invoice fields hide/show accordingly | Pass |
+| Gift Form Validation | Submit the Gift a Can form without selecting a can | Submission blocked client-side, with a "Please choose a can" message under the picker | To test |
+| Contact Form Validation | Submit the "Add a Friend" form with required fields missing | Inline errors shown, submission blocked | Pass |
+| Registration Rules | Register with mismatched or too-weak passwords | allauth validation errors shown, account not created | Pass |
 
 ### UX
 

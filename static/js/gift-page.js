@@ -9,6 +9,7 @@
     const hiddenInput = document.getElementById('gift-product-id');
     const triggerImg = document.getElementById('gift-trigger-img');
     const triggerLabel = document.getElementById('gift-trigger-label');
+    const productError = document.getElementById('gift-product-error');
 
     if (trigger && optionsEl) {
         trigger.addEventListener('click', function () {
@@ -27,6 +28,7 @@
                 triggerLabel.textContent = this.dataset.name;
                 triggerLabel.classList.remove('gift-trigger-placeholder');
                 trigger.style.borderColor = '';
+                if (productError) productError.classList.add('d-none');
 
                 const img = this.dataset.image;
                 if (img) {
@@ -67,6 +69,7 @@
             if (!hiddenInput.value) {
                 e.preventDefault();
                 trigger.style.borderColor = 'var(--danger)';
+                if (productError) productError.classList.remove('d-none');
                 trigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
