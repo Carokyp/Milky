@@ -41,6 +41,8 @@
                         </div>
                         {% endif %}
                     </div>
+                    {% elif product.product_image %}
+                    <img src="{{ product.product_image.url }}" class="w-100 h-100 object-fit-cover" alt="{{ product.name }}" />
                     {% else %}
                     <img src="{% static 'images/no-image.png' %}" class="w-100 h-100 object-fit-cover" alt="{{ product.name }}" />
                     {% endif %}

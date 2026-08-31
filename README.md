@@ -605,7 +605,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### **Product Detail Page**
 
-- **Product image:** the layered can visual, with a "Coming Soon" state when a product isn't available yet and an "Out of Stock" state at zero stock
+- **Product image:** the three-layer can visual (falling back to the single product image, then a placeholder, if a layer is missing), with a "Coming Soon" state when a product isn't available yet and an "Out of Stock" state at zero stock
 - **Add to cart:** a quantity selector and an Add to Cart button
 - **Product info:** benefit highlight icons and a nutrition-facts table (per 100ml / per 330ml)
 - **Reviews:**
@@ -677,7 +677,8 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### **Products Management (Superuser Only)**
 
-- **Add / Edit forms**, grouped into sections: Info, Stock & Visibility, Cart & Checkout Image, and Product Card Visuals (the three layered images)
+- **Add / Edit forms**, grouped into sections: Info, Stock & Visibility, Product Card Visuals (the three layered images), and Cart & Checkout Image
+- **Image fallback:** the storefront card uses the three layered visuals; if any layer is missing it falls back to the single Cart & Checkout image, then to a no-image placeholder
 - **Custom file-upload widgets** showing the current image with a "Remove Image" option
 - **Delete** has no dedicated page. It's triggered from a shared confirmation modal, available on any product card
 
@@ -891,19 +892,22 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
 | Registration | Register with a new email and password | Account created, verification email sent (real email on Heroku, console in dev) | Pass |
+| Duplicate Registration | Register with an email that already has an account | No new account; an "account already exists" email is sent, with no message confirming the address exists | Pass |
 | Mandatory Email Verification | Try to sign in before verifying the email | Sign-in is blocked until the email is verified | Pass |
-| Sign In | Sign in with valid credentials | User is authenticated and redirected | To test |
-| Invalid Sign In | Sign in with the wrong password | Error message shown, user stays on the sign-in page | To test |
-| Password Reset | Request a reset link for a registered email | Reset flow completes and the new password works | To test |
-| Password Change | Change the password from the account while signed in | New password works, old one is rejected | To test |
-| Email Management | Add an email, set it primary, resend verification from the account | Each action succeeds and the email list updates | To test |
-| Sign Out | Click Sign Out in the navbar | User is signed out and redirected | To test |
+| Sign In | Sign in with valid credentials | User is authenticated and redirected | Pass |
+| Invalid Sign In | Sign in with the wrong password | Error message shown, user stays on the sign-in page | Pass |
+| Post-Login Redirect | Visit `/profile/` while logged out, then sign in | After sign-in the user lands on `/profile/` (via `?next=`) | Pass |
+| Password Reset | Request a reset link for a registered email | Reset flow completes and the new password works | Pass |
+| Password Reset - Unknown Email | Request a reset for an email with no account | Same generic confirmation message as for a valid email (no information leak) | Pass |
+| Password Change | Change the password from the account while signed in | New password works, old one is rejected | Pass |
+| Sign Out | Click Sign Out in the navbar | User is signed out and redirected | Pass |
 
 ### CRUD
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Add Product (superuser) | Fill in the product form and submit | Product created and immediately visible in the catalogue | To test |
+| Add Product (superuser) | Fill in the product form and submit | Product created and immediately visible in the catalogue | Pass |
+| Add Product with no images (superuser) | Submit the product form leaving the image fields empty | Product is created; All Products and the home page show the no-image placeholder for it instead of erroring | To test |
 | Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | To test |
 | Delete Product (superuser) | Confirm deletion from the shared modal | Product removed from the catalogue | To test |
 | Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | To test |

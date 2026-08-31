@@ -29,6 +29,8 @@
                             <img class="product-card-bg w-100 d-block" src="{{ product.background_image.url }}" alt="Decorative background for {{ product.name }}">
                             <img class="product-card-objects position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.objects_image.url }}" alt="Decorative elements floating around {{ product.name }}">
                             <img class="product-card-can position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.can_image.url }}" alt="{{ product.name }} can">
+                            {% elif product.product_image %}
+                            <img class="product-card-bg w-100 d-block" src="{{ product.product_image.url }}" alt="{{ product.name }}">
                             {% else %}
                             <img class="product-card-bg w-100 d-block" src="{% static 'images/no-image.png' %}" alt="{{ product.name }}">
                             {% endif %}
