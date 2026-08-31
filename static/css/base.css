@@ -622,9 +622,20 @@ dd {
 
 /* #region Forms */
 
-/* Generic form styling shared across pages */
-.form-text {
+/* Generic form styling shared across pages. Crispy renders Django's
+   password-rules help as a <ul> inside .form-text, so size and colour
+   are set on the list too, to keep it a compact muted hint like the
+   others. */
+.form-text,
+.form-text ul,
+.form-text li {
     font-size: var(--font-sm);
+    color: var(--light-brown);
+}
+
+.form-text ul {
+    margin: 0.35rem 0 0;
+    padding-left: 1.1rem;
 }
 
 /* crispy-forms wraps field errors in a <p>, which the global `p { }`
