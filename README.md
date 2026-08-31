@@ -739,8 +739,10 @@ Confirmation modals are shown before any destructive action, so nothing is delet
 - Every `<img>` has an `alt` attribute
 - Icon-only controls carry text alternatives: `aria-label` on the footer social links and the mobile menu toggle, plus `aria-expanded` / `aria-controls` on the toggle
 - Toasts are announced to screen readers via `role="alert"`, `aria-live` and `aria-atomic`
-- Most pages lead with a single `<h1>`. The home page currently uses `<h1>` for each of its display section titles ("Our Favorites", "It's Still Good For You", …), which is a known heading-structure issue to tidy up
-- Dark-brown text on the cream background keeps body copy at a high contrast ratio
+- The cart summary and the product-page review list carry `aria-live="polite"` so their AJAX updates are read out
+- Every page leads with a single `<h1>`, with no skipped heading levels
+- Decorative images (backgrounds, commas, arrows) use an empty `alt`; meaningful images carry a descriptive one
+- Dark-brown text on the cream background keeps body copy well above the WCAG AA 4.5:1 ratio
 
 #### **Base Templates**
 
@@ -955,11 +957,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Keyboard navigation | Tab through the navbar, a product card, and the checkout form | Every interactive element is reachable and shows a visible focus state | *to test* |
-| Screen reader, toasts | Trigger a success and an error toast with a screen reader running | Both are announced through their `aria-live` region | *to test* |
-| Image alternatives | Inspect every `<img>` | Meaningful images have descriptive `alt`, decorative ones an empty `alt` | *to test* |
-| Heading order | Run an outline check on each page type | One `<h1>` per page, no skipped levels (note: home page currently has several `<h1>`s) | *to test* |
-| Colour contrast | Check brown-on-cream and brown-on-gold in a contrast checker | Meets WCAG AA for body text and buttons | *to test* |
+| Keyboard navigation | Tab through the navbar, a product card, and the checkout form | Every interactive element is reachable and shows a visible focus state | Pass (Chrome, Edge, Firefox; Safari needs its "Press Tab to highlight each item" setting, which is off by default) |
+| Screen reader, toasts | Trigger a success and an error toast with a screen reader running | Both are announced through their `aria-live` region | Pass |
+| Image alternatives | Inspect every `<img>` | Meaningful images have descriptive `alt`, decorative ones an empty `alt` | Pass |
+| Heading order | Run an outline check on each page type | One `<h1>` per page, no skipped levels | Pass |
+| Colour contrast | Check brown-on-cream and brown-on-gold in a contrast checker | Meets WCAG AA for body text and buttons | Pass (roughly 9.8:1 on cream, 7.6:1 on the gold buttons) |
 | WAVE | Run [WAVE](https://wave.webaim.org/) on each page type | No errors; contrast and ARIA warnings reviewed | *to test* |
 
 ### Validator Testing

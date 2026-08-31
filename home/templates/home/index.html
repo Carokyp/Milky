@@ -8,9 +8,9 @@
 <section class="hero-section text-center px-3 pb-4">
     <div class="hero-visual position-relative mb-5">
         <img src="{% static 'images/home-background.png' %}"
-            class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="Abstract cream and gold wave pattern">
-        <img src="{% static 'images/brand-name.png' %}"
-            class="hero-brand-name position-absolute top-50 start-50 translate-middle opacity-50" alt="Milky">
+            class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" alt="">
+        <img src="{% static 'images/brand-name.webp' %}"
+            class="hero-brand-name position-absolute top-50 start-50 translate-middle opacity-50" alt="">
         <div id="can-viewer" class="position-relative w-100 h-100" data-model-url="{% static 'models/milky-can.glb' %}">
         </div>
         <div class="hero-wave-bottom" aria-hidden="true">
@@ -19,7 +19,7 @@
     </div>
     <h1 class="mb-1">FREAKING DELICIOUS!</h1>
     <div class="text-highlight mb-5">
-        <h1 class="mb-0">CRACK. SIP. SMILE.</h1>
+        <p class="text-h1 mb-0">CRACK. SIP. SMILE.</p>
     </div>
     <p class="mb-5 text-lg">Soft, indulgent and perfectly balanced, it's your little moment of sweetness in a can.</p>
     <a href="{% url 'all_products' %}" class="btn-milky-gold btn rounded-pill text-uppercase text-lg py-3 px-5">Shop
@@ -29,10 +29,10 @@
 <!-- Products grid -->
 <section class="favorites-section">
     <div class="bubble-text-wrapper bubble-favorites position-relative text-center">
-        <img src="{% static 'images/gradient-cream-background.png' %}" alt="Decorative background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        <img src="{% static 'images/gradient-cream-background.png' %}" alt="" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
         <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text-favorites p-3">
             <div class="text-highlight mb-4">
-                <h1 class="mb-0">OUR FAVORITES</h1>
+                <h2 class="text-h1 mb-0">OUR FAVORITES</h2>
             </div>
             <p class="mb-4 text-lg">The ones everyone keeps coming back for, the flavors that made Milky a habit, not just a craving.</p>
         </div>
@@ -84,11 +84,11 @@
 <!-- Benefits section -->
 <section class="section-yellow text-center position-relative pt-0 pb-4 pb-md-5 pb-lg-0">
     <div class="bubble-benefits position-relative">
-        <img src="{% static 'images/benefits-background.png' %}" alt="Decorative gradient background blending into the yellow section" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        <img src="{% static 'images/benefits-background.webp' %}" alt="" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
         <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text-benefits p-3">
-            <h1 class="mb-1">IT'S STILL</h1>
+            <h2 class="text-h1 mb-1">IT'S STILL</h2>
             <div class="text-highlight mb-4 mb-md-5">
-                <h1 class="mb-0">GOOD FOR YOU</h1>
+                <p class="text-h1 mb-0">GOOD FOR YOU</p>
             </div>
             <p class="mb-4 py-md-2 text-lg">Real milk means a natural source of vitamins, minerals, and protein <br> every can so you can enjoy the sweetness without the guilt.</p>
         </div>
@@ -96,7 +96,7 @@
     <div class="container">
         <div class="row align-items-center px-3 py-4 gap-4 gap-md-5 gap-lg-0 benefits-row">
             <div class="col-12 col-lg-6">
-                <img src="{% static 'images/benefits-image.png' %}" alt="Milky Vanilla Marshmallow can surrounded by marshmallows and ice cream cones" class="img-fluid">
+                <img src="{% static 'images/benefits-image.webp' %}" alt="Milky Vanilla Marshmallow can surrounded by marshmallows and ice cream cones" class="img-fluid">
             </div>
             <div class="col-12 col-lg-6 mt-0">
                 <div class="d-flex align-items-center justify-content-center gap-2 position-relative mb-5">
@@ -135,11 +135,11 @@
         <div class="row align-items-center px-3 py-5">
             <div class="col-12 col-lg-6 lifestyle-text-col">
                 <div class="bubble-text-wrapper bubble-lifestyle position-relative">
-                    <img src="{% static 'images/bubble.png' %}" alt="Decorative white cloud-shaped background" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+                    <img src="{% static 'images/bubble.png' %}" alt="" class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bubble-text bubble-text-lifestyle p-3 px-md-5 px-lg-3 px-xl-0">
-                        <h1 class="mb-1">MOMENTS THAT</h1>
+                        <h2 class="text-h1 mb-1">MOMENTS THAT</h2>
                         <div class="text-highlight mb-4">
-                            <h1 class="mb-0">TASTE BETTER</h1>
+                            <p class="text-h1 mb-0">TASTE BETTER</p>
                         </div>
                         <p class="mb-4 text-lg">Whether it's a chill night in or a hangout with friends, Milky is always there to make it
                             sweeter.</p>
@@ -148,7 +148,7 @@
             </div>
             <div class="col-12 col-lg-6">
                 <div class="lifestyle-photo-frame py-4">
-                    <img src="{% static 'images/group-enjoying-drinks.png' %}" class="lifestyle-photo img-fluid w-100 object-fit-cover d-block"
+                    <img src="{% static 'images/group-enjoying-drinks.webp' %}" class="lifestyle-photo img-fluid w-100 object-fit-cover d-block"
                         alt="Group of friends enjoying Milky">
                 </div>
             </div>

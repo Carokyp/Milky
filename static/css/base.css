@@ -147,6 +147,11 @@ p {
     font-size: var(--font-logo);
 }
 
+/* Keeps a demoted heading (h2/p) at the display h1 size */
+.text-h1 {
+    font-size: var(--font-h1);
+}
+
 .text-h2 {
     font-size: var(--font-h2);
 }
@@ -168,7 +173,9 @@ p {
     transform: rotate(-2deg);
 }
 
-.text-highlight h1 {
+.text-highlight h1,
+.text-highlight h2,
+.text-highlight p {
     color: var(--light-cream);
 }
 
