@@ -19,7 +19,7 @@
             <div class="row g-0 align-items-stretch">
                 <!-- Keeps the image glued to the bottom so it lines up with the price/button side -->
                 <div class="col-12 col-lg-6 d-flex flex-column justify-content-end">
-                    {% if product.background_image %}
+                    {% if product.background_image and product.objects_image and product.can_image %}
                     <div class="product-card-wrapper position-relative">
                         <div class="product-card">
                             <div class="product-card-inner position-relative overflow-hidden rounded-0">
