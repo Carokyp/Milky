@@ -19,13 +19,16 @@
             <div class="row g-0 align-items-stretch">
                 <!-- Keeps the image glued to the bottom so it lines up with the price/button side -->
                 <div class="col-12 col-lg-6 d-flex flex-column justify-content-end">
-                    {% if product.background_image %}
                     <div class="product-card-wrapper position-relative">
                         <div class="product-card">
                             <div class="product-card-inner position-relative overflow-hidden rounded-0">
+                                {% if product.background_image %}
                                 <img class="product-card-bg w-100 d-block" src="{{ product.background_image.url }}" alt="{{ product.name }} background">
                                 {% if product.objects_image %}<img class="product-card-objects position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.objects_image.url }}" alt="{{ product.name }} ingredients">{% endif %}
                                 {% if product.can_image %}<img class="product-card-can position-absolute top-0 start-0 w-100 h-100 object-fit-contain pe-none" src="{{ product.can_image.url }}" alt="{{ product.name }}">{% endif %}
+                                {% else %}
+                                <img class="product-card-bg w-100 d-block" src="{% static 'images/no-image.png' %}" alt="{{ product.name }}">
+                                {% endif %}
                             </div>
                         </div>
                         {% if request.user.is_superuser %}
@@ -41,9 +44,6 @@
                         </div>
                         {% endif %}
                     </div>
-                    {% else %}
-                    <img src="{% static 'images/no-image.png' %}" class="w-100 h-100 object-fit-cover" alt="{{ product.name }}" />
-                    {% endif %}
                 </div>
                 <div class="col-12 col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5 text-center bg-white">
                     <h1 class="logo-font text-uppercase text-xxl mb-1">{{ product.name }}</h1>
