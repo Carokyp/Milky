@@ -174,8 +174,7 @@ p {
 }
 
 .text-highlight h1,
-.text-highlight h2,
-.text-highlight p {
+.text-highlight h2 {
     color: var(--light-cream);
 }
 
