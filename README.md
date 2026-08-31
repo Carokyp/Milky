@@ -908,6 +908,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 |------------|-------------|------------------|--------------|
 | Add Product (superuser) | Fill in the product form and submit | Product created and immediately visible in the catalogue | Pass |
 | Add Product with no images (superuser) | Submit the product form leaving the image fields empty | Product is created; All Products and the home page show the no-image placeholder for it instead of erroring | To test |
+| Add Product with image URL only (superuser) | Fill in the Image URL field, leave the upload empty | Product is created; the linked image shows as the cart, checkout and confirmation thumbnail | To test |
 | Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | To test |
 | Delete Product (superuser) | Confirm deletion from the shared modal | Product removed from the catalogue | To test |
 | Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | To test |
@@ -948,6 +949,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | To test |
 | Free-Delivery Banner | Change the cart total above and below the threshold | The progress banner updates live to match | To test |
 | Unavailable Product | Open a product with `is_available` off or zero stock | Add to Cart is replaced by a disabled "Coming Soon" / "Out of Stock" button | To test |
+| Product card with partial layers | View a product with only a card background, and one with background + can | The card renders with whatever layers are present; hovering it causes no JS error | To test |
 | Mobile Nav Dismiss | Open the mobile menu, then click outside it or open the account dropdown | The menu closes | To test |
 | Gift Locked State | Open Gift a Can with a gift already in the cart | The page shows a locked state instead of the form | To test |
 | Empty States | View the cart, a product with no reviews, and the Orders / Contacts tabs while empty | Each shows its dedicated empty-state message | To test |
