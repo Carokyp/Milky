@@ -890,8 +890,8 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Registration | Register with a new email and password | Account created, verification email sent (console backend in dev) | To test |
-| Mandatory Email Verification | Try to sign in before verifying the email | Sign-in is blocked until the email is verified | To test |
+| Registration | Register with a new email and password | Account created, verification email sent (real email on Heroku, console in dev) | Pass |
+| Mandatory Email Verification | Try to sign in before verifying the email | Sign-in is blocked until the email is verified | Pass |
 | Sign In | Sign in with valid credentials | User is authenticated and redirected | To test |
 | Invalid Sign In | Sign in with the wrong password | Error message shown, user stays on the sign-in page | To test |
 | Password Reset | Request a reset link for a registered email | Reset flow completes and the new password works | To test |
@@ -1046,6 +1046,7 @@ Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best 
 | A disabled "Add to Cart" button still let an unavailable product be added through a direct POST | Fixed | `add_to_cart` didn't re-check `is_available` server-side. Added the check so the add is rejected with an error message. |
 | A product URL with a non-numeric id (e.g. `/products/abc/`) reached the view and raised a 500 | Fixed | The route used `<product_id>` with no converter changed to `<int:product_id>`. |
 | Using the cart stepper to drop an item's quantity to 0 deleted the whole line | Fixed | Quantity is now clamped to a minimum of 1. Removal is only via the explicit remove button. |
+| Sign In on the deployed site intermittently returned "CSRF verification failed" (403) | Fixed | Heroku forwards HTTPS requests to Django over HTTP, so Django expected an `http://` origin while the browser sent `https://`. Added `SECURE_PROXY_SSL_HEADER` and `CSRF_TRUSTED_ORIGINS` for the Heroku domain. |
 
 No known unresolved bugs at this time.
 

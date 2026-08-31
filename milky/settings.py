@@ -37,6 +37,16 @@ ALLOWED_HOSTS = [
     "milky-app-839f694f035d.herokuapp.com",  # Heroku app URL
 ]
 
+# Heroku terminates HTTPS at its router and forwards the request to Django
+# over HTTP with this header. Without it Django thinks the request is HTTP
+# and rejects HTTPS form posts as CSRF failures.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Origins allowed to send POST requests (Django 4+ checks this on HTTPS).
+CSRF_TRUSTED_ORIGINS = [
+    "https://milky-app-839f694f035d.herokuapp.com",
+]
+
 
 # Application definition
 
