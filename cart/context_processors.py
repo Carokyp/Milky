@@ -3,7 +3,6 @@
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.conf import settings
-from django.shortcuts import get_object_or_404
 
 from products.models import Product
 from accounts.models import Contact
@@ -12,13 +11,17 @@ from accounts.models import Contact
 def gift_item_from_session(request):
     """Look up the gift can's product/contact from the current session.
 
-    Returns None if there is no gift in progress.
+    Returns None if there is no gift in progress, or if its product has
+    since been deleted (in which case the stale gift is cleared).
     """
     gift = request.session.get("gift")
     if not gift:
         return None
 
-    product = get_object_or_404(Product, pk=gift["product_id"])
+    product = Product.objects.filter(pk=gift["product_id"]).first()
+    if product is None:
+        request.session.pop("gift", None)
+        return None
     contact = Contact.objects.filter(pk=gift["contact_id"]).first()
 
     return {
@@ -36,8 +39,14 @@ def cart_contents(request):
     product_count = 0
     cart = request.session.get("cart", {})
 
+    # Skip and prune any product that has since been deleted, so a stale
+    # cart entry never breaks page rendering.
+    missing = []
     for product_id, quantity in cart.items():
-        product = get_object_or_404(Product, pk=product_id)
+        product = Product.objects.filter(pk=product_id).first()
+        if product is None:
+            missing.append(product_id)
+            continue
         total += quantity * product.price
         product_count += quantity
         cart_items.append(
@@ -48,6 +57,11 @@ def cart_contents(request):
                 "subtotal": quantity * product.price,
             }
         )
+
+    if missing:
+        for product_id in missing:
+            cart.pop(product_id, None)
+        request.session["cart"] = cart
 
     gift_item = gift_item_from_session(request)
     if gift_item:
