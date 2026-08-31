@@ -12,4 +12,9 @@ urlpatterns = [
     path("test-403/", views.test_403, name="test_403"),
     path("test-405/", views.test_405, name="test_405"),
     path("test-500/", views.test_500, name="test_500"),
+    path(
+        "test-change-password/",
+        views.test_change_password,
+        name="test_change_password",
+    ),
 ]

@@ -55,3 +55,20 @@ def test_error(request):
 def test_info(request):
     messages.info(request, "This is an info message!")
     return redirect("home")
+
+
+def test_change_password(request):
+    from django.contrib.auth import get_user_model
+    from allauth.account.forms import ResetPasswordKeyForm
+
+    user = (
+        request.user
+        if request.user.is_authenticated
+        else get_user_model().objects.first()
+    )
+    form = ResetPasswordKeyForm(user=user, temp_key="preview")
+    return render(
+        request,
+        "account/password_reset_from_key.html",
+        {"form": form, "action_url": "#"},
+    )
