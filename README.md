@@ -454,9 +454,9 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
   - `flavor` (CharField(50), null/blank, choices: chocolate, vanilla, fruity, caramel, nutty, special)
   - `description` (TextField, soft cap 500 chars)
   - `price` (DecimalField, 6 digits / 2 decimal places)
-  - `product_image` (ImageField, null/blank): single image used on the detail page, cart, and checkout
-  - `product_image_url` (URLField, null/blank): an alternative to uploading, point `product_image` at an external URL instead
-  - `background_image`, `objects_image`, `can_image` (ImageField, null/blank): the three layered images used to build each product card
+  - `product_image` (ImageField, null/blank): the single image used in the cart, checkout and order confirmation
+  - `product_image_url` (URLField, null/blank): optional external image link, used for the cart image only when nothing is uploaded to `product_image`
+  - `background_image`, `objects_image`, `can_image` (ImageField, null/blank): the layered storefront card; `background_image` is the base, the other two are optional overlays
   - `stock` (PositiveIntegerField, nullable)
   - `is_available` (BooleanField, default `True`)
   - `featured` (BooleanField, default `False`): shown on the home page
@@ -605,7 +605,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### **Product Detail Page**
 
-- **Product image:** the three-layer can visual (falling back to the single product image, then a placeholder, if a layer is missing), with a "Coming Soon" state when a product isn't available yet and an "Out of Stock" state at zero stock
+- **Product image:** the layered can visual (or the no-image placeholder if the product has no card background), with a "Coming Soon" state when a product isn't available yet and an "Out of Stock" state at zero stock
 - **Add to cart:** a quantity selector and an Add to Cart button
 - **Product info:** benefit highlight icons and a nutrition-facts table (per 100ml / per 330ml)
 - **Reviews:**
@@ -677,8 +677,8 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### **Products Management (Superuser Only)**
 
-- **Add / Edit forms**, grouped into sections: Info, Stock & Visibility, Product Card Visuals (the three layered images), and Cart & Checkout Image
-- **Image fallback:** the storefront card uses the three layered visuals; if any layer is missing it falls back to the single Cart & Checkout image, then to a no-image placeholder
+- **Add / Edit forms**, grouped into sections: Info, Stock & Visibility, Product Card Visuals, and Cart & Checkout Image
+- **Images:** the storefront card is built from `background_image` (required) plus the optional `objects_image` / `can_image` overlays, falling back to the no-image placeholder; the cart / checkout / confirmation use `product_image`, or `product_image_url` when nothing is uploaded, then the placeholder
 - **Custom file-upload widgets** showing the current image with a "Remove Image" option
 - **Delete** has no dedicated page. It's triggered from a shared confirmation modal, available on any product card
 

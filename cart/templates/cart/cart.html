@@ -21,8 +21,8 @@
 
                     <!-- Product image -->
                     <div class="flex-shrink-0 cart-item-img">
-                        {% if gift_item.product.product_image %}
-                            <img src="{{ gift_item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
+                        {% if gift_item.product.single_image_url %}
+                            <img src="{{ gift_item.product.single_image_url }}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
                         {% else %}
                             <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
                         {% endif %}
@@ -53,8 +53,8 @@
 
                     <!-- Product image -->
                     <div class="flex-shrink-0 cart-item-img">
-                        {% if item.product.product_image %}
-                            <img src="{{ item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                        {% if item.product.single_image_url %}
+                            <img src="{{ item.product.single_image_url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
                         {% else %}
                             <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
                         {% endif %}

@@ -75,6 +75,14 @@ class Product(models.Model):
     class Meta:
         ordering = ["display_order", "name"]
 
+    @property
+    def single_image_url(self):
+        """Return the cart image URL: the upload, an external link, or ''."""
+        if self.product_image:
+            return self.product_image.url
+        # Optional external link, used only when nothing is uploaded.
+        return self.product_image_url or ""
+
     def __str__(self):
         """Return the product name for display."""
         return self.name

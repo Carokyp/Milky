@@ -146,15 +146,16 @@ document.querySelectorAll('.product-card').forEach(card => {
         const rect = card.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width - 0.5;
         const y = (e.clientY - rect.top) / rect.height - 0.5;
-        objects.style.transform = `translate(${x * 25}px, ${y * 25}px)`;
-        can.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
+        // The overlay layers are optional, so a card may have only a background.
+        if (objects) objects.style.transform = `translate(${x * 25}px, ${y * 25}px)`;
+        if (can) can.style.transform = `translate(${x * 10}px, ${y * 10}px)`;
     });
 
     /**
      * Resets the card's layers to their original position.
      */
     card.addEventListener('mouseleave', () => {
-        objects.style.transform = 'translate(0, 0)';
-        can.style.transform = 'translate(0, 0)';
+        if (objects) objects.style.transform = 'translate(0, 0)';
+        if (can) can.style.transform = 'translate(0, 0)';
     });
 });

@@ -110,8 +110,8 @@
                     {% if gift_item %}
                     <div class="d-flex align-items-center gap-3 py-3">
                         <div class="flex-shrink-0 checkout-item-img">
-                            {% if gift_item.product.product_image %}
-                            <img src="{{ gift_item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
+                            {% if gift_item.product.single_image_url %}
+                            <img src="{{ gift_item.product.single_image_url }}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
                             {% else %}
                             <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ gift_item.product.name }}">
                             {% endif %}
@@ -130,8 +130,8 @@
                     {% for item in cart_items %}
                     <div class="d-flex align-items-center gap-3 py-3">
                         <div class="flex-shrink-0 checkout-item-img">
-                            {% if item.product.product_image %}
-                            <img src="{{ item.product.product_image.url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
+                            {% if item.product.single_image_url %}
+                            <img src="{{ item.product.single_image_url }}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
                             {% else %}
                             <img src="{% static 'images/no-image.png' %}" class="img-fluid rounded-3" alt="{{ item.product.name }}">
                             {% endif %}
