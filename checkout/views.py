@@ -155,6 +155,9 @@ def checkout(request):
     payment_intent = stripe.PaymentIntent.create(
         amount=int(cart_data["grand_total"] * 100),
         currency="usd",
+        # Card only, so the Payment Element does not offer Stripe Link
+        # (the email field and "save my information" prompt).
+        payment_method_types=["card"],
         metadata={
             "user_id": (
                 str(request.user.id) if request.user.is_authenticated else ""
