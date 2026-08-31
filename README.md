@@ -352,7 +352,7 @@ The Django admin interface manages the core catalogue and order data:
 - Every toast has a manual close button and auto-hides after 6 seconds (`toast.js`)
 
 **Confirmation Modals** (triggered before destructive actions):
-- **Delete Product Modal**: shown to superusers before permanently deleting a product, from any page that shows a product card
+- **Delete Product Modal**: shown to superusers before deleting a product, from any page that shows a product card (a product with past orders is hidden rather than deleted)
 - **Delete Contact Modal**: shown before removing a saved gift recipient from the Contacts tab
 
 **Empty States**:
@@ -493,7 +493,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 **8. `checkout.OrderItem`**
 - **Foreign Keys:**
   - `order` (to `Order`, `CASCADE`, `related_name="items"`): the order this line belongs to; deleting the order deletes its items
-  - `product` (to `Product`, `PROTECT`): the product bought on this line; a product that has been ordered can't be deleted
+  - `product` (to `Product`, `PROTECT`): the product bought on this line; a product that has been ordered can't be hard-deleted (the delete button hides it instead)
   - `gift_contact` (to `accounts.Contact`, `SET_NULL`, optional): set only on the single gift line, points to the friend who is notified by email
 - **Fields:** `sku`, `unit_price` (snapshotted from the product at purchase time), `quantity`, `total_price` (auto-computed), `is_gift` (BooleanField, default `False`), `gift_message` (TextField, blank)
 - **Side effect:** saving an `OrderItem` also recalculates and re-saves its parent `Order`'s `order_total`
@@ -537,7 +537,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 |---|---|---|
 | Single database, ORM only | Django ORM and migrations, no raw SQL | Portable from SQLite (dev) to PostgreSQL (prod) |
 | Explicit join model | `UserCustomer` links `User` and `Customer` instead of a `OneToOneField` | 1:1 in code, not constrained in the schema |
-| Deliberate `on_delete` | `CASCADE` for owned rows (order items, contacts, reviews); `SET_NULL` for `Order.customer`, `Review.order`, `OrderItem.gift_contact`; `PROTECT` for `OrderItem.product` | Related rows are cleaned up without destroying order history; a product that has been ordered can't be deleted |
+| Deliberate `on_delete` | `CASCADE` for owned rows (order items, contacts, reviews); `SET_NULL` for `Order.customer`, `Review.order`, `OrderItem.gift_contact`; `PROTECT` for `OrderItem.product` | Related rows are cleaned up without destroying order history; deleting an ordered product is caught and turned into a hide (`is_available` off) |
 | Unique constraints | `Product.sku` and `Order.reference_code`, both auto-generated | No duplicate SKUs or order references |
 | Validated range | `Review.rating` bounded 1-5 by `MinValueValidator` / `MaxValueValidator` | Ratings can't go out of range |
 | Choice fields | `Product.flavor` (6 choices), `Order.status` (Pending / Completed / Cancelled) | Data validation, powers admin filtering |
@@ -678,7 +678,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 - **Add / Edit forms**, grouped into sections: Info, Stock & Visibility, Product Card Visuals, and Cart & Checkout Image
 - **Images:** the storefront card is built from `background_image` (required) plus the optional `objects_image` / `can_image` overlays, falling back to the no-image placeholder; the cart / checkout / confirmation use `product_image`, or `product_image_url` when nothing is uploaded, then the placeholder
 - **Custom file-upload widgets** showing the current image with a "Remove Image" option
-- **Delete** has no dedicated page. It's triggered from a shared confirmation modal, available on any product card
+- **Delete** has no dedicated page. It's triggered from a shared confirmation modal, available on any product card; a product that has past orders is hidden (`is_available` off) instead of deleted
 
 <p align="center">
   <img src="docs/images/Products_Management.png" alt="Superuser products management" style="width: 60%; max-width: 900px; height: auto;">
@@ -714,7 +714,7 @@ All auth pages share the same split layout: a form on one side, an illustration 
 
 Confirmation modals are shown before any destructive action, so nothing is deleted on a single click:
 
-- **Delete Product Modal:** shown to superusers before permanently deleting a product, from any page with a product card
+- **Delete Product Modal:** shown to superusers before deleting a product, from any page with a product card (a product with past orders is hidden rather than deleted)
 - **Delete Contact Modal:** shown before removing a saved gift recipient from the Contacts tab
 
 <p align="center">
@@ -903,7 +903,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Add Product with image URL only (superuser) | Fill in the Image URL field, leave the upload empty | Product is created; the linked image shows as the cart, checkout and confirmation thumbnail | Pass |
 | Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | Pass |
 | Delete Product (superuser) | Confirm deletion of a product that has never been ordered | Product removed from the catalogue | Pass |
-| Delete Ordered Product (superuser) | Try to delete a product that appears in a past order | Deletion blocked with an error message; the product and the past orders are untouched | To test |
+| Delete Ordered Product (superuser) | Delete a product that appears in a past order | The product is hidden from the shop (`is_available` off) instead of deleted; the past orders keep their line items; a warning toast explains why | To test |
 | Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | Pass |
 | Add / Edit / Delete Contact | Manage a saved gift recipient from the Contacts tab | Contact list updates immediately, in place | Pass |
 | Edit Profile Details | Change name, phone or address in the My Profile tab and save | Success toast, the new values persist on reload | Pass |
@@ -914,14 +914,14 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Products Management (non-superuser) | Visit `/products/add/` while signed in as a non-superuser | Redirected home with an error message | To test |
-| Products Management (logged out) | Visit `/products/add/` while logged out | Redirected to the sign-in page | To test |
-| Profile Access | Visit `/profile/` while logged out | Redirected to sign in | To test |
-| Own-Data Scoping | Try to view another user's order confirmation page directly | Access denied unless it's the current session's own order | To test |
-| Guest Order Confirmation | View the confirmation page right after a guest checkout | Accessible, since the reference code matches the session | To test |
-| Review While Logged Out | Open a product detail page while logged out | Review form is replaced by a "Sign In to leave a review" prompt | To test |
-| Gift Form While Logged Out | Submit the Gift a Can form while logged out | Redirected to sign in | To test |
-| Contact Ownership | Edit or delete another user's saved contact via its URL | 404, the contact is scoped to its owner | To test |
+| Products Management (non-superuser) | Visit `/products/add/` while signed in as a non-superuser | Redirected home with an error message | Pass |
+| Products Management (logged out) | Visit `/products/add/` while logged out | Redirected to the sign-in page | Pass |
+| Profile Access | Visit `/profile/` while logged out | Redirected to sign in | Pass |
+| Own-Data Scoping | Sign in, then paste another account's order confirmation URL | 404; you only see your own orders | Pass |
+| Guest Order Confirmation | Complete a guest checkout, then view the confirmation page | The page loads; a guest can only see the order they just placed, not another order's URL | Pass |
+| Review While Logged Out | Open a product detail page while logged out | Review form is replaced by a "Sign In to leave a review" prompt | Pass |
+| Gift a Can While Logged Out | Open `/products/gift/` while logged out | The promo page shows with "Login to gift" / "Register", not the gift form | Pass |
+| Contact Ownership | While signed in as one user, paste another user's `delete_contact` / `edit_contact` URL | 404; the contact is neither shown nor deleted (scoped to its owner) | Pass |
 
 ### Forms
 

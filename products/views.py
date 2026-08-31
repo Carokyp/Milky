@@ -238,7 +238,7 @@ def edit_product(request, product_id):
 @login_required
 @superuser_required
 def delete_product(request, product_id):
-    """Delete a product, unless it is referenced by past orders."""
+    """Delete a product, or hide it if it is referenced by past orders."""
     product = get_object_or_404(Product, pk=product_id)
     try:
         product.delete()
@@ -246,10 +246,14 @@ def delete_product(request, product_id):
             request, "Product deleted successfully!", extra_tags="product"
         )
     except ProtectedError:
-        messages.error(
+        # Can't hard-delete a product that has been ordered, so hide it
+        # from the shop instead (past orders keep their line items).
+        product.is_available = False
+        product.save()
+        messages.warning(
             request,
-            f'"{product.name}" is in past orders and cannot be deleted. '
-            "Uncheck its availability to hide it from the shop instead.",
+            f'"{product.name}" has past orders and cannot be deleted, '
+            "so it has been hidden from the shop instead.",
             extra_tags="product",
         )
     return redirect(reverse("all_products"))
