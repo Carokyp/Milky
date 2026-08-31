@@ -1007,6 +1007,20 @@ textarea::placeholder {
     border-radius: 1.5rem;
 }
 
+/* In the grids, lock every card to the designed background ratio
+   (1650x1370) so an uploaded image or the fallback can't change the
+   card size. The image fills that box with object-fit: cover. */
+.favorites-grid .product-card-inner,
+.collection-grid .product-card-inner {
+    aspect-ratio: 1650 / 1370;
+}
+
+.favorites-grid .product-card-bg,
+.collection-grid .product-card-bg {
+    height: 100%;
+    object-fit: cover;
+}
+
 .product-card-gradient {
     padding: 3rem 1.2rem 1.2rem;
     background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.794));
