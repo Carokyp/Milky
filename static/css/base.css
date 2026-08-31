@@ -622,10 +622,7 @@ dd {
 
 /* #region Forms */
 
-/* Generic form styling shared across pages. Crispy renders Django's
-   password-rules help as a <ul> inside .form-text, so size and colour
-   are set on the list too, to keep it a compact muted hint like the
-   others. */
+/* Generic form styling shared across pages.*/
 .form-text,
 .form-text ul,
 .form-text li {
@@ -638,9 +635,7 @@ dd {
     padding-left: 1.1rem;
 }
 
-/* crispy-forms wraps field errors in a <p>, which the global `p { }`
-   rule above would otherwise override back to the default text size
-   and color, hiding the intended small red error style. */
+/* crispy-forms wraps field errors */
 .invalid-feedback p {
     font-size: inherit;
     color: inherit;
@@ -711,8 +706,7 @@ textarea::placeholder {
     max-width: 240px;
 }
 
-/* Below 376px: full-width button under the whole image row.
-   From 376px up: compact centered button inside the text column, under "Remove Image". */
+/* compact button inside the text column, under "Remove Image". */
 .change-image-btn-full {
     display: none;
 }
@@ -721,7 +715,7 @@ textarea::placeholder {
     display: none;
 }
 
-/* Reserves room for 2 lines (line-height 1.5) so the hr/image/button below line up across the 3 side-by-side cards */
+/* Reserves room for the 3 side-by-side cards */
 .widget-visual-desc {
     min-height: 3em;
 }
@@ -1018,9 +1012,7 @@ textarea::placeholder {
     border-radius: 1.5rem;
 }
 
-/* In the grids, lock every card to the designed background ratio
-   (1650x1370) so an uploaded image or the fallback can't change the
-   card size. The image fills that box with object-fit: cover. */
+/* Lock every card to the designed background ratio (1650x1370)*/
 .favorites-grid .product-card-inner,
 .collection-grid .product-card-inner {
     aspect-ratio: 1650 / 1370;
@@ -1052,8 +1044,6 @@ textarea::placeholder {
     object-fit: contain;
 }
 
-/* This icon's artwork sits smaller within its own image than the others,
-   so it's zoomed in without changing the box other icons align to. */
 .product-icon-zoom {
     transform: scale(1.4);
 }
