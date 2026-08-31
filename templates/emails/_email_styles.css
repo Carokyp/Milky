@@ -57,6 +57,14 @@ body {
 .break-word { word-break: break-word; }
 .no-margin { margin: 0; }
 
+/* Inline link inside body copy — keep it in the site's dark brown, since
+   some mail clients auto-link email addresses and force their own blue */
+.inline-link {
+    color: #523122 !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
 /* Small uppercase caption above a value — used on the reference/date boxes
    and "Items ordered" in the confirmation email, and "Your gift" /
    "A message from..." in the gift email */

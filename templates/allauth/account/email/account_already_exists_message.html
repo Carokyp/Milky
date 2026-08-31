@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
 <title>Milky - Account Already Exists</title>
 <style>
 {% comment %}
@@ -34,7 +35,7 @@ be included rather than linked.
             <td class="greeting text-center">
                 <h1 class="logo-font text-brown no-margin" style="font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;">Hi there!</h1>
                 <p class="text-muted greeting-text">
-                    Someone tried to sign up using <span class="text-brown fw-bold">{{ email }}</span>,
+                    Someone tried to sign up using <a href="mailto:{{ email }}" class="inline-link break-word">{{ email }}</a>,
                     but an account with that address already exists.
                 </p>
                 <p class="text-muted greeting-text">
