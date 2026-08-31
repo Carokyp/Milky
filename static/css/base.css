@@ -173,8 +173,7 @@ p {
     transform: rotate(-2deg);
 }
 
-.text-highlight h1,
-.text-highlight h2 {
+.text-highlight h1 {
     color: var(--light-cream);
 }
 
