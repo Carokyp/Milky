@@ -221,9 +221,7 @@ def edit_product(request, product_id):
                 "Product updated successfully!",
                 extra_tags="product",
             )
-            return redirect(
-                reverse("product_detail", args=[product.id])  # type: ignore
-            )
+            return redirect(reverse("all_products"))
         else:
             messages.error(request, "Failed to update product.")
     else:
