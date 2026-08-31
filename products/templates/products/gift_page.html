@@ -64,8 +64,8 @@
                             {% for product in products %}
                             <div class="gift-product-option d-flex align-items-center gap-3"
                                 data-value="{{ product.id }}" data-name="{{ product.name }}"
-                                data-image="{% if product.product_image %}{{ product.product_image.url }}{% elif product.can_image %}{{ product.can_image.url }}{% endif %}">
-                                <img src="{% if product.product_image %}{{ product.product_image.url }}{% elif product.can_image %}{{ product.can_image.url }}{% endif %}"
+                                data-image="{% if product.single_image_url %}{{ product.single_image_url }}{% elif product.can_image %}{{ product.can_image.url }}{% endif %}">
+                                <img src="{% if product.single_image_url %}{{ product.single_image_url }}{% elif product.can_image %}{{ product.can_image.url }}{% endif %}"
                                     alt="{{ product.name }}" class="gift-option-img">
                                 <span>{{ product.name }}</span>
                             </div>

@@ -35,8 +35,8 @@
                     {% for item in cart_items %}
                     <div class="row mb-2 align-items-center">
                         <div class="col-4">
-                            {% if item.product.product_image %}
-                            <img src="{{ item.product.product_image.url }}" class="rounded-3 w-100" alt="{{ item.product.name }}" />
+                            {% if item.product.single_image_url %}
+                            <img src="{{ item.product.single_image_url }}" class="rounded-3 w-100" alt="{{ item.product.name }}" />
                             {% else %}
                             <img src="{% static 'images/no-image.png' %}" class="rounded-3 w-100" alt="{{ item.product.name }}" />
                             {% endif %}
