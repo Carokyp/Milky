@@ -938,17 +938,18 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Cart Quantity Update | Use the +/- stepper on a cart line | Quantity and totals update in place via AJAX, no reload | To test |
-| Toast Feedback | Add a product to the cart | Success toast appears with a live mini-cart preview | To test |
-| Delete Confirmation | Click delete on a product (superuser) or a contact | Confirmation modal appears before anything is removed | To test |
-| Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | To test |
-| Free-Delivery Banner | Change the cart total above and below the threshold | The progress banner updates live to match | To test |
-| Unavailable Product | Turn off a product's `is_available`, then check the catalogue and open its detail page directly | It no longer appears on All Products or the home page; its detail page shows a disabled "Currently Unavailable" button | To test |
-| Zero-Stock Product | Open a product with `stock` at 0 | Add to Cart is replaced by a disabled "Out of Stock" button | To test |
-| Product card with partial layers | View a product with only a card background, and one with background + can | The card renders with whatever layers are present; hovering it causes no JS error | To test |
-| Mobile Nav Dismiss | Open the mobile menu, then click outside it or open the account dropdown | The menu closes | To test |
-| Gift Locked State | Open Gift a Can with a gift already in the cart | The page shows a locked state instead of the form | To test |
-| Empty States | View the cart, a product with no reviews, and the Orders / Contacts tabs while empty | Each shows its dedicated empty-state message | To test |
+| Cart Quantity Update | Use the +/- stepper on a cart line | Quantity and totals update in place via AJAX, no reload | Pass |
+| Toast Feedback | Add a product to the cart | Success toast appears with a live mini-cart preview | Pass |
+| Delete Confirmation | Click delete on a product (superuser) or a contact | Confirmation modal appears before anything is removed | Pass |
+| Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | Pass |
+| Free-Delivery Banner | Change the cart total above and below the threshold | The progress banner updates live to match | Pass |
+| Unavailable Product | Turn off a product's `is_available`, then check the catalogue and open its detail page directly | It no longer appears on All Products or the home page; its detail page shows a disabled "Currently Unavailable" button | Pass |
+| Zero-Stock Product | Open a product with `stock` at 0 | Add to Cart is replaced by a disabled "Out of Stock" button | Pass |
+| Product card with partial layers | View a product with only a card background, and one with background + can | The card renders with whatever layers are present; hovering moves the layers that exist and throws no JS error | Pass |
+| Superuser overlay on any product | Open the detail page of a product with no card artwork, as a superuser | The Edit / Delete overlay is still shown | Pass |
+| Mobile Nav Dismiss | Open the mobile menu, then click outside it or open the account dropdown | The menu closes | Pass |
+| Gift Locked State | Open Gift a Can with a gift already in the cart | A page explains a gift is already in the cart, instead of the form | Pass |
+| Empty States | View the cart, a product with no reviews, and the Orders / Contacts tabs while empty | Each shows its dedicated empty-state message | Pass |
 
 ### Accessibility
 
