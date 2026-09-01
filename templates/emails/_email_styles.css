@@ -1,4 +1,4 @@
-/* Styles for emails only — kept separate from static/css/base.css because
+/* Styles for emails only, kept separate from static/css/base.css because
    email clients need every rule inlined/embedded in the message itself, they
    can't fetch an external stylesheet or read CSS custom properties reliably. 
 */
@@ -10,10 +10,10 @@ body, table, td { margin: 0; padding: 0; }
 img { border: 0; line-height: 100%; outline: none; text-decoration: none; }
 table { border-collapse: collapse; }
 
-/* Fonts — self-hosted so the recipient's mail client isn't asked to fetch a
+/* Fonts are self-hosted so the recipient's mail client isn't asked to fetch a
    third-party CDN. Support is inconsistent across email clients (Outlook
    desktop ignores @font-face entirely), so every rule below still falls back
-   to a system-font stack — clients that don't support this just render the
+   to a system-font stack that the client can handle. Clients that don't support this just render the
    fallback, nothing breaks. */
 @font-face {
     font-family: 'Bebas Neue';
@@ -57,7 +57,7 @@ body {
 .break-word { word-break: break-word; }
 .no-margin { margin: 0; }
 
-/* Inline link inside body copy — keep it in the site's dark brown, since
+/* Inline link inside body copy, keep it in the site's dark brown, since
    some mail clients auto-link email addresses and force their own blue */
 .inline-link {
     color: #523122 !important;
@@ -65,9 +65,7 @@ body {
     text-decoration: none;
 }
 
-/* Small uppercase caption above a value — used on the reference/date boxes
-   and "Items ordered" in the confirmation email, and "Your gift" /
-   "A message from..." in the gift email */
+/* Small uppercase caption above a value */
 .section-label {
     font-size: 13px;
     text-transform: uppercase;
@@ -75,9 +73,7 @@ body {
     font-weight: 600;
 }
 
-/* Light cream panel — used by the reference/date boxes and delivery address
-   box in the confirmation email, and the personal message box in the gift
-   email */
+/* Light cream panel */
 .info-box {
     background-color: #faeade;
     border-radius: 8px;
@@ -91,7 +87,7 @@ body {
 .email-bg { background-color: #faeade; } /* --light-cream */
 .email-pad { padding: 32px 16px; }
 
-/* Card — the white box that holds the whole email */
+/* Card white box that holds the whole email */
 .card {
     background-color: #fafafa; /* --card-background */
     border-radius: 16px;
@@ -127,8 +123,7 @@ body {
     margin: 0 0 12px 0;
 }
 
-/* Centered call-to-action button inside an info-box panel — used by the
-   account confirmation and account-already-exists emails */
+/* Centered button inside an info-box panel */
 .cta-section {
     padding: 30px 40px;
 }
@@ -229,9 +224,7 @@ body {
 
 /* #region Gift-a-can email */
 
-/* Product spotlight card — one centered image + name, same at every screen
-   size (no column split, so there's no empty side to fill with a single
-   product) */
+/* Product spotlight card */
 .gift-product-card {
     padding: 28px 20px;
 }

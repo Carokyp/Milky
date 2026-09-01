@@ -217,7 +217,6 @@ dd {
     color: var(--green) !important;
 }
 
-/* Darker than Bootstrap's default red so it clears AA contrast on white */
 .text-danger,
 .invalid-feedback {
     color: var(--danger) !important;
@@ -307,8 +306,7 @@ dd {
     background-color: var(--footer-background);
 }
 
-/* Cream wave — compound selector so this wins over .hero-wave-bottom's own `bottom`
-   regardless of source order, since both classes sit on the same element in base.html */
+/* Cream wave */
 .hero-wave-bottom.lifestyle-wave-bottom {
     bottom: -60px;
 }
@@ -470,8 +468,7 @@ dd {
     font-size: large;
 }
 
-/* Chrome/Safari reserve invisible width for the native spin buttons,
-   which pushes the centered digit off-center within the pill. */
+/* Chrome/Safari spin buttons */
 .quantity-input::-webkit-outer-spin-button,
 .quantity-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -504,7 +501,7 @@ dd {
     transition: background 0.2s ease;
 }
 
-/* Nudge down the heading to match the icon's optical center */
+/* Nudge down the heading */
 .back-btn + h1 {
     transform: translateY(0.08em);
 }
@@ -848,7 +845,6 @@ textarea::placeholder {
 /* 3D Can */
 .hero-visual {
     height: 300px;
-    /* Overrides the parent .hero-section's px-3 so the background bleeds to the edges. */
     width: calc(100% + 2rem);
     margin-left: -1rem;
     margin-right: -1rem;
@@ -900,6 +896,11 @@ textarea::placeholder {
 
 .bubble-text {
     padding-top: 2.5rem;
+}
+
+/* Nudge the lifestyle text down */
+.bubble-text-lifestyle {
+    transform: translateY(0.5rem);
 }
 
 /* -- Our Favorites -- */
@@ -1069,7 +1070,6 @@ textarea::placeholder {
     color: var(--brown);
 }
 
-/* Review author is a heading for screen readers, but keeps body typography */
 .review-author {
     font-family: var(--font-family-body);
 }
@@ -1144,7 +1144,6 @@ textarea::placeholder {
 
 /* -- When the user is logged-in -- */
 
-/* h2 for correct heading hierarchy sized to match the rest of the site's h4 */
 .gift-section-title {
     font-size: var(--font-h4);
 }
@@ -1229,7 +1228,6 @@ textarea::placeholder {
 
 /* #region Cart */
 
-/* Kept as an <h1> for the page's document outline, but sized like an h2 */
 .cart-title {
     font-size: var(--font-h2);
 }
@@ -1335,7 +1333,6 @@ textarea::placeholder {
     letter-spacing: 0.05em;
 }
 
-/* Account holder's name — a heading for screen readers, body type visually */
 .profile-name {
     font-family: var(--font-family-body);
     color: var(--brown);
@@ -1405,9 +1402,7 @@ textarea::placeholder {
     border-color: black;
 }
 
-/* Hide allauth field labels visually (the design uses placeholders) but keep
-   them in the accessibility tree — display:none would strip the accessible
-   name and trip "missing form label". */
+/* Hide allauth field labels but keep them in the accessibility tree */
 .allauth-form-inner-content label:not([for='id_remember']) {
     position: absolute;
     width: 1px;
@@ -1480,7 +1475,7 @@ textarea::placeholder {
     }
 }
 
-/* Add/Edit product — Change Image button goes compact/centered above the extra-small-phones breakpoint */
+/* Add/Edit product */
 @media (min-width: 376px) {
     .change-image-btn-compact {
         display: block;
@@ -1488,7 +1483,7 @@ textarea::placeholder {
     }
 }
 
-/* Small phones (≤359.98px) — narrower than the breakpoint above, kept separate on purpose */
+/* Small phones (≤359.98px) */
 @media (max-width: 359.98px) {
 
     /* -- Cart -- */
@@ -1606,7 +1601,6 @@ textarea::placeholder {
         margin-top: -190px;
     }
 
-    /* Extra lift at the top edge — it sits close to the bubble's white top here */
     .gift-hero-img,
     .gift-step-card {
         box-shadow: 0 -4px 10px rgba(82, 49, 34, 0.08), 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
@@ -1799,17 +1793,18 @@ textarea::placeholder {
         transform: rotate(6deg);
     }
 
-    /* Fluid scaling instead of a hard jump per breakpoint */
+    /* Text stays centred in the cloud; cloud and photo each sit centred
+       in their half of the row (no sideways offset). */
     .bubble-text-lifestyle {
-        transform: translateX(clamp(50px, calc(50px + (100vw - 1024px) * 0.1933), 200px)) translateY(10px);
+        transform: translateY(10px);
     }
 
     .lifestyle-text-col .bubble-lifestyle img {
-        transform: rotate(1deg) scale(1.7) translateX(clamp(25px, calc(25px + (100vw - 1024px) * 0.0966), 100px));
+        transform: rotate(1deg) scale(1.6);
     }
 
     .lifestyle-photo {
-        transform: translateX(clamp(-90px, calc(10px + (100vw - 1024px) * -0.1289), 10px));
+        transform: none;
     }
 
     /* -- Product Detail -- */
@@ -1920,10 +1915,6 @@ textarea::placeholder {
         padding-top: 11rem !important;
     }
 
-    /* -- Home: Lifestyle -- */
-    .lifestyle-text-col .bubble-lifestyle img {
-        transform: rotate(1deg) scale(1.6) translateX(clamp(25px, calc(25px + (100vw - 1024px) * 0.0966), 100px));
-    }
 }
 
 /* Desktop */
@@ -2009,6 +2000,10 @@ textarea::placeholder {
         transform: rotate(6deg);
     }
 
+    .lifestyle-text-col .bubble-lifestyle img {
+        transform: rotate(1deg) scale(1.8);
+    }
+
     /* -- Gift -- */
 
     .gift-img-hero {
@@ -2083,6 +2078,11 @@ textarea::placeholder {
 
     .bubble-text {
         padding-top: 4.5rem;
+    }
+
+    /* -- Home: Lifestyle -- */
+    .lifestyle-text-col .bubble-lifestyle img {
+        transform: rotate(1deg) scale(1.9);
     }
 }
 
