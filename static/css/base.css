@@ -1335,6 +1335,12 @@ textarea::placeholder {
     letter-spacing: 0.05em;
 }
 
+/* Account holder's name — a heading for screen readers, body type visually */
+.profile-name {
+    font-family: var(--font-family-body);
+    color: var(--brown);
+}
+
 .profile-email {
     font-size: var(--font-sm);
     overflow: hidden;

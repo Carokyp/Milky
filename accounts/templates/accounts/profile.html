@@ -27,9 +27,9 @@
                     </div>
                     <div class="min-w-0">
                         {% if customer.name %}
-                        <p class="mb-0 fw-bold">{{ customer.name }} {{ customer.surname }}</p>
+                        <h2 class="mb-0 fw-bold fs-6 profile-name">{{ customer.name }} {{ customer.surname }}</h2>
                         {% else %}
-                        <p class="mb-0 fw-bold">{{ request.user.username }}</p>
+                        <h2 class="mb-0 fw-bold fs-6 profile-name">{{ request.user.username }}</h2>
                         {% endif %}
                         <p class="mb-0 profile-email text-light-brown">{{ request.user.email }}</p>
                     </div>
@@ -65,7 +65,7 @@
                             {% csrf_token %}
                             <div class="row g-4">
                                 <div class="col-12 col-md">
-                                    <h2 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</h2>
+                                    <h3 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</h3>
                                     {{ form.name|as_crispy_field }}
                                     {{ form.surname|as_crispy_field }}
                                     {{ form.phone_number|as_crispy_field }}
@@ -75,7 +75,7 @@
                                     <div class="vr h-100"></div>
                                 </div>
                                 <div class="col-12 col-md mt-3 mt-md-4">
-                                    <h2 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Delivery address</h2>
+                                    <h3 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Delivery address</h3>
                                     {{ form.address|as_crispy_field }}
                                     {{ form.city|as_crispy_field }}
                                     {{ form.postal_code|as_crispy_field }}
@@ -133,7 +133,7 @@
 
                             <!-- Saved contacts -->
                             <div class="col-12 col-md">
-                                <h2 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Contacts</h2>
+                                <h3 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Contacts</h3>
 
                                 {% if contacts %}
                                 <ul class="list-unstyled mb-0">
@@ -152,13 +152,14 @@
                                                 {% endif %}
                                             </div>
                                             <div class="d-flex gap-2">
-                                                <button type="button" class="contact-edit-btn" data-contact-id="{{ contact.id }}">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                <button type="button" class="contact-edit-btn" data-contact-id="{{ contact.id }}" aria-label="Edit {{ contact.name }} {{ contact.surname }}">
+                                                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
                                                 </button>
                                                 <button type="button" class="contact-delete-btn"
                                                     data-delete-url="{% url 'delete_contact' contact.id %}"
-                                                    data-contact-name="{{ contact.name }} {{ contact.surname }}">
-                                                    <i class="fa-solid fa-trash"></i>
+                                                    data-contact-name="{{ contact.name }} {{ contact.surname }}"
+                                                    aria-label="Delete {{ contact.name }} {{ contact.surname }}">
+                                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -190,7 +191,7 @@
 
                             <!-- Add contact form -->
                             <div class="col-12 col-md">
-                                <h2 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Add a Friend</h2>
+                                <h3 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Add a Friend</h3>
                                 <form method="POST" action="{% url 'add_contact' %}">
                                     {% csrf_token %}
                                     {{ contact_form|crispy }}
