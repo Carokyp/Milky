@@ -15,12 +15,24 @@
 
         <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
             {% csrf_token %}
-            {{ form|crispy }}
+            {% if form.non_field_errors %}
+            <div class="mb-3">
+                {% for error in form.non_field_errors %}<p class="text-danger text-sm mb-0">{{ error }}</p>{% endfor %}
+            </div>
+            {% endif %}
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="visually-hidden">{{ field.label|default:field.field.widget.attrs.placeholder }}</label>
+                {{ field }}
+                {% if field.help_text %}<div id="{{ field.auto_id }}_helptext" class="form-text text-sm">{{ field.help_text|safe }}</div>{% endif %}
+                {% for error in field.errors %}<div class="text-danger text-sm mt-1">{{ error }}</div>{% endfor %}
+            </div>
+            {% endfor %}
             {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
             {% endif %}
             <button type="submit" class="btn-milky-gold btn rounded-pill py-2 text-uppercase w-100 fw-bold mb-2 mt-2">{% trans "Register" %}</button>
-            <a class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center d-block mb-4" href="{% url 'account_login' %}">{% trans "Back to Login" %}</a>
+            <a class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center d-block mb-4" href="{% url 'home' %}">{% trans "Back to Shop" %}</a>
         </form>
 
         <div class="text-start text-sm mt-auto">
@@ -29,7 +41,7 @@
     </section>
 
     <!-- Illustration + overlay text (hidden below tablet) -->
-    <div class="col-12 col-md-6 p-0 d-none d-md-block position-relative">
+    <div class="col-12 col-md-6 p-0 d-none d-md-block position-relative signup-hero">
         <img src="{% static 'images/logo.png' %}" class="img-fluid position-absolute start-50 translate-middle-x logo-signup" alt="Logo image">
         <p class="text-center text-lg fw-bold text-uppercase position-absolute start-50 translate-middle overlay-main-text text-nowrap">Join Milky today!</p>
         <p class="text-center text-sm fw-bold position-absolute start-50 translate-middle-x overlay-secondary-text w-100">Create your account to enjoy a sweeter experience.</p>

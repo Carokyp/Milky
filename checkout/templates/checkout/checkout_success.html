@@ -33,7 +33,7 @@
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 min-w-0">
-                            <p class="logo-font text-uppercase mb-1 cart-product-name">{{ item.product.name }}</p>
+                            <h2 class="logo-font text-uppercase mb-1 cart-product-name">{{ item.product.name }}</h2>
                             <p class="mb-0 cart-product-price">Qty: {{ item.quantity }}</p>
                             <p class="mb-0 cart-product-price">Price: ${{ item.total_price }}</p>
                         </div>
@@ -42,21 +42,21 @@
                 </ul>
 
                 <!-- Price recap -->
-                <div class="py-3 mt-2">
+                <dl class="py-3 mt-2 mb-0">
                     <div class="d-flex justify-content-between mb-2 text-sm">
-                        <p class="mb-0">Subtotal</p>
-                        <p class="mb-0">${{ order.order_total }}</p>
+                        <dt class="mb-0 fw-normal">Subtotal</dt>
+                        <dd class="mb-0">${{ order.order_total }}</dd>
                     </div>
                     <div class="d-flex justify-content-between mb-2 text-sm">
-                        <p class="mb-0 text-light-brown">Delivery</p>
-                        <p class="mb-0 text-light-brown">{% if order.delivery_cost == 0 %}Free{% else %}${{ order.delivery_cost }}{% endif %}</p>
+                        <dt class="mb-0 fw-normal text-light-brown">Delivery</dt>
+                        <dd class="mb-0 text-light-brown">{% if order.delivery_cost == 0 %}Free{% else %}${{ order.delivery_cost }}{% endif %}</dd>
                     </div>
                     <hr class="my-3">
                     <div class="d-flex justify-content-between">
-                        <p class="fw-bold mb-0">Grand Total</p>
-                        <p class="fw-bold mb-0">${{ order.grand_total }}</p>
+                        <dt class="fw-bold mb-0">Grand Total</dt>
+                        <dd class="fw-bold mb-0">${{ order.grand_total }}</dd>
                     </div>
-                </div>
+                </dl>
             </div>
         </section>
 
@@ -67,12 +67,12 @@
                 <!-- Order reference -->
                 <div class="bg-white rounded-4 shadow-sm mb-3 p-4 text-center">
                     <p class="text-sm mb-1">Order reference</p>
-                    <h4 class="mb-0 logo-font">{{ order.reference_code }}</h4>
+                    <h2 class="mb-0 logo-font text-h4">{{ order.reference_code }}</h2>
                 </div>
 
                 <!-- Delivery info -->
                 <div class="bg-white rounded-4 shadow-sm p-4 mb-3">
-                    <h4 class="mb-3">Delivery</h4>
+                    <h2 class="mb-3 text-h4">Delivery</h2>
                     <p class="mb-1 text-sm fw-bold">{{ order.delivery_name }} {{ order.delivery_surname }}</p>
                     <p class="mb-1 text-sm">{{ order.delivery_address }}, {{ order.delivery_city }}{% if order.delivery_postcode %}, {{ order.delivery_postcode }}{% endif %}</p>
                     {% if order.delivery_phone %}<p class="mb-0 text-sm">{{ order.delivery_phone }}</p>{% endif %}

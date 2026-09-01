@@ -85,6 +85,21 @@ class ProductForm(forms.ModelForm):
             if "widget_attrs" in options:
                 field.widget.attrs.update(options["widget_attrs"])
 
+        # The image widgets hide their native <input>, so give each one an
+        # accessible name matching its visible heading.
+        image_fields = (
+            "product_image",
+            "background_image",
+            "objects_image",
+            "can_image",
+        )
+        for name in image_fields:
+            if name in self.fields:
+                field = self.fields[name]
+                field.widget.attrs["aria-label"] = field.label or name.replace(
+                    "_", " "
+                )
+
 
 class ReviewForm(forms.ModelForm):
     """Form for submitting a product review."""

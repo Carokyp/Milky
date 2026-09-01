@@ -30,7 +30,7 @@
 
                     <!-- Gift info -->
                     <div class="flex-grow-1 min-w-0">
-                        <p class="logo-font text-uppercase mb-0 cart-product-name">{{ gift_item.product.name }}</p>
+                        <h2 class="logo-font text-uppercase mb-0 cart-product-name">{{ gift_item.product.name }}</h2>
                         <p class="mb-2 cart-product-price">${{ gift_item.price }}</p>
                         <div class="d-flex align-items-center justify-content-between gap-2">
                             <span class="cart-gift-label text-sm text-green d-flex align-items-center gap-1 min-w-0">
@@ -39,8 +39,8 @@
                             </span>
                             <form method="POST" action="{% url 'remove_gift' %}" class="flex-shrink-0">
                                 {% csrf_token %}
-                                <button type="submit" class="btn cart-remove-btn cart-remove-btn-sm">
-                                    <i class="fa-solid fa-trash-can"></i>
+                                <button type="submit" class="btn cart-remove-btn cart-remove-btn-sm" aria-label="Remove gift for {{ gift_item.contact.name }}">
+                                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
                                 </button>
                             </form>
                         </div>
@@ -62,27 +62,27 @@
 
                     <!-- Product info -->
                     <div class="flex-grow-1 min-w-0">
-                        <p class="logo-font text-uppercase mb-0 cart-product-name">{{ item.product.name }}</p>
+                        <h2 class="logo-font text-uppercase mb-0 cart-product-name">{{ item.product.name }}</h2>
                         <p class="mb-2 cart-product-price">${{ item.product.price }}</p>
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                             <form method="POST" action="{% url 'update_cart' item.product_id %}">
                                 {% csrf_token %}
                                 <div class="btn-quantity-cart d-inline-flex align-items-center gap-2 border rounded-pill px-3 py-1">
                                     <button type="button" class="btn-quantity-cart btn" data-action="decrease"
-                                        data-product-id="{{ item.product_id }}"
+                                        data-product-id="{{ item.product_id }}" aria-label="Decrease quantity"
                                         {% if item.quantity == 1 %}disabled{% endif %}> -
                                     </button>
-                                    <input type="number" name="quantity" class="quantity-input quantity-value-cart text-center border-0 bg-transparent p-0"
+                                    <input type="number" name="quantity" aria-label="Quantity for {{ item.product.name }}" class="quantity-input quantity-value-cart text-center border-0 bg-transparent p-0"
                                         value="{{ item.quantity }}" min="1" max="99">
                                     <button type="button" class="btn-quantity-cart btn" data-action="increase"
-                                        data-product-id="{{ item.product_id }}" {% if item.quantity == 99 %}disabled{% endif %}> +
+                                        data-product-id="{{ item.product_id }}" aria-label="Increase quantity" {% if item.quantity == 99 %}disabled{% endif %}> +
                                     </button>
                                 </div>
                             </form>
                             <form method="POST" action="{% url 'remove_from_cart' item.product_id %}" class="ms-auto">
                                 {% csrf_token %}
-                                <button type="submit" class="btn cart-remove-btn">
-                                    <i class="fa-solid fa-trash-can"></i>
+                                <button type="submit" class="btn cart-remove-btn" aria-label="Remove {{ item.product.name }} from cart">
+                                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
                                 </button>
                             </form>
                         </div>

@@ -5,8 +5,8 @@
 
     <!-- Star rating selector -->
     <div class="mb-3">
-        <label class="form-label fw-bold rating">Rating</label>
-        <div class="d-flex gap-1 fs-4">
+        <p class="form-label fw-bold rating mb-1" id="rating-label">Rating</p>
+        <div class="d-flex gap-1 fs-4" role="radiogroup" aria-labelledby="rating-label">
             {% for i in "12345" %}
             <i class="fa-regular fa-star star star-btn"
                data-value="{{ forloop.counter }}"></i>
@@ -16,6 +16,7 @@
     </div>
 
     <div class="mb-3">
+        <label for="id_comment" class="visually-hidden">Your review</label>
         <textarea name="comment" id="id_comment" class="form-control" rows="4"
             placeholder="Share your thoughts about this product..."></textarea>
     </div>

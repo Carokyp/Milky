@@ -14,8 +14,10 @@ class CustomClearableFileInput(ClearableFileInput):
     )
 
     def get_context(self, name, value, attrs):
-        """Add the current file's basename to the widget context."""
+        """Add the current file's basename and an accessible name."""
         context = super().get_context(name, value, attrs)
         if value:
             context["widget"]["filename"] = os.path.basename(value.name)
+        widget_attrs = context["widget"]["attrs"]
+        context["widget"]["aria_label"] = widget_attrs.get("aria-label", name)
         return context

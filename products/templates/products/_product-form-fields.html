@@ -53,7 +53,7 @@ Params:
                 <div class="row g-3">
                     <div class="col-12 col-lg-4">
                         <div class="image-field-row mb-0 h-100">
-                            <h4 class="mb-1">{{ form.background_image.label }}</h4>
+                            <h2 class="text-h4 mb-1">{{ form.background_image.label }}</h2>
                             {% if form.background_image.help_text %}<p class="widget-visual-desc text-muted text-sm mb-3">{{ form.background_image.help_text }}</p>{% endif %}
                             <hr class="mb-3">
                             {{ form.background_image }}
@@ -63,7 +63,7 @@ Params:
 
                     <div class="col-12 col-lg-4">
                         <div class="image-field-row mb-0 h-100">
-                            <h4 class="mb-1">{{ form.objects_image.label }}</h4>
+                            <h2 class="text-h4 mb-1">{{ form.objects_image.label }}</h2>
                             {% if form.objects_image.help_text %}<p class="widget-visual-desc text-muted text-sm mb-3">{{ form.objects_image.help_text }}</p>{% endif %}
                             <hr class="mb-3">
                             {{ form.objects_image }}
@@ -73,7 +73,7 @@ Params:
 
                     <div class="col-12 col-lg-4">
                         <div class="image-field-row mb-0 h-100">
-                            <h4 class="mb-1">{{ form.can_image.label }}</h4>
+                            <h2 class="text-h4 mb-1">{{ form.can_image.label }}</h2>
                             {% if form.can_image.help_text %}<p class="widget-visual-desc text-muted text-sm mb-3">{{ form.can_image.help_text }}</p>{% endif %}
                             <hr class="mb-3">
                             {{ form.can_image }}
@@ -94,7 +94,7 @@ Params:
                 <div class="row g-4">
                     <div class="col-12 col-lg d-flex flex-column">
                         <div class="image-field-row mb-0 h-100">
-                            <h4 class="mb-1">{{ form.product_image.label }}</h4>
+                            <h2 class="text-h4 mb-1">{{ form.product_image.label }}</h2>
                             <hr class="mb-3">
                             {{ form.product_image }}
                             {% if form.product_image.errors %}<div class="text-danger text-sm mt-1">{{ form.product_image.errors }}</div>{% endif %}
@@ -107,7 +107,7 @@ Params:
                     {% endif %}
                     <div class="col-12 col-lg d-flex flex-column">
                         <div class="image-field-row mb-0 h-100 d-flex flex-column justify-content-center">
-                            <h4 class="mb-1">Image URL</h4>
+                            <h2 class="text-h4 mb-1">Image URL</h2>
                             <hr class="mb-3">
                             {{ form.product_image_url|as_crispy_field }}
                         </div>

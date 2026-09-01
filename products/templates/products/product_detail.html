@@ -47,7 +47,7 @@
                 </div>
                 <div class="col-12 col-lg-6 d-flex flex-column justify-content-center p-4 p-md-5 text-center bg-white">
                     <h1 class="logo-font text-uppercase text-xxl mb-1">{{ product.name }}</h1>
-                    <p class="fw-bold mb-md-4">${{ product.price }} / per can (330ml)</p>
+                    <p class="mb-md-4"><span class="fw-bold">${{ product.price }}</span> / per can (330ml)</p>
                     <p class="mb-4">{{ product.description }}</p>
 
                     <form method="POST" action="{% url 'add_to_cart' product.id %}">
@@ -56,9 +56,10 @@
 
                         <div class="d-flex justify-content-center mb-3">
                             <div class="d-flex align-items-center justify-content-between rounded-pill px-4 py-2 btn-quantity w-100">
-                                <button type="button" class="btn p-0 btn-quantity-detail" data-action="decrease" disabled>-</button>
-                                <input type="number" name="quantity" class="quantity-input text-center border-0 bg-transparent" value="1" min="1" max="99" required>
-                                <button type="button" class="btn btn-sm p-0 btn-quantity-detail" data-action="increase">+</button>
+                                <button type="button" class="btn p-0 btn-quantity-detail" data-action="decrease" aria-label="Decrease quantity" disabled>-</button>
+                                <label for="quantity" class="visually-hidden">Quantity</label>
+                                <input type="number" id="quantity" name="quantity" class="quantity-input text-center border-0 bg-transparent" value="1" min="1" max="99" required>
+                                <button type="button" class="btn btn-sm p-0 btn-quantity-detail" data-action="increase" aria-label="Increase quantity">+</button>
                             </div>
                         </div>
 
@@ -82,38 +83,38 @@
 <div class="text-center pt-5">
     <div class="container">
         <p class="lead mb-5">Soft, indulgent and perfectly balanced, it's your little moment of sweetness in a can!</p>
-        <div class="row g-3 justify-content-center">
-            <div class="col-6 col-md-4">
+        <ul class="row g-3 justify-content-center list-unstyled">
+            <li class="col-6 col-md-4">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
-                    <img src="{% static 'images/cow.png' %}" alt="Made with real milk" class="product-icon mb-3">
-                    <p class="text-uppercase fw-bold mb-0 benefit-label">Made with Real Milk</p>
+                    <img src="{% static 'images/cow.png' %}" alt="" class="product-icon mb-3">
+                    <span class="text-uppercase fw-bold benefit-label">Made with Real Milk</span>
                 </div>
-            </div>
-            <div class="col-6 col-md-4">
+            </li>
+            <li class="col-6 col-md-4">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
-                    <img src="{% static 'images/bones.png' %}" alt="Rich in calcium" class="product-icon mb-3">
-                    <p class="text-uppercase fw-bold mb-0 benefit-label">Rich in Calcium</p>
+                    <img src="{% static 'images/bones.png' %}" alt="" class="product-icon mb-3">
+                    <span class="text-uppercase fw-bold benefit-label">Rich in Calcium</span>
                 </div>
-            </div>
-            <div class="col-6 col-md-4">
+            </li>
+            <li class="col-6 col-md-4">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
-                    <img src="{% static 'images/no-artificial-flavors.png' %}" alt="No artificial flavors" class="product-icon product-icon-zoom mb-3">
-                    <p class="text-uppercase fw-bold mb-0 benefit-label">No Artificial Flavors</p>
+                    <img src="{% static 'images/no-artificial-flavors.png' %}" alt="" class="product-icon product-icon-zoom mb-3">
+                    <span class="text-uppercase fw-bold benefit-label">No Artificial Flavors</span>
                 </div>
-            </div>
-            <div class="col-6 col-md-6">
+            </li>
+            <li class="col-6 col-md-6">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
-                    <img src="{% static 'images/agave.png' %}" alt="Natural sweetness" class="product-icon mb-3">
-                    <p class="text-uppercase fw-bold mb-0 benefit-label">Natural Sweetness</p>
+                    <img src="{% static 'images/agave.png' %}" alt="" class="product-icon mb-3">
+                    <span class="text-uppercase fw-bold benefit-label">Natural Sweetness</span>
                 </div>
-            </div>
-            <div class="col-12 col-md-6">
+            </li>
+            <li class="col-12 col-md-6">
                 <div class="bg-white rounded-4 py-4 px-3 d-flex flex-column align-items-center justify-content-center shadow-sm h-100">
-                    <img src="{% static 'images/yummy.png' %}" alt="Dangerously delicious" class="product-icon mb-3">
-                    <p class="text-uppercase fw-bold mb-0 benefit-label">Dangerously Delicious</p>
+                    <img src="{% static 'images/yummy.png' %}" alt="" class="product-icon mb-3">
+                    <span class="text-uppercase fw-bold benefit-label">Dangerously Delicious</span>
                 </div>
-            </div>
-        </div>
+            </li>
+        </ul>
     </div>
 </div>
 

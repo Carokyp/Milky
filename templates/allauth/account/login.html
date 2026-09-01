@@ -22,14 +22,31 @@
                 {% for error in form.non_field_errors %}<p class="text-danger text-sm mb-0">{{ error }}</p>{% endfor %}
             </div>
             {% endif %}
-            {{ form.login|as_crispy_field }}
             <div class="mb-3">
+                <label for="{{ form.login.id_for_label }}" class="visually-hidden">{% trans "Email address" %}</label>
+                <input type="email"
+                       name="{{ form.login.html_name }}"
+                       id="{{ form.login.id_for_label }}"
+                       value="{{ form.login.value|default:'' }}"
+                       class="form-control{% if form.login.errors %} is-invalid{% endif %}"
+                       placeholder="{% trans 'Email address' %}"
+                       aria-label="{% trans 'Email address' %}"
+                       autocomplete="email"
+                       required>
+                {% if form.login.errors %}
+                <div class="invalid-feedback">{{ form.login.errors|join:", " }}</div>
+                {% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.password.id_for_label }}" class="visually-hidden">{% trans "Password" %}</label>
                 <input type="password"
                        name="{{ form.password.html_name }}"
                        id="{{ form.password.id_for_label }}"
                        class="form-control{% if form.password.errors %} is-invalid{% endif %}"
-                       placeholder="Password"
-                       autocomplete="current-password">
+                       placeholder="{% trans 'Password' %}"
+                       aria-label="{% trans 'Password' %}"
+                       autocomplete="current-password"
+                       required>
                 {% if form.password.errors %}
                 <div class="invalid-feedback">{{ form.password.errors|join:", " }}</div>
                 {% endif %}

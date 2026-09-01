@@ -117,7 +117,7 @@
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 min-w-0">
-                            <p class="logo-font text-uppercase mb-0 cart-product-name">{{ gift_item.product.name }}</p>
+                            <h2 class="logo-font text-uppercase mb-0 cart-product-name">{{ gift_item.product.name }}</h2>
                             <p class="mb-0 cart-product-price">Price: ${{ gift_item.price }}</p>
                             <p class="mb-0 text-sm text-green d-flex align-items-center gap-2">
                                 <img src="{% static 'images/gift.png' %}" alt="" class="cart-gift-icon">
@@ -137,7 +137,7 @@
                             {% endif %}
                         </div>
                         <div class="flex-grow-1 min-w-0">
-                            <p class="logo-font text-uppercase mb-0 cart-product-name">{{ item.product.name }}</p>
+                            <h2 class="logo-font text-uppercase mb-0 cart-product-name">{{ item.product.name }}</h2>
                             <p class="mb-0 cart-product-price">Qty: {{ item.quantity }}</p>
                             <p class="mb-0 cart-product-price">Price: ${{ item.subtotal }}</p>
                         </div>
@@ -153,25 +153,27 @@
                             <span>Gift reward — <strong>{{ promo_discount|floatformat:0 }}% off</strong> applied.</span>
                         </div>
                         {% endif %}
-                        <div class="d-flex justify-content-between mb-2 text-sm">
-                            <p class="mb-0">Subtotal</p>
-                            <p class="mb-0">${{ total }}</p>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2 text-sm">
-                            <p class="mb-0 text-light-brown">Delivery</p>
-                            <p class="mb-0 text-light-brown">{% if delivery == 0 %}Free{% else %}${{ delivery }}{% endif %}</p>
-                        </div>
-                        {% if promo_discount %}
-                        <div class="d-flex justify-content-between mb-2 text-success text-sm">
-                            <p class="mb-0">Gift discount</p>
-                            <p class="mb-0">-{{ promo_discount|floatformat:0 }}%</p>
-                        </div>
-                        {% endif %}
-                        <hr class="my-3">
-                        <div class="d-flex justify-content-between mb-4">
-                            <p class="fw-bold mb-0">Grand Total</p>
-                            <p class="fw-bold mb-0">${{ grand_total|floatformat:2 }}</p>
-                        </div>
+                        <dl class="mb-0">
+                            <div class="d-flex justify-content-between mb-2 text-sm">
+                                <dt class="mb-0 fw-normal">Subtotal</dt>
+                                <dd class="mb-0">${{ total }}</dd>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 text-sm">
+                                <dt class="mb-0 fw-normal text-light-brown">Delivery</dt>
+                                <dd class="mb-0 text-light-brown">{% if delivery == 0 %}Free{% else %}${{ delivery }}{% endif %}</dd>
+                            </div>
+                            {% if promo_discount %}
+                            <div class="d-flex justify-content-between mb-2 text-success text-sm">
+                                <dt class="mb-0 fw-normal">Gift discount</dt>
+                                <dd class="mb-0">-{{ promo_discount|floatformat:0 }}%</dd>
+                            </div>
+                            {% endif %}
+                            <hr class="my-3">
+                            <div class="d-flex justify-content-between mb-4">
+                                <dt class="fw-bold mb-0">Grand Total</dt>
+                                <dd class="fw-bold mb-0">${{ grand_total|floatformat:2 }}</dd>
+                            </div>
+                        </dl>
 
                         <!-- Actions -->
                         <div class="d-flex flex-column gap-2">

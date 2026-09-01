@@ -65,7 +65,7 @@
                             {% csrf_token %}
                             <div class="row g-4">
                                 <div class="col-12 col-md">
-                                    <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</p>
+                                    <h2 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Personal details</h2>
                                     {{ form.name|as_crispy_field }}
                                     {{ form.surname|as_crispy_field }}
                                     {{ form.phone_number|as_crispy_field }}
@@ -75,7 +75,7 @@
                                     <div class="vr h-100"></div>
                                 </div>
                                 <div class="col-12 col-md mt-3 mt-md-4">
-                                    <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Delivery address</p>
+                                    <h2 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Delivery address</h2>
                                     {{ form.address|as_crispy_field }}
                                     {{ form.city|as_crispy_field }}
                                     {{ form.postal_code|as_crispy_field }}
@@ -133,7 +133,7 @@
 
                             <!-- Saved contacts -->
                             <div class="col-12 col-md">
-                                <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Contacts</p>
+                                <h2 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Contacts</h2>
 
                                 {% if contacts %}
                                 <ul class="list-unstyled mb-0">
@@ -190,7 +190,7 @@
 
                             <!-- Add contact form -->
                             <div class="col-12 col-md">
-                                <p class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Add a Friend</p>
+                                <h2 class="profile-section-title text-muted fw-bold mb-3 text-uppercase">Add a Friend</h2>
                                 <form method="POST" action="{% url 'add_contact' %}">
                                     {% csrf_token %}
                                     {{ contact_form|crispy }}
