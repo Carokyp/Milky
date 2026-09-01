@@ -969,11 +969,10 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Tool | Target | Result |
 |------|--------|--------|
-| [W3C HTML Validator](https://validator.w3.org/) | Each rendered page (validated from view-source) | *to run; `html5validator` is installed* |
+| [W3C HTML Validator](https://validator.w3.org/) | Each rendered page (validated from view-source) | *to run* |
 | [W3C CSS Validator (Jigsaw)](https://jigsaw.w3.org/css-validator/) | `static/css/base.css` | *to run* |
 | [JSHint](https://jshint.com/) | Files in `static/js/` | *to run* |
 | [flake8](https://flake8.pycqa.org/) / [black](https://black.readthedocs.io/) | Python source (79-char lines, `setup.cfg` + `pyproject.toml`) | *to run* |
-| [CI Python Linter](https://pep8ci.herokuapp.com/) | Python source (strict PEP 8, 79-char lines) | *to run* |
 
 <details>
 <summary>HTML validation</summary>
