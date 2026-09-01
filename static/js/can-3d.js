@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
 const container = document.getElementById('can-viewer');
@@ -45,7 +46,10 @@ if (container) {
     tiltGroup.rotation.x = THREE.MathUtils.degToRad(12);
     scene.add(tiltGroup);
 
-    new GLTFLoader().load(
+    const loader = new GLTFLoader();
+    // The model ships meshopt-compressed to keep it small (~1 MB vs ~10 MB).
+    loader.setMeshoptDecoder(MeshoptDecoder);
+    loader.load(
         modelUrl,
         /**
          * Tones down the loaded model's metalness/roughness so it doesn't
