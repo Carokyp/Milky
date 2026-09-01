@@ -222,10 +222,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # S3 static/media config adapted from the Code Institute "Boutique Ado"
 # walkthrough, updated to Django's STORAGES dict.
 if "USE_AWS" in os.environ:
-    # Cache control
+    # Cache control: 30 days. Static file names don't change between
+    # deploys, so after updating a CSS/JS file, returning visitors (and
+    # Lighthouse) may need a hard refresh to pick it up.
     AWS_S3_OBJECT_PARAMETERS = {
         "Expires": "Thu, 31 Dec 2099 20:00:00 GMT",
-        "CacheControl": "max-age=86400",
+        "CacheControl": "max-age=2592000, public",
     }
 
     # AWS S3 settings
