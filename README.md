@@ -1,7 +1,7 @@
 # Milky
 
 <p align="center">
-  <img src="docs/images/readme-preview.png" alt="Milky responsive preview" width="100%">
+  <img src="docs/images/milky-preview.png" alt="Milky responsive preview" width="100%">
 </p>
 
 ## About
@@ -250,20 +250,68 @@ Three Google Fonts: `Bebas Neue` for headings, `Poppins` for body text, and `Pat
 #### Colors
 The palette centers on warm cream backgrounds with brown text, gold for primary calls to action, and green for success/discount highlights.
 
-| Token | Hex | Use |
-|---|---|---|
-| `--light-cream` | `#faeade` | Page background |
-| `--brown` | `#523122` | Primary text |
-| `--light-brown` | `#8c5e4a` | Secondary text |
-| `--gold` | `#fbcb62` | Primary CTA buttons |
-| `--green` | `#198754` | Success states, discounts |
-| `--danger` | `#dc3545` | Errors |
-| `--card-background` | `#fafafa` | Card surfaces |
-| `--footer-background` | `#e9cfb7` | Footer |
-
-<p align="center">
-  <img src="docs/images/Color.png" alt="Milky colour palette" style="width: 32%; max-width: 300px; height: auto;">
-</p>
+<div align="center">
+  <table>
+    <tr>
+      <td valign="middle" width="65%" align="center">
+        <table>
+          <thead>
+            <tr>
+              <th align="left">Token</th>
+              <th align="left">Hex</th>
+              <th align="left">Use</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>--light-cream</code></td>
+              <td>#faeade</td>
+              <td>Page background</td>
+            </tr>
+            <tr>
+              <td><code>--brown</code></td>
+              <td>#523122</td>
+              <td>Primary text</td>
+            </tr>
+            <tr>
+              <td><code>--light-brown</code></td>
+              <td>#8c5e4a</td>
+              <td>Secondary text</td>
+            </tr>
+            <tr>
+              <td><code>--gold</code></td>
+              <td>#fbcb62</td>
+              <td>Primary CTA buttons</td>
+            </tr>
+            <tr>
+              <td><code>--green</code></td>
+              <td>#198754</td>
+              <td>Success states, discounts</td>
+            </tr>
+            <tr>
+              <td><code>--danger</code></td>
+              <td>#dc3545</td>
+              <td>Errors</td>
+            </tr>
+            <tr>
+              <td><code>--card-background</code></td>
+              <td>#fafafa</td>
+              <td>Card surfaces</td>
+            </tr>
+            <tr>
+              <td><code>--footer-background</code></td>
+              <td>#e9cfb7</td>
+              <td>Footer</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+      <td valign="middle" width="35%" align="center">
+        <img src="docs/images/colors.png" alt="Milky colour palette" width="100%" style="max-width: 320px;">
+      </td>
+    </tr>
+  </table>
+</div>
 
 ## Technical Architecture
 
@@ -278,7 +326,7 @@ The Django admin interface manages the core catalogue and order data:
 - Full add/edit/delete access to every product field, including the three layered card images
 
 <p align="center">
-  <img src="docs/images/Django/Django_Products.png" alt="Django admin product management" style="width: 70%; max-width: 700px; height: auto;">
+  <img src="docs/images/Django/admin-products.png" alt="Django admin product management" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 **Reviews:**
@@ -289,7 +337,7 @@ The Django admin interface manages the core catalogue and order data:
 - The username column is blank unless the review is tied to an order from that account
 
 <p align="center">
-  <img src="docs/images/Django/Django_Reviews.png" alt="Django admin review management" style="width: 70%; max-width: 700px; height: auto;">
+  <img src="docs/images/Django/admin-reviews.png" alt="Django admin review management" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 **Orders:**
@@ -302,7 +350,7 @@ The Django admin interface manages the core catalogue and order data:
 - A JS-injected "Same as delivery address" checkbox on the Invoice fieldset copies the delivery fields across when ticked and clears them when unticked, and self-checks on load when the two already match
 
 <p align="center">
-  <img src="docs/images/Django/Django_Orders.png" alt="Django admin order management" style="width: 70%; max-width: 700px; height: auto;">
+  <img src="docs/images/Django/admin-orders.png" alt="Django admin order management" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 **Customers, Contacts & account links:**
@@ -389,9 +437,11 @@ PRODUCT ||--o{ REVIEW : "receives"
 ORDER |o--o{ REVIEW : "credits (optional)"
 CONTACT |o--o{ ORDERITEM : "gifted to (optional)"
 ```
-
+<p align="left">
+  <a href="https://miro.com/app/live-embed/uXjVHU_iiV0=/?embedMode=view_only_without_ui&moveToViewport=-488%2C-690%2C2990%2C1511&embedId=930774328073" target="_blank" rel="noopener noreferrer"><strong>Full ERD here</strong></a>
+</p>
 <p align="center">
-  <img src="docs/images/ERD.png" alt="Milky ERD" style="width: 100%; max-width: 1000px; height: auto;">
+  <img src="docs/images/ERD.png" alt="Milky ERD" style="width: 100%; max-width: 1000px; height: auto;"><br>
 </p>
 
 **ERD note:** a user account and its `Customer` profile are linked by a separate `UserCustomer` row (two foreign keys), not by a `OneToOneField`. Nothing in the database stops a user having more than one `Customer`, but the code always reads the link with `.filter(user=request.user).first()`, so in practice it behaves as one-to-one.
@@ -554,172 +604,251 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### **Header & Navigation**
 
-- **Public Navigation:**
-  - Home
-  - All Products
-  - Gift a Can
-  - Cart
-  - Register
-  - Sign In
+Responsive navigation for guests and authenticated users.
 
-- **Authenticated Navigation:**
-  - Home
-  - All Products
-  - Gift a Can
-  - Cart
-  - My Profile
-  - Sign Out
-  - Products Management *(superusers only)*
-
+<p align="center"><strong>Public navigation</strong></p>
 <p align="center">
-  <img src="docs/images/Navbar.png" alt="Milky navigation bar" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/images/public-nav.png" alt="Milky public navigation bar" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
-- On mobile, the navigation collapses into a toggle menu that closes when you click outside it.
+<p align="center"><strong>Authenticated navigation</strong></p>
+<p align="center">
+  <img src="docs/images/auth-nav.png" alt="Milky authenticated navigation bar" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+On mobile, the navigation collapses into a toggle menu that closes when you click outside it.
 
 #### **Home Page**
 
-- **Hero Section:**
-  - An animated, rotating 3D can (rendered with Three.js) over a brand watermark
-  - A "Shop Now" call to action
-- **Our Favorites:**
-  - A grid of the products flagged `featured`
-  - Each card is built from three layered images, with a subtle mouse-tilt parallax effect
-  - Superusers see an Edit / Delete overlay on every card
-- **It's Still Good For You:** a benefits section with a stats card (Calcium / Protein / Vitamin D)
-- **Moments That Taste Better:** a lifestyle photo section
+Hero section, featured products, and a playful brand-first storefront experience.
 
+<p align="center"><strong>Hero section</strong></p>
 <p align="center">
-  <img src="docs/images/Home.png" alt="Milky home page" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/hero.png" alt="Milky home page hero section" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Featured products</strong></p>
+<p align="center">
+  <img src="docs/images/our-favorites.png" alt="Milky featured product grid" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Superuser controls</strong></p>
+<p align="center">
+  <img src="docs/images/superuser-products.png" alt="Milky superuser product controls" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Benefits section</strong></p>
+<p align="center">
+  <img src="docs/images/good-for-you.png" alt="Milky benefits section" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Lifestyle section</strong></p>
+<p align="center">
+  <img src="docs/images/moments.png" alt="Milky lifestyle section" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **All Products**
 
-- Full product grid, using the same card component and superuser overlay as the home page
-- Each card links through to its Product Detail Page
+Full product grid with the same storefront styling and superuser controls as the home page.
 
+<p align="center"><strong>All products catalogue</strong></p>
 <p align="center">
-  <img src="docs/images/All_Products.png" alt="All products page" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/all-product.png" alt="All products page" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Product Detail Page**
 
-- **Product image:** the layered can visual (or the no-image placeholder if the product has no card background), with an "Out of Stock" state at zero stock and a "Currently Unavailable" state for a hidden product reached by direct link (unavailable products are hidden from the catalogue and home page)
-- **Add to cart:** a quantity selector and an Add to Cart button
-- **Product info:** benefit highlight icons and a nutrition-facts table (per 100ml / per 330ml)
-- **Reviews:**
-  - Paginated 3 per page, loaded via AJAX with no full reload, each with a star-rating display
-  - A star-picker review form for signed-in users, or a "Sign In to leave a review" prompt for guests
+Product storytelling, nutrition info, reviews, and the purchase flow in one place.
 
+<p align="center"><strong>Product detail</strong></p>
 <p align="center">
-  <img src="docs/images/Product_Detail.png" alt="Product detail page" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/products-details.png" alt="Product detail page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Customer reviews</strong></p>
+<p align="center">
+  <img src="docs/images/reviews.png" alt="Product review section" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Gift a Can**
 
-- **Logged out:** a promo landing page with a hero image, a 3-step "how it works" explainer, and Sign In / Register calls to action
-- **Logged in:** the full gift form, made of:
-  - A custom product picker
-  - An optional personal message
-  - Either a saved contact or new-friend fields
-- **One gift per order:** if a gift is already in the session, the page shows a locked state instead
-- **After payment:** the recipient gets a "you've been gifted a can" email, including the buyer's personal message
+A lightweight gifting flow designed for guest education and logged-in conversion.
 
+<p align="center"><strong>Guest page</strong></p>
 <p align="center">
-  <img src="docs/images/Gift_a_Can.png" alt="Gift a Can page" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/gift-logout.png" alt="Gift a Can logged-out page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Logged-in customer</strong></p>
+<p align="center">
+  <img src="docs/images/gift-login.png" alt="Gift a Can logged-in form" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>One gift per order</strong></p>
+<p align="center">
+  <img src="docs/images/one-gift.png" alt="Gift a Can one-gift state" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Recipient email with confirmation sent to the friend</strong></p>
+<p align="center">
+  <img src="docs/images/gift-email.png" alt="Gift email preview" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Cart**
 
-- **Line items:** an AJAX quantity stepper (clamped 1-99) and AJAX remove
-- **Gift line:** a separate, non-editable line if a Gift a Can is in progress, with its own remove button
-- **Order summary:** subtotal, delivery, gift discount, grand total, and a live free-delivery progress banner
-- **Empty state:** cart icon, "Your cart is empty" message, and a Shop Now button
+Session-based cart with live totals, delivery progress, and quick quantity updates.
 
+<p align="center"><strong>Cart with items</strong></p>
 <p align="center">
-  <img src="docs/images/Cart.png" alt="Cart page" style="width: 50%; max-width: 550px; height: auto;">
+  <img src="docs/images/cart-1.png" alt="Cart page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Empty cart</strong></p>
+<p align="center">
+  <img src="docs/images/empty-cart.png" alt="Empty cart state" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Checkout Page**
 
-- **Layout:** Details / Delivery / Invoice / Payment sections, in a two-column responsive layout from tablet width up, with a sticky order summary
-- **Same as delivery:** a checkbox that hides / shows the invoice fields
-- **Save details:** a "Save this delivery info to my profile" checkbox for signed-in users, or a login / register prompt for guests
-- **Payment:**
-  - Stripe Payment Element, mounted only once it scrolls into view
-  - The "Complete Order" button stays disabled until Stripe reports the form is ready
+Secure Stripe checkout with delivery, invoice, and payment details in a clear step-based flow.
 
+<p align="center"><strong>Detail and Delivery </strong></p>
 <p align="center">
-  <img src="docs/images/Checkout.png" alt="Checkout page" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/checkout.png" alt="Checkout page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Stripe payment section</strong></p>
+<p align="center">
+  <img src="docs/images/payment.png" alt="Stripe payment section" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Order Confirmation**
 
-- Reference code, itemised line items, price recap, delivery address, and a "Continue Shopping" call to action (a "Back to Profile" button replaces it when the page is opened from the profile)
-- An HTML order-confirmation email is sent to the buyer once the Stripe webhook confirms payment
-- The same template doubles as the order-detail view reached from the profile's Orders tab
+Order confirmation and receipt follow-up built to feel clear and premium after purchase.
 
+<p align="center"><strong>Order confirmation page</strong></p>
 <p align="center">
-  <img src="docs/images/Order_Confirmation.png" alt="Order confirmation page" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/order-confirmation.png" alt="Order confirmation page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Order confirmation email</strong></p>
+<p align="center">
+  <img src="docs/images/email-order-confirmation.png" alt="Order confirmation email" style="width: 50%; max-width: 700px; height: auto;">
 </p>
 
 #### **Profile Page**
 
-- **My Profile:** edit name, surname, phone, address, city, postal code, and country
-- **Orders:** a list of past orders with a status badge (Pending / Completed / Cancelled) linking to the order detail view, or a "No orders found yet." empty state
-- **Contacts:** saved gift recipients, with inline edit-in-place, a delete-confirmation modal, an "Add a Friend" form, or a "No contacts yet." empty state
-- The active tab is remembered across redirects (for example, after adding a contact you land back on the Contacts tab)
+A personal account area for saved details, orders, and gift contacts.
 
+<p align="center"><strong>Profile overview</strong></p>
 <p align="center">
-  <img src="docs/images/Profile.png" alt="Profile page" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/profile.png" alt="Profile page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Order history</strong></p>
+<p align="center">
+  <img src="docs/images/profile-order.png" alt="Profile orders tab" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Saved contacts</strong></p>
+<p align="center">
+  <img src="docs/images/profile-contact.png" alt="Profile contacts tab" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Products Management (Superuser Only)**
 
-- **Add / Edit forms**, grouped into sections: Info, Stock & Visibility, Product Card Visuals, and Cart & Checkout Image
-- **Images:** the storefront card is built from `background_image` (required) plus the optional `objects_image` / `can_image` overlays, falling back to the no-image placeholder; the cart / checkout / confirmation use `product_image`, or `product_image_url` when nothing is uploaded, then the placeholder
-- **Custom file-upload widgets** showing the current image with a "Remove Image" option
-- **Delete** has no dedicated page. It's triggered from a shared confirmation modal, available on any product card; a product that has past orders is hidden (`is_available` off) instead of deleted
+Product creation and editing tools designed for lightweight storefront administration.
 
+<p align="center"><strong>Add product form</strong></p>
 <p align="center">
-  <img src="docs/images/Products_Management.png" alt="Superuser products management" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/add-product.png" alt="Superuser products management" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Edit product form</strong></p>
+<p align="center">
+  <img src="docs/images/edit-product.png" alt="Superuser edit product form" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Authentication Pages** (django-allauth)
 
-All auth pages share the same split layout: a form on one side, an illustration on the other (hidden below tablet width).
+A consistent auth layout with clear form states for sign in, signup, reset, and change flows.
 
-- **Register:** email, username and password; a verification email is sent, and the account can't sign in until the email is confirmed
-- **Sign In:** by email address and password
-  - "Remember Me" controls session length only. Checked keeps the session alive for two weeks and survives the browser closing; unchecked ends it as soon as the browser closes
-  - It doesn't pre-fill the form on a later visit; that's the browser's own password manager
-- **Sign Out:** a confirmation page before the session is cleared
-- **Password Reset:** request a link by email → open it → set a new password, with "sent" and "done" states in between
-- **Password Change / Set:** change the password from the account while signed in
-- **Email management:** add, remove, re-send verification, and set the primary email address
+<p align="center"><strong>Register</strong></p>
+<p align="center">
+  <img src="docs/images/register.png" alt="Register page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Sign in</strong></p>
+<p align="center">
+  <img src="docs/images/sign-in.png" alt="Sign in page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Sign out</strong></p>
+<p align="center">
+  <img src="docs/images/sign-out.png" alt="Sign out page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Password reset</strong></p>
+<p align="center">
+  <img src="docs/images/password-reset.png" alt="Password reset page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Password change</strong></p>
+<p align="center">
+  <img src="docs/images/change-password.png" alt="Password change page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+#### **Footer**
+
+- Social media links (X, Instagram, Facebook), each with an accessible label
+- Copyright notice
+- Consistent across every page
 
 <p align="center">
-  <img src="docs/images/Login.png" alt="Sign in page" style="width: 60%; max-width: 900px; height: auto;">
+  <img src="docs/images/Footer.png" alt="Website footer" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Toast Notification System**
 
-- Four variants (success, error, warning, info), each with its own icon; success toasts also vary their title by context
-- Cart toasts show a live mini-cart preview inside the toast itself
+Fast visual feedback for cart actions, validation, warnings, and informational states.
 
+<p align="center"><strong>Success toast</strong></p>
 <p align="center">
-  <img src="docs/images/Toast.png" alt="Toast notification with mini-cart preview" style="width: 50%; max-width: 450px; height: auto;">
+  <img src="docs/images/success-toast.png" alt="Success toast" style="width: 60%; max-width: 700px; height: auto;">
+</p>
+
+<p align="center"><strong>Error toast</strong></p>
+<p align="center">
+  <img src="docs/images/error-toast.png" alt="Error toast" style="width: 60%; max-width: 700px; height: auto;">
+</p>
+
+<p align="center"><strong>Warning toast</strong></p>
+<p align="center">
+  <img src="docs/images/warning-toast.png" alt="Warning toast" style="width: 60%; max-width: 700px; height: auto;">
+</p>
+
+<p align="center"><strong>Info toast</strong></p>
+<p align="center">
+  <img src="docs/images/info-toast.png" alt="Info toast" style="width: 60%; max-width: 700px; height: auto;">
+</p>
+
+<p align="center"><strong>Cart toast preview</strong></p>
+<p align="center">
+  <img src="docs/images/cart-toast.png" alt="Cart toast preview" style="width: 60%; max-width: 700px; height: auto;">
 </p>
 
 #### **Modals**
 
-Confirmation modals are shown before any destructive action, so nothing is deleted on a single click:
+Destructive actions are protected by confirmation modals to keep the experience clear and safe.
 
-- **Delete Product Modal:** shown to superusers before deleting a product, from any page with a product card (a product with past orders is hidden rather than deleted)
-- **Delete Contact Modal:** shown before removing a saved gift recipient from the Contacts tab
-
+<p align="center"><strong>Delete product modal</strong></p>
 <p align="center">
-  <img src="docs/images/Delete_Modal.png" alt="Delete confirmation modal" style="width: 50%; max-width: 450px; height: auto;">
+  <img src="docs/images/delete-product.png" alt="Delete product modal" style="width: 60%; max-width: 700px; height: auto;">
+</p>
+
+<p align="center"><strong>Delete contact modal</strong></p>
+<p align="center">
+  <img src="docs/images/delete-contact.png" alt="Delete contact modal" style="width: 60%; max-width: 700px; height: auto;">
 </p>
 
 #### **Input Fields & Forms**
@@ -752,16 +881,6 @@ Confirmation modals are shown before any destructive action, so nothing is delet
 - `django-allauth`'s pages extend a themed `templates/allauth/` layout so they match the rest of the site
 - The custom error pages extend `templates/errors/base_error.html`
 
-#### **Footer**
-
-- Social media links (X, Instagram, Facebook), each with an accessible label
-- Copyright notice
-- Consistent across every page
-
-<p align="center">
-  <img src="docs/images/Footer.png" alt="Website footer" style="width: 70%; max-width: 1200px; height: auto;">
-</p>
-
 #### **Responsiveness**
 
 - Mobile-first, with custom breakpoints at 768px, 1024px, 1440px, and 1800px, plus a small tweak below 360px
@@ -780,11 +899,24 @@ All four custom error pages share the same branded layout: a breakpoint-swapped 
 | **405** | Method Not Allowed | "This request method is not supported for this page." |
 | **500** | Server Error | "Something went wrong on our end. Please try again in a moment." |
 
+<p align="center"><strong>Error 404</strong></p>
 <p align="center">
-  <img src="docs/images/Error_404.png" alt="404 error page" style="width: 20%; max-width: 300px;">
-  <img src="docs/images/Error_403.png" alt="403 error page" style="width: 20%; max-width: 300px;">
-  <img src="docs/images/Error_405.png" alt="405 error page" style="width: 20%; max-width: 300px;">
-  <img src="docs/images/Error_500.png" alt="500 error page" style="width: 20%; max-width: 300px;">
+  <img src="docs/images/error-404.png" alt="404 error page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Error 403</strong></p>
+<p align="center">
+  <img src="docs/images/error-403.png" alt="403 error page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Error 405</strong></p>
+<p align="center">
+  <img src="docs/images/error-405.png" alt="405 error page" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Error 500</strong></p>
+<p align="center">
+  <img src="docs/images/error-500.png" alt="500 error page" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 ## Future Features
@@ -963,7 +1095,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Image alternatives | Inspect every `<img>` | Meaningful images have descriptive `alt`, decorative ones an empty `alt` | Pass |
 | Heading order | Run an outline check on each page type | One `<h1>` per page, no skipped levels | Pass |
 | Colour contrast | Check brown-on-cream and brown-on-gold in a contrast checker | Meets WCAG AA for body text and buttons | Pass (roughly 9.8:1 on cream, 7.6:1 on the gold buttons) |
-| WAVE | Run [WAVE](https://wave.webaim.org/) on each page type | No errors; contrast and ARIA warnings reviewed | *to test* |
+| WAVE | Run [WAVE](https://wave.webaim.org/) on each page type | No errors; contrast and ARIA warnings reviewed | Pass |
 
 ### Validator Testing
 
