@@ -16,13 +16,13 @@
         <p>{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
 
         <div class="mt-4">
-            <a class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center d-block" href="{% url 'account_login' %}">{% trans "Back to Login" %}</a>
+            <a class="btn-milky btn rounded-pill py-2 text-uppercase w-100 fw-bold text-center d-block" href="{% url 'home' %}">{% trans "Back to Shop" %}</a>
         </div>
     </section>
 
     <!-- Illustration (hidden below tablet) -->
     <div class="col-12 col-md-6 p-0 d-none d-md-block">
-        <img src="{% static 'images/verify-email.webp' %}" class="w-100 h-100 account-hero-image rounded-4" alt="Verify email image">
+        <img src="{% static 'images/verify-email.webp' %}" class="w-100 h-100 account-hero-image rounded-4" alt="">
     </div>
 
 </div>
