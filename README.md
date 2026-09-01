@@ -553,6 +553,8 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### Relationships Summary
 
+<div align="center">
+
 | Relationship | Models involved | Type | Enforcement |
 |---|---|---|---|
 | User / Customer | User, UserCustomer, Customer | Effectively One-to-One | Join model, app-enforced only |
@@ -563,6 +565,8 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 | Product to Review | Product, Review | One-to-Many | `ForeignKey` + `CASCADE` |
 | Order to Review | Order, Review | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
 | Contact to OrderItem | Contact, OrderItem | One-to-Many, optional | `ForeignKey` + `SET_NULL` |
+
+</div>
 
 ---
 
@@ -584,6 +588,8 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 #### Schema Characteristics
 
+<div align="center">
+
 | Characteristic | Implementation | Benefit |
 |---|---|---|
 | Single database, ORM only | Django ORM and migrations, no raw SQL | Portable from SQLite (dev) to PostgreSQL (prod) |
@@ -597,6 +603,8 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 | Denormalised totals | `order_total` / `delivery_cost` stored on `Order`, resynced by `save()` overrides on `Order` and `OrderItem` | Totals ready for templates and admin without recomputing |
 | Timestamp | `Order.created_at` (`auto_now_add`) | Order list sorts newest-first |
 | Session-only transient state | Cart and in-progress gift selection live in `request.session` | The cart and gift selection never become database rows on their own |
+
+</div>
 
 ## Features
 
@@ -892,12 +900,16 @@ Destructive actions are protected by confirmation modals to keep the experience 
 
 All four custom error pages share the same branded layout: a breakpoint-swapped illustration, the status code, a short title, a plain-language message, and a single "Back to Home" call to action.
 
+<div align="center">
+
 | Error Code | Title Shown | Message Shown |
 |---|---|---|
 | **404** | Page Not Found | "The page you're looking for doesn't exist or has been moved." |
 | **403** | Access Forbidden | "You don't have permission to access this page." |
 | **405** | Method Not Allowed | "This request method is not supported for this page." |
 | **500** | Server Error | "Something went wrong on our end. Please try again in a moment." |
+
+</div>
 
 <p align="center"><strong>Error 404</strong></p>
 <p align="center">
@@ -971,6 +983,8 @@ sent over SMTP. The application is deployed on **Heroku** with Gunicorn.
 
 Installed via `requirements.txt`:
 
+<div align="center">
+
 | Package | Purpose |
 |---|---|
 | [Django](https://www.djangoproject.com/) 6.0.4 | the web framework the whole project is built on |
@@ -982,6 +996,8 @@ Installed via `requirements.txt`:
 | [dj-database-url](https://pypi.org/project/dj-database-url/) + [psycopg2](https://pypi.org/project/psycopg2/) | PostgreSQL connection in production |
 | [gunicorn](https://pypi.org/project/gunicorn/) | WSGI server used on Heroku |
 | [Pillow](https://pypi.org/project/pillow/) | image handling for uploaded product photos |
+
+</div>
 
 Dev / QA tooling: [black](https://pypi.org/project/black/), [flake8](https://pypi.org/project/flake8/), [html5validator](https://pypi.org/project/html5validator/).
 
@@ -1016,6 +1032,8 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 ### Authentication
 
+<div align="center">
+
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
 | Registration | Register with a new email and password | Account created, verification email sent (real email on Heroku, console in dev) | Pass |
@@ -1029,7 +1047,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Password Change | Change the password from the account while signed in | New password works, old one is rejected | Pass |
 | Sign Out | Click Sign Out in the navbar | User is signed out and redirected | Pass |
 
+</div>
+
 ### CRUD
+
+<div align="center">
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
@@ -1045,7 +1067,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Remove Gift from Cart | Add a Gift a Can, then remove it from the cart | The gift line disappears and the "one gift per order" slot is freed | Pass |
 | Place Order | Complete checkout with a Stripe test card | Order created, confirmation page shown, order appears in Orders tab | Pass |
 
+</div>
+
 ### Permissions
+
+<div align="center">
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
@@ -1058,7 +1084,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Gift a Can While Logged Out | Open `/products/gift/` while logged out | The promo page shows with "Login to gift" / "Register", not the gift form | Pass |
 | Contact Ownership | While signed in as one user, paste another user's `delete_contact` / `edit_contact` URL | 404; the contact is neither shown nor deleted (scoped to its owner) | Pass |
 
+</div>
+
 ### Forms
+
+<div align="center">
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
@@ -1069,7 +1099,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Contact Form Validation | Submit the "Add a Friend" form with required fields missing | Inline errors shown, submission blocked | Pass |
 | Registration Rules | Register with mismatched or too-weak passwords | allauth validation errors shown, account not created | Pass |
 
+</div>
+
 ### UX
+
+<div align="center">
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
@@ -1086,7 +1120,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Gift Locked State | Open Gift a Can with a gift already in the cart | A page explains a gift is already in the cart, instead of the form | Pass |
 | Empty States | View the cart, a product with no reviews, and the Orders / Contacts tabs while empty | Each shows its dedicated empty-state message | Pass |
 
+</div>
+
 ### Accessibility
+
+<div align="center">
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
@@ -1097,7 +1135,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Colour contrast | Check brown-on-cream and brown-on-gold in a contrast checker | Meets WCAG AA for body text and buttons | Pass (roughly 9.8:1 on cream, 7.6:1 on the gold buttons) |
 | WAVE | Run [WAVE](https://wave.webaim.org/) on each page type | No errors; contrast and ARIA warnings reviewed | Pass |
 
+</div>
+
 ### Validator Testing
+
+<div align="center">
 
 | Tool | Target | Result |
 |------|--------|--------|
@@ -1105,6 +1147,8 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | [W3C CSS Validator (Jigsaw)](https://jigsaw.w3.org/css-validator/) | `static/css/base.css` | *to run* |
 | [JSHint](https://jshint.com/) | Files in `static/js/` | *to run* |
 | [flake8](https://flake8.pycqa.org/) / [black](https://black.readthedocs.io/) | Python source (79-char lines, `setup.cfg` + `pyproject.toml`) | *to run* |
+
+</div>
 
 <details>
 <summary>HTML validation</summary>
@@ -1140,6 +1184,8 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 ### Browser Compatibility
 
+<div align="center">
+
 | Browser | Version | Result |
 |---------|---------|--------|
 | Chrome | | *to test* |
@@ -1147,7 +1193,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Safari | | *to test* |
 | Edge | | *to test* |
 
+</div>
+
 ### Responsive Design
+
+<div align="center">
 
 | Device Category | Screen Size | Test Result | Notes |
 |----------------|-------------|-------------|-------|
@@ -1159,9 +1209,13 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Desktop - Large | 2560px × 1300px | Pass | Toast banner and body content stay aligned at the 1800px max content width |
 | Desktop - 5K | 5120px × 2880px | Pass | Content stays capped and centred at the 1800px max width; layout matches the 2560px case |
 
+</div>
+
 ### Performance
 
 Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best practices, and SEO. Reports are saved in `docs/images/LightHouse_Desktop/` and `docs/images/LightHouse_Mobile/`.
+
+<div align="center">
 
 | Page | Performance | Accessibility | Best Practices | SEO |
 |------|-------------|---------------|----------------|-----|
@@ -1171,7 +1225,11 @@ Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best 
 | Cart | | | | |
 | Checkout | | | | |
 
+</div>
+
 ### Bugs Found, Fixed, and Unresolved
+
+<div align="center">
 
 | Bug | Status | Notes |
 |-----|--------|-------|
@@ -1185,6 +1243,8 @@ Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best 
 | Using the cart stepper to drop an item's quantity to 0 deleted the whole line | Fixed | Quantity is now clamped to a minimum of 1. Removal is only via the explicit remove button. |
 | Sign In on the deployed site intermittently returned "CSRF verification failed" (403) | Fixed | Heroku forwards HTTPS requests to Django over HTTP, so Django expected an `http://` origin while the browser sent `https://`. Added `SECURE_PROXY_SSL_HEADER` and `CSRF_TRUSTED_ORIGINS` for the Heroku domain. |
 
+</div>
+
 No known unresolved bugs at this time.
 
 ### Testing User Stories
@@ -1193,6 +1253,8 @@ All user stories from [User Stories](#user-stories) are validated below against 
 
 #### New Visitor Stories
 
+<div align="center">
+
 | User Story | How It's Fulfilled | Features / Pages Used |
 |---|---|---|
 | As a new visitor, I want to see the product range and understand the brand. | The home page opens with a hero and a featured-products showcase, all Products shows the full catalogue. | Home Page, All Products |
@@ -1200,7 +1262,11 @@ All user stories from [User Stories](#user-stories) are validated below against 
 | As a new visitor, I want to add products to my cart and check out as a guest. | The cart and checkout flows don't require an account. `Order.customer` is nullable for guest orders. | Cart, Checkout Page |
 | As a new visitor, I want to create an account so my details are saved for next time. | Registration via django-allauth, with delivery details saved to the `Customer` profile on request. | Register, Checkout Page ("save this delivery info") |
 
+</div>
+
 #### Existing User Stories
+
+<div align="center">
 
 | User Story | How It's Fulfilled | Features / Pages Used |
 |---|---|---|
@@ -1210,13 +1276,19 @@ All user stories from [User Stories](#user-stories) are validated below against 
 | As an existing user, I want to reset my password. | django-allauth's password reset flow. | Password Reset |
 | As an existing user, I want to leave a star rating and comment on a product. | The review form on the Product Detail Page, restricted to authenticated users. | Product Detail Page |
 
+</div>
+
 #### All Users Stories
+
+<div align="center">
 
 | User Story | How It's Fulfilled | Features / Pages Used |
 |---|---|---|
 | As a user, I want clear confirmation before a destructive action. | Shared confirmation modals for product deletion and contact deletion. | Products Management, Profile Page Contacts tab |
 | As a user, I want feedback after every action. | The toast notification system, plus inline form validation errors. | Site-wide |
 | As a user, I want the site to work well across devices. | Fluid typography and four custom breakpoints (768 / 1024 / 1440 / 1800px), verified manually across mobile, tablet, laptop, and wide desktop. | Site-wide |
+
+</div>
 
 ## Security
 
@@ -1417,11 +1489,15 @@ The deployed site keeps Stripe in **test mode**, so no real payment is ever take
 
 **Test cards**
 
+<div align="center">
+
 | Card number | Result |
 |---|---|
 | `4242 4242 4242 4242` | Payment succeeds |
 | `4000 0000 0000 9995` | Payment declined (insufficient funds) |
 | `4000 0025 0000 3155` | Requires 3D Secure authentication |
+
+</div>
 
 For any test card, use **any future expiry date**, **any 3-digit CVC** and **any
 postcode**. The full list is in the
