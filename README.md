@@ -212,12 +212,12 @@ Wireframes and the high-fidelity design were both built in Figma:
 
 <p align="center"><strong>Mobile wireframes</strong></p>
 <p align="center">
-  <img src="docs/images/wireframes/wireframe-mobile.png" alt="Milky mobile wireframes" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/wireframes/wireframe-mobile.png" alt="Milky mobile wireframes" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
 <p align="center"><strong>Desktop wireframes</strong></p>
 <p align="center">
-  <img src="docs/images/wireframes/wireframe-desktop.png" alt="Milky desktop wireframes" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/wireframes/wireframe-desktop.png" alt="Milky desktop wireframes" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
 From the wireframes on, the layout was refined directly in the browser across
@@ -312,7 +312,7 @@ The Django admin interface manages the core catalogue and order data:
 - Full add/edit/delete access to every product field, including the three layered card images
 
 <p align="center">
-  <img src="docs/images/Django/admin-products.png" alt="Django admin product management" style="width: 90%; max-width: 1100px; height: auto;">
+  <img src="docs/django/admin-products.png" alt="Django admin product management" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 **Reviews:**
@@ -323,7 +323,7 @@ The Django admin interface manages the core catalogue and order data:
 - The username column is blank unless the review is tied to an order from that account
 
 <p align="center">
-  <img src="docs/images/Django/admin-reviews.png" alt="Django admin review management" style="width: 90%; max-width: 1100px; height: auto;">
+  <img src="docs/django/admin-reviews.png" alt="Django admin review management" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 **Orders:**
@@ -336,7 +336,7 @@ The Django admin interface manages the core catalogue and order data:
 - A JS-injected "Same as delivery address" checkbox on the Invoice fieldset copies the delivery fields across when ticked and clears them when unticked, and self-checks on load when the two already match
 
 <p align="center">
-  <img src="docs/images/Django/admin-orders.png" alt="Django admin order management" style="width: 90%; max-width: 1100px; height: auto;">
+  <img src="docs/django/admin-orders.png" alt="Django admin order management" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 **Customers, Contacts & account links:**
@@ -1140,7 +1140,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 <summary>HTML validation</summary>
 
 <p align="center">
-  <img src="docs/images/Testing/validator-html.png" alt="W3C HTML validator results" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/testing/validator-html.png" alt="W3C HTML validator results" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 </details>
 
@@ -1148,7 +1148,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 <summary>CSS validation</summary>
 
 <p align="center">
-  <img src="docs/images/Testing/validator-css.png" alt="W3C CSS validator results" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/testing/validator-css.png" alt="W3C CSS validator results" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 </details>
 
@@ -1156,7 +1156,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 <summary>JavaScript validation</summary>
 
 <p align="center">
-  <img src="docs/images/Testing/validator-js.png" alt="JSHint results" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/testing/validator-js.png" alt="JSHint results" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 </details>
 
@@ -1164,7 +1164,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 <summary>Python validation</summary>
 
 <p align="center">
-  <img src="docs/images/Testing/validator-python.png" alt="CI Python Linter results" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/testing/validator-python.png" alt="CI Python Linter results" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 </details>
 
@@ -1199,7 +1199,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 ### Performance
 
-Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best practices, and SEO. Reports are saved in `docs/images/LightHouse_Desktop/` and `docs/images/LightHouse_Mobile/`.
+Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best practices, and SEO. Reports are saved in `docs/lighthouse/`.
 
 <div align="center">
 
