@@ -181,3 +181,38 @@ def preview_account_already_exists_email(request):
         "account/email/account_already_exists_message.html", context
     )
     return HttpResponse(html_body)
+
+
+# TODO: Remove before deployment
+@login_required
+def preview_password_reset_email(request):
+    """Render the real password-reset email in the browser, for styling
+    work. Store-owner only. Builds a genuine reset key for the logged-in
+    user the same way allauth does, so the button in the preview actually
+    works and lands on the "set a new password" page.
+    """
+    if not request.user.is_superuser:
+        messages.error(request, "Sorry, only store owners can do that.")
+        return redirect(reverse("home"))
+
+    from allauth.account import app_settings as allauth_settings
+    from allauth.account.adapter import get_adapter
+    from allauth.account.utils import user_pk_to_url_str
+
+    token_generator = allauth_settings.PASSWORD_RESET_TOKEN_GENERATOR()
+    key = "{}-{}".format(
+        user_pk_to_url_str(request.user),
+        token_generator.make_token(request.user),
+    )
+
+    context = {
+        "user": request.user,
+        "password_reset_url": get_adapter(
+            request
+        ).get_reset_password_from_key_url(key),
+        **build_email_font_urls(request),
+    }
+    html_body = render_to_string(
+        "account/email/password_reset_key_message.html", context
+    )
+    return HttpResponse(html_body)

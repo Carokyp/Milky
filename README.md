@@ -208,31 +208,17 @@ step. These choices were worked out in the wireframes below.
 
 Wireframes and the high-fidelity design were both built in Figma:
 
-**[Milky Figma file](https://www.figma.com/design/90A4C1NyUtrnebcMyJtTlb/MILKY?node-id=1-5049)**
+**[Full Wireframes on Figma here](https://www.figma.com/design/90A4C1NyUtrnebcMyJtTlb/MILKY?node-id=1-5049)**
 
-<details>
-<summary>Mobile wireframes</summary>
-
+<p align="center"><strong>Mobile wireframes</strong></p>
 <p align="center">
-  <img src="docs/images/wireframes/wireframes-mobile.png" alt="Milky mobile wireframes" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/images/wireframes/wireframe-mobile.png" alt="Milky mobile wireframes" style="width: 90%; max-width: 900px; height: auto;">
 </p>
-</details>
 
-<details>
-<summary>Tablet wireframes</summary>
-
+<p align="center"><strong>Desktop wireframes</strong></p>
 <p align="center">
-  <img src="docs/images/wireframes/wireframes-tablet.png" alt="Milky tablet wireframes" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/images/wireframes/wireframe-desktop.png" alt="Milky desktop wireframes" style="width: 90%; max-width: 900px; height: auto;">
 </p>
-</details>
-
-<details>
-<summary>Desktop wireframes</summary>
-
-<p align="center">
-  <img src="docs/images/wireframes/wireframes-desktop.png" alt="Milky desktop wireframes" style="width: 90%; max-width: 900px; height: auto;">
-</p>
-</details>
 
 From the wireframes on, the layout was refined directly in the browser across
 the 768 / 1024 / 1440 / 1800px breakpoints.
@@ -813,7 +799,7 @@ A consistent auth layout with clear form states for sign in, signup, reset, and 
 - Consistent across every page
 
 <p align="center">
-  <img src="docs/images/Footer.png" alt="Website footer" style="width: 90%; max-width: 1100px; height: auto;">
+  <img src="docs/images/footer.png" alt="Website footer" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 #### **Toast Notification System**

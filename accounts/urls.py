@@ -31,4 +31,9 @@ urlpatterns = [
         views.preview_account_already_exists_email,
         name="preview_account_already_exists_email",
     ),
+    path(
+        "preview/password-reset-email/",
+        views.preview_password_reset_email,
+        name="preview_password_reset_email",
+    ),
 ]
