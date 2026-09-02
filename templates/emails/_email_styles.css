@@ -58,11 +58,15 @@ body {
 .no-margin { margin: 0; }
 
 /* Inline link inside body copy, keep it in the site's dark brown, since
-   some mail clients auto-link email addresses and force their own blue */
-.inline-link {
+   some mail clients auto-link email addresses and force their own blue.
+   The nested `a` rule catches the anchor Gmail injects when it auto-detects
+   an address inside a plain <span class="inline-link">. */
+.inline-link,
+.inline-link a {
     color: #523122 !important;
+    font-family: 'Poppins', 'Segoe UI', Helvetica, Arial, sans-serif !important;
     font-weight: 700;
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 /* Small uppercase caption above a value */
@@ -214,10 +218,12 @@ body {
     padding: 30px 40px;
 }
 
-.contact-link {
-    color: #8c5e4a;
+.contact-link,
+.contact-link a {
+    color: #8c5e4a !important;
+    font-family: 'Poppins', 'Segoe UI', Helvetica, Arial, sans-serif !important;
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 /* #endregion */
