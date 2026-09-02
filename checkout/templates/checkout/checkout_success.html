@@ -51,8 +51,7 @@
                         <dt class="mb-0 fw-normal text-light-brown">Delivery</dt>
                         <dd class="mb-0 text-light-brown">{% if order.delivery_cost == 0 %}Free{% else %}${{ order.delivery_cost }}{% endif %}</dd>
                     </div>
-                    <hr class="my-3">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between pt-3 summary-grand-total">
                         <dt class="fw-bold mb-0">Grand Total</dt>
                         <dd class="fw-bold mb-0">${{ order.grand_total }}</dd>
                     </div>
