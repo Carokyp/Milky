@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="format-detection" content="telephone=no,date=no,address=no,email=no">
+<title>Milky - No Account Found</title>
+<style>
+{% comment %}
+Same shared stylesheet as the other emails — see
+templates/emails/_email_styles.css and milky/adapter.py for why this has to
+be included rather than linked.
+{% endcomment %}
+{% include "emails/_email_styles.css" %}
+</style>
+</head>
+<body>
+<!-- Outer table: full-width page background behind the card, since some
+     mail clients ignore styles on <body> itself -->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="email-bg">
+<tr>
+<td align="center" class="email-pad">
+
+    <table role="presentation" class="email-wrapper card" width="600" cellpadding="0" cellspacing="0">
+
+        <!-- Header / logo text -->
+        <tr>
+            <td align="center" class="bg-brown header">
+                <span class="logo-font text-cream text-uppercase logo-text">No Account Found</span>
+            </td>
+        </tr>
+
+        <!-- Message -->
+        <tr>
+            <td class="greeting text-center">
+                <h1 class="logo-font text-brown no-margin" style="font-family: 'Bebas Neue', 'Arial Narrow', Arial, sans-serif;">Hi there!</h1>
+                <p class="text-muted greeting-text">
+                    Someone tried to access a Milky account with
+                    <a href="mailto:{{ email }}" class="inline-link break-word">{{ email }}</a>,
+                    but we have no record of an account with that address.
+                </p>
+                <p class="text-muted greeting-text">
+                    If it was you, you can create an account below.
+                </p>
+            </td>
+        </tr>
+
+        <!-- Sign up button -->
+        <tr>
+            <td class="cta-section text-center">
+                <a href="{{ signup_url }}" class="cta-button">Sign Up</a>
+            </td>
+        </tr>
+
+        <!-- Ignore note -->
+        <tr>
+            <td class="cta-section text-center">
+                <p class="text-muted no-margin">If you did not initiate this action, you can safely ignore this email.</p>
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td align="center" class="bg-brown-light footer">
+                <p class="text-cream text-sm no-margin">Thank you for choosing Milky!</p>
+            </td>
+        </tr>
+
+    </table>
+
+</td>
+</tr>
+</table>
+</body>
+</html>

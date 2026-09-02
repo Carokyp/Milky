@@ -216,3 +216,25 @@ def preview_password_reset_email(request):
         "account/email/password_reset_key_message.html", context
     )
     return HttpResponse(html_body)
+
+
+# TODO: Remove before deployment
+@login_required
+def preview_unknown_account_email(request):
+    """Render the real unknown-account email in the browser, for styling
+    work. Store-owner only. Uses the logged-in user's own email and the
+    real signup URL.
+    """
+    if not request.user.is_superuser:
+        messages.error(request, "Sorry, only store owners can do that.")
+        return redirect(reverse("home"))
+
+    context = {
+        "email": request.user.email,
+        "signup_url": request.build_absolute_uri(reverse("account_signup")),
+        **build_email_font_urls(request),
+    }
+    html_body = render_to_string(
+        "account/email/unknown_account_message.html", context
+    )
+    return HttpResponse(html_body)

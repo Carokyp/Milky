@@ -36,4 +36,9 @@ urlpatterns = [
         views.preview_password_reset_email,
         name="preview_password_reset_email",
     ),
+    path(
+        "preview/unknown-account-email/",
+        views.preview_unknown_account_email,
+        name="preview_unknown_account_email",
+    ),
 ]
