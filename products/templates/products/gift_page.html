@@ -24,7 +24,7 @@
     </div>
 </section>
 
-<section class="container gift-content">
+<div class="container gift-content">
     <div class="row justify-content-center">
         {% if user.is_authenticated %}
         <!-- Gift form (logged in) -->
@@ -214,7 +214,7 @@
         </div>
         {% endif %}
     </div>
-</section>
+</div>
 {% endblock %}
 
 {% block extra_js %}
