@@ -11,9 +11,11 @@ def _style_auth_fields(fields):
     for name, field in fields.items():
         css = field.widget.attrs.get("class", "")
         field.widget.attrs["class"] = f"{css} form-control".strip()
-        aria_label = field.label or field.widget.attrs.get(
-            "placeholder"
-        ) or name.replace("_", " ").title()
+        aria_label = (
+            field.label
+            or field.widget.attrs.get("placeholder")
+            or name.replace("_", " ").title()
+        )
         field.widget.attrs["aria-label"] = aria_label
 
 

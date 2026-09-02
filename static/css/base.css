@@ -259,7 +259,7 @@ dd {
     color: var(--gold);
 }
 
-.navbar>.container-fluid {
+.navbar > .container-fluid {
     max-width: var(--site-max-width);
     margin: 0 auto;
     background-color: var(--light-cream);
@@ -1700,7 +1700,7 @@ textarea::placeholder {
         height: 100%;
         width: auto;
     }
-    
+
     .error-banner-text h1 {
         font-size: 4rem;
     }
