@@ -1296,10 +1296,9 @@ textarea::placeholder {
 
 /* #region Checkout */
 
-/* Rule above the order summary's Grand Total row. Replaces an <hr>, which is
-   not valid as a direct child of the <dl> that wraps the summary. */
+/* Replaces an <hr> */
 .summary-grand-total {
-    border-top: 1px solid var(--light-brown);
+    border-top: 1px solid rgba(140, 94, 74, 0.25);
 }
 
 .links {
