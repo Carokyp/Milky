@@ -1,7 +1,13 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import {
+    GLTFLoader
+} from 'three/addons/loaders/GLTFLoader.js';
+import {
+    MeshoptDecoder
+} from 'three/addons/libs/meshopt_decoder.module.js';
+import {
+    RoomEnvironment
+} from 'three/addons/environments/RoomEnvironment.js';
 
 const container = document.getElementById('can-viewer');
 
@@ -13,7 +19,10 @@ if (container) {
     const camera = new THREE.PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 100);
     camera.position.set(0, 0, 5);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        alpha: true
+    });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;

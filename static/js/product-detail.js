@@ -4,7 +4,7 @@
  * @param {HTMLButtonElement} button - The increase/decrease button being configured.
  */
 document.querySelectorAll('.btn-quantity-detail').forEach(button => {
-    button.addEventListener('click', function () {
+    button.addEventListener('click', function() {
         const action = this.dataset.action;
         const quantityInput = document.querySelector('.quantity-input');
         const decreaseButton = document.querySelector('button[data-action="decrease"]');
@@ -37,18 +37,22 @@ if (reviewsList) {
      * page of reviews via AJAX instead of a full navigation.
      * @param {MouseEvent} e - The click event on the reviews container.
      */
-    reviewsList.addEventListener('click', function (e) {
+    reviewsList.addEventListener('click', function(e) {
         const link = e.target.closest('.review-nav-btn:not(.disabled)');
         if (!link) return;
 
         e.preventDefault();
 
         fetch(link.href, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            credentials: 'same-origin',
-        })
-        .then(response => response.json())
-        .then(data => { reviewsList.innerHTML = data.html; })
-        .catch(err => console.error('Failed to load reviews page', err));
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                credentials: 'same-origin',
+            })
+            .then(response => response.json())
+            .then(data => {
+                reviewsList.innerHTML = data.html;
+            })
+            .catch(err => console.error('Failed to load reviews page', err));
     });
 }

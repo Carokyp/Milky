@@ -13,7 +13,7 @@ document.querySelector('.dropdown').addEventListener('show.bs.dropdown', closeNa
  * Closes the navbar when the user clicks anywhere outside the header.
  * @param {MouseEvent} e - The click event fired on the document.
  */
-document.addEventListener('click', function (e) {
+document.addEventListener('click', function(e) {
     if (!e.target.closest('header')) closeNavbar();
 });
 
@@ -22,12 +22,12 @@ document.addEventListener('click', function (e) {
  * delete-confirmation modal with the target product's name and link.
  * @param {HTMLElement} btn - The delete-product button being configured.
  */
-document.querySelectorAll('.delete-product-btn').forEach(function (btn) {
+document.querySelectorAll('.delete-product-btn').forEach(function(btn) {
     /**
      * Populates the delete-confirmation modal and shows it.
      * @param {MouseEvent} e - The click event on the delete button.
      */
-    btn.addEventListener('click', function (e) {
+    btn.addEventListener('click', function(e) {
         e.preventDefault();
         document.getElementById('deleteProductModalText').innerHTML =
             'Are you sure you want to delete <strong>' + this.dataset.productName + '</strong>? This cannot be undone.';
@@ -40,8 +40,8 @@ document.querySelectorAll('.delete-product-btn').forEach(function (btn) {
  * Wires up each trigger element to open its associated hidden file input.
  * @param {HTMLElement} btn - The trigger element being configured.
  */
-document.querySelectorAll('.trigger-file-input').forEach(function (btn) {
-    btn.addEventListener('click', function () {
+document.querySelectorAll('.trigger-file-input').forEach(function(btn) {
+    btn.addEventListener('click', function() {
         const input = document.getElementById(this.dataset.target);
         if (input) input.click();
     });
@@ -53,8 +53,8 @@ document.querySelectorAll('.trigger-file-input').forEach(function (btn) {
  * buttons.
  * @param {HTMLInputElement} input - The file input being configured.
  */
-document.querySelectorAll('input[data-filename-target]').forEach(function (input) {
-    input.addEventListener('change', function () {
+document.querySelectorAll('input[data-filename-target]').forEach(function(input) {
+    input.addEventListener('change', function() {
         const file = this.files[0];
         const target = document.getElementById(this.dataset.filenameTarget);
         if (target) target.textContent = file ? file.name : '';
@@ -72,7 +72,7 @@ document.querySelectorAll('input[data-filename-target]').forEach(function (input
                  * Renders the selected file as an image preview.
                  * @param {ProgressEvent<FileReader>} e - The FileReader load event.
                  */
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     previewImg.src = e.target.result;
                     previewWrap.classList.remove('d-none');
                     if (selectTrigger) selectTrigger.classList.add('d-none');
@@ -100,8 +100,8 @@ document.querySelectorAll('input[data-filename-target]').forEach(function (input
  * input when checked.
  * @param {HTMLInputElement} checkbox - The remove-preview checkbox being configured.
  */
-document.querySelectorAll('.remove-preview-checkbox').forEach(function (checkbox) {
-    checkbox.addEventListener('change', function () {
+document.querySelectorAll('.remove-preview-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
         if (!this.checked) return;
         const input = document.getElementById(this.dataset.clearTarget);
         if (!input) return;
@@ -115,8 +115,8 @@ document.querySelectorAll('.remove-preview-checkbox').forEach(function (checkbox
  * and "blank image" trigger buttons.
  * @param {HTMLInputElement} checkbox - The real-clear checkbox being configured.
  */
-document.querySelectorAll('.real-clear-checkbox').forEach(function (checkbox) {
-    checkbox.addEventListener('change', function () {
+document.querySelectorAll('.real-clear-checkbox').forEach(function(checkbox) {
+    checkbox.addEventListener('change', function() {
         const selectTrigger = this.dataset.selectTrigger ? document.getElementById(this.dataset.selectTrigger) : null;
         const blankTrigger = this.dataset.blankTrigger ? document.getElementById(this.dataset.blankTrigger) : null;
         if (this.checked) {

@@ -21,16 +21,16 @@ highlightStars(parseInt(ratingInput.value));
  * @param {HTMLElement} star - The star icon being configured.
  */
 stars.forEach(star => {
-    star.addEventListener('click', function () {
+    star.addEventListener('click', function() {
         ratingInput.value = this.dataset.value;
         highlightStars(parseInt(this.dataset.value));
     });
 
-    star.addEventListener('mouseover', function () {
+    star.addEventListener('mouseover', function() {
         highlightStars(parseInt(this.dataset.value));
     });
 
-    star.addEventListener('mouseout', function () {
+    star.addEventListener('mouseout', function() {
         highlightStars(parseInt(ratingInput.value));
     });
 });

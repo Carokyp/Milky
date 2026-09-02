@@ -58,16 +58,18 @@ function updateCartDisplay(data) {
  */
 function sendCartUpdate(form) {
     fetch(form.action, {
-        method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        body: new FormData(form),
-        credentials: 'same-origin',
-    })
-    .then(response => response.json())
-    .then(data => {
-        updateCartDisplay(data);
-    })
-    .catch(err => console.error('Cart update failed', err));
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: new FormData(form),
+            credentials: 'same-origin',
+        })
+        .then(response => response.json())
+        .then(data => {
+            updateCartDisplay(data);
+        })
+        .catch(err => console.error('Cart update failed', err));
 }
 
 // Event listeners
@@ -78,7 +80,7 @@ function sendCartUpdate(form) {
  * @param {HTMLButtonElement} button - The increase/decrease button being configured.
  */
 document.querySelectorAll('button.btn-quantity-cart[data-action]').forEach(button => {
-    button.addEventListener('click', function () {
+    button.addEventListener('click', function() {
         const action = this.dataset.action;
         const form = this.closest('form');
         const quantityInput = form.querySelector('.quantity-input');
@@ -108,7 +110,7 @@ document.querySelectorAll('button.btn-quantity-cart[data-action]').forEach(butto
  * @param {HTMLInputElement} input - The quantity input being configured.
  */
 document.querySelectorAll('.quantity-input').forEach(input => {
-    input.addEventListener('change', function () {
+    input.addEventListener('change', function() {
         let quantity = parseInt(this.value) || 1;
         if (quantity < 1) quantity = 1;
         if (quantity > 99) quantity = 99;
@@ -123,24 +125,26 @@ document.querySelectorAll('.quantity-input').forEach(input => {
  * @param {HTMLFormElement} form - The remove-item form being configured.
  */
 document.querySelectorAll('form[action*="/cart/remove/"]').forEach(form => {
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         fetch(form.action, {
-            method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            body: new FormData(form),
-            credentials: 'same-origin',
-        })
-        .then(resp => resp.json())
-        .then(data => {
-            if (parseInt(data.product_count) === 0) {
-                window.location.reload();
-                return;
-            }
-            form.closest('.cart-item-row')?.remove();
-            updateCartDisplay(data);
-        })
-        .catch(err => console.error('Remove failed', err));
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: new FormData(form),
+                credentials: 'same-origin',
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                if (parseInt(data.product_count) === 0) {
+                    window.location.reload();
+                    return;
+                }
+                form.closest('.cart-item-row')?.remove();
+                updateCartDisplay(data);
+            })
+            .catch(err => console.error('Remove failed', err));
     });
 });
 
@@ -150,7 +154,7 @@ document.querySelectorAll('form[action*="/cart/remove/"]').forEach(form => {
  * @param {HTMLFormElement} form - The quantity-update form being configured.
  */
 document.querySelectorAll('form[action*="/cart/update/"]').forEach(form => {
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         sendCartUpdate(form);
     });

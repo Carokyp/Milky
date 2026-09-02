@@ -3,7 +3,7 @@
  * fields, copying delivery values into the invoice fields when checked and
  * auto-checking itself if the invoice fields already match on load.
  */
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
 
     // Create the checkbox wrapper
     const checkbox = document.createElement('div');
@@ -50,18 +50,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const sameAsDelivery = document.getElementById('same-as-delivery-admin');
     if (!sameAsDelivery) return;
 
-    sameAsDelivery.addEventListener('change', function () {
+    sameAsDelivery.addEventListener('change', function() {
         fieldPairs.forEach(([invoiceKey, deliveryKey]) => {
             const [invoiceField, deliveryField] = getFieldPair(invoiceKey, deliveryKey);
             if (!invoiceField || !deliveryField) return;
 
             invoiceField.value = this.checked ? deliveryField.value : '';
-            invoiceField.dispatchEvent(new Event('change', { bubbles: true }));
+            invoiceField.dispatchEvent(new Event('change', {
+                bubbles: true
+            }));
         });
     });
 
     // Auto-check after admin JS has fully initialised
-    setTimeout(function () {
+    setTimeout(function() {
         const allMatch = fieldPairs.every(([invoiceKey, deliveryKey]) => {
             const [invoiceField, deliveryField] = getFieldPair(invoiceKey, deliveryKey);
             if (!invoiceField || !deliveryField) return true;

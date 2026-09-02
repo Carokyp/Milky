@@ -6,7 +6,7 @@ window.scrollTo(0, 0);
 
 // Toggle the invoice fields visibility when the "same-as-delivery"
 // checkbox changes — hide them when checked, show them when unchecked.
-document.getElementById('same-as-delivery').addEventListener('change', function () {
+document.getElementById('same-as-delivery').addEventListener('change', function() {
     const invoiceFields = document.getElementById('invoice-fields');
     invoiceFields.style.display = this.checked ? 'none' : 'block';
 });
@@ -36,7 +36,9 @@ const observer = new IntersectionObserver((entries) => {
         observer.disconnect();
         initialize();
     }
-}, { threshold: 0.1 });
+}, {
+    threshold: 0.1
+});
 observer.observe(document.getElementById('payment-element'));
 
 /**
@@ -44,12 +46,14 @@ observer.observe(document.getElementById('payment-element'));
  * button once it is ready for input.
  */
 async function initialize() {
-    elements = stripe.elements({ clientSecret });
+    elements = stripe.elements({
+        clientSecret
+    });
 
     const paymentElement = elements.create('payment');
     paymentElement.mount('#payment-element');
 
-    paymentElement.on('ready', function () {
+    paymentElement.on('ready', function() {
         submitButton.disabled = false;
         paymentStatus.style.display = 'none';
     });
@@ -84,7 +88,9 @@ async function handleSubmit(e) {
         // 1. Save form data to session
         const saveResponse = await fetch(checkoutUrl, {
             method: 'POST',
-            headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
             body: formData,
         });
         const data = await saveResponse.json();
@@ -101,7 +107,9 @@ async function handleSubmit(e) {
 
         const cacheResponse = await fetch(cacheUrl, {
             method: 'POST',
-            headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            },
             body: cacheData,
         });
         if (!cacheResponse.ok) {
@@ -111,7 +119,9 @@ async function handleSubmit(e) {
         }
 
         // 3. Stripe confirms and redirects
-        const { error } = await stripe.confirmPayment({
+        const {
+            error
+        } = await stripe.confirmPayment({
             elements,
             confirmParams: {
                 return_url: window.location.origin + '/checkout/success/',

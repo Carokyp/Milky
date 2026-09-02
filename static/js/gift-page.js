@@ -1,4 +1,4 @@
-(function () {
+(function() {
     // This template renders one of three states — logged out, logged in with a gift
     // already in progress, or logged in with the form — so every element below is
     // looked up defensively; most only exist in the last state.
@@ -12,7 +12,7 @@
     const productError = document.getElementById('gift-product-error');
 
     if (trigger && optionsEl) {
-        trigger.addEventListener('click', function () {
+        trigger.addEventListener('click', function() {
             optionsEl.classList.toggle('open');
             trigger.classList.toggle('open');
         });
@@ -22,8 +22,8 @@
          * trigger's label/image, and closes the dropdown.
          * @param {HTMLElement} opt - The gift product option being configured.
          */
-        optionsEl.querySelectorAll('.gift-product-option').forEach(function (opt) {
-            opt.addEventListener('click', function () {
+        optionsEl.querySelectorAll('.gift-product-option').forEach(function(opt) {
+            opt.addEventListener('click', function() {
                 hiddenInput.value = this.dataset.value;
                 triggerLabel.textContent = this.dataset.name;
                 triggerLabel.classList.remove('gift-trigger-placeholder');
@@ -38,7 +38,9 @@
                     triggerImg.style.display = 'none';
                 }
 
-                optionsEl.querySelectorAll('.gift-product-option').forEach(function (option) { option.classList.remove('selected'); });
+                optionsEl.querySelectorAll('.gift-product-option').forEach(function(option) {
+                    option.classList.remove('selected');
+                });
                 this.classList.add('selected');
                 optionsEl.classList.remove('open');
                 trigger.classList.remove('open');
@@ -49,7 +51,7 @@
          * Closes the dropdown when the user clicks outside of it.
          * @param {MouseEvent} e - The click event on the document.
          */
-        document.addEventListener('click', function (e) {
+        document.addEventListener('click', function(e) {
             if (!trigger.contains(e.target) && !optionsEl.contains(e.target)) {
                 optionsEl.classList.remove('open');
                 trigger.classList.remove('open');
@@ -65,12 +67,15 @@
          * product has been selected.
          * @param {SubmitEvent} e - The form submit event.
          */
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             if (!hiddenInput.value) {
                 e.preventDefault();
                 trigger.style.borderColor = 'var(--danger)';
                 if (productError) productError.classList.remove('d-none');
-                trigger.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                trigger.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
             }
         });
     }
@@ -86,7 +91,7 @@
         const newControls = newFields.querySelectorAll(
             'input, select, textarea'
         );
-        newControls.forEach(function (el) {
+        newControls.forEach(function(el) {
             el.dataset.wasRequired = el.required ? '1' : '';
         });
 
@@ -98,12 +103,12 @@
         function toggleNewContactFields() {
             if (contactSelect.value) {
                 newFields.style.display = 'none';
-                newControls.forEach(function (el) {
+                newControls.forEach(function(el) {
                     el.removeAttribute('required');
                 });
             } else {
                 newFields.style.display = '';
-                newControls.forEach(function (el) {
+                newControls.forEach(function(el) {
                     if (el.dataset.wasRequired) {
                         el.setAttribute('required', '');
                     }

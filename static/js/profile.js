@@ -13,9 +13,9 @@ function toggleEditContact(contactId) {
     view.style.display = isHidden ? 'none' : 'flex';
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.contact-edit-btn, .contact-cancel-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.contact-edit-btn, .contact-cancel-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
             toggleEditContact(this.dataset.contactId);
         });
     });
@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalText = document.getElementById('deleteContactModalText');
     let lastTrigger = null;
 
-    document.querySelectorAll('.contact-delete-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
+    document.querySelectorAll('.contact-delete-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
             lastTrigger = this;
             confirmBtn.href = this.dataset.deleteUrl;
             modalText.innerHTML = 'Are you sure you want to delete <strong>' + this.dataset.contactName + '</strong>?';
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Restore focus to whichever delete button opened the modal.
-    deleteModalEl.addEventListener('hidden.bs.modal', function () {
+    deleteModalEl.addEventListener('hidden.bs.modal', function() {
         if (lastTrigger) lastTrigger.focus();
     });
 });
