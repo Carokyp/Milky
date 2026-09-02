@@ -57,8 +57,10 @@
                     <div class="position-relative w-100">
                         <button type="button" class="gift-product-trigger d-flex align-items-center gap-3"
                             id="gift-product-trigger">
-                            <!-- Empty/hidden until JS fills it in with the selected can's image -->
-                            <img id="gift-trigger-img" src="" alt="" class="gift-option-img" style="display:none;">
+                            <!-- Hidden until gift-page.js swaps in the selected can's image.
+                                 src is a 1px transparent GIF data URI so the <img> stays valid
+                                 HTML (an empty src is not allowed) with no network request. -->
+                            <img id="gift-trigger-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" class="gift-option-img" style="display:none;">
                             <span id="gift-trigger-label" class="gift-trigger-placeholder">— Select a flavour —</span>
                             <i class="fa-solid fa-chevron-down gift-dropdown-chevron ms-auto"></i>
                         </button>

@@ -70,11 +70,13 @@ main.js listens for its change event to drive the preview below.
 Live preview — hidden by default.
 Revealed by main.js after a new file is picked, showing a client-side
 preview (filename, thumbnail, Remove Image) before the form is submitted.
+The preview img starts on a 1px transparent GIF data URI so it stays valid
+HTML (an empty src is not allowed) until main.js sets the real object URL.
 {% endcomment %}
 <div id="preview-wrap-{{ widget.attrs.id }}" class="d-none">
     <div class="row gx-3 align-items-center mb-3">
         <div class="col-5 col-md-6 col-lg-4">
-            <img id="preview-{{ widget.attrs.id }}" class="widget-preview-img" src="" alt="Selected image preview">
+            <img id="preview-{{ widget.attrs.id }}" class="widget-preview-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Selected image preview">
         </div>
         <div class="col-7 col-md-6 col-lg-8 d-flex flex-column text-center text-lg-start">
             <p id="filename-{{ widget.attrs.id }}" class="widget-preview-label text-muted text-uppercase text-sm text-nowrap fw-bold mb-2 text-truncate"></p>
