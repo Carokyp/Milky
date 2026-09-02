@@ -21,13 +21,21 @@ def profile_view(request):
         contacts = list(customer.contact_set.all())  # type: ignore
     else:
         contacts = []
+    # Several forms with the same field names share this page, so each gets a
+    # distinct auto_id prefix to keep every id/label unique in the rendered
+    # HTML (the field "name" attributes are left untouched, so the POST
+    # handlers in add_contact_view / edit_contact_view are unaffected).
     for contact in contacts:
-        contact.edit_form = GiftACanForm(instance=contact)
-    contact_form = GiftACanForm()
+        contact.edit_form = GiftACanForm(
+            instance=contact, auto_id=f"id_editcontact{contact.id}_%s"
+        )
+    contact_form = GiftACanForm(auto_id="id_addcontact_%s")
     active_tab = request.session.pop("profile_active_tab", "profile")
 
     if request.method == "POST":
-        form = CustomerForm(request.POST, instance=customer)
+        form = CustomerForm(
+            request.POST, instance=customer, auto_id="id_profile_%s"
+        )
         if form.is_valid():
             form.save()
             if not user_customers:
@@ -41,7 +49,7 @@ def profile_view(request):
             )
             return redirect("profile")
     else:
-        form = CustomerForm(instance=customer)
+        form = CustomerForm(instance=customer, auto_id="id_profile_%s")
 
     context = {
         "customer": customer,
