@@ -1039,17 +1039,18 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 ### Automated Tests
 
-The suite lives in each app's `tests.py` and runs with `python manage.py test` (Django spins up a throwaway database, so real data is never touched). **43 tests, all passing.**
+The suite lives in each app's `tests.py` and runs with `python manage.py test` (Django spins up a throwaway database, so real data is never touched). **59 tests, all passing** (the `main` branch runs 57; `develop` adds 2 for its extra settings).
 
 <div align="center">
 
 | App | What it covers |
 |---|---|
-| `checkout` | delivery fee above / below / at the £25 free-delivery threshold, `grand_total` with and without the gift promo discount, `OrderItem.save()` keeping the line total and the parent order total in sync, unique reference codes, and that a signed-in user gets a 404 on another user's order confirmation |
-| `products` | `generate_sku()` format and uniqueness, `single_image_url` fallback order, `Review.rating` rejected outside 1-5, the catalogue hiding unavailable products, `add`/`edit`/`delete` product refused to non-superusers, and an ordered product being hidden (not hard-deleted) |
-| `cart` | adding / re-adding / updating / removing a session cart line, the 99-per-line cap, an unavailable product being refused, and the running totals from `cart_contents()` |
-| `accounts` | the profile and contact views behind `@login_required`, a contact needing a completed profile first, and one user getting a 404 on another user's `edit-contact` / `delete-contact` URL |
+| `checkout` | delivery fee above / below / at the £25 free-delivery threshold, `grand_total` with and without the gift promo discount, `OrderItem.save()` keeping the line total and the parent order total in sync, unique reference codes, a signed-in user getting a 404 on another user's order confirmation, and `build_order_kwargs()` (promo percent only with a gift, invoice address falling back to delivery) |
+| `products` | `generate_sku()` format and uniqueness, `single_image_url` fallback order, `Review.rating` rejected outside 1-5, the catalogue hiding unavailable products, `add`/`edit`/`delete` product refused to non-superusers, an ordered product being hidden (not hard-deleted), and the Gift a Can flow (login required, profile required, one gift per order, unavailable product refused, gifting to a saved contact) |
+| `cart` | adding / re-adding / updating / removing a session cart line, the 99-per-line cap, an unavailable product being refused, the running totals from `cart_contents()`, and the 10% gift discount being applied then cleared by `remove_gift` |
+| `accounts` | the profile and contact views behind `@login_required`, a contact needing a completed profile first, one user getting a 404 on another user's `edit-contact` / `delete-contact` URL, and `GiftACanForm` validation |
 | `home` | the landing page loading and its showcase listing only `featured` **and** available products |
+| `milky` (`develop` only) | the develop branch's extra settings: the verbose console `LOGGING` config |
 
 **On the testing timeline:** the feature work was checked with the manual plan below as it was built. The automated suite was added near the end of the project, once the models and views had settled; from that point a test-first workflow was used for fixes and refinements.
 
