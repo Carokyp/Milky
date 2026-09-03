@@ -14,10 +14,4 @@ urlpatterns = [
     ),
     path("<int:product_id>/add_review/", views.add_review, name="add_review"),
     path("gift/", views.gift_page_view, name="gift_page"),
-    # TODO: Remove before deployment
-    path(
-        "preview/gift-email/",
-        views.preview_gift_email,
-        name="preview_gift_email",
-    ),
 ]

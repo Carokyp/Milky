@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import ProtectedError
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -13,7 +13,6 @@ from django.utils.html import format_html
 from .models import Product
 from accounts.models import UserCustomer, Contact
 from checkout.models import Order
-from .email_utils import build_gift_email_context
 from .forms import ReviewForm, ProductForm
 from accounts.forms import GiftACanForm
 
@@ -157,31 +156,6 @@ def gift_page_view(request):
 
     form = GiftACanForm()
     return render_gift_page(form)
-
-
-# TODO: Remove before deployment
-@login_required
-@superuser_required
-def preview_gift_email(request):
-    """Render the real gift-a-can email in the browser, for styling work.
-
-    Store-owner only. Shows real contact/customer data from the most
-    recent gift.
-    """
-    contact = Contact.objects.order_by("-id").first()
-    product = Product.objects.filter(is_available=True).first()
-    if not contact or not product:
-        return HttpResponse("No gift in the database yet — gift a can first.")
-
-    context = build_gift_email_context(
-        request,
-        product,
-        contact.customer,
-        contact,
-        "Enjoy this can, you deserve it!",
-    )
-    html_body = render_to_string("products/gift_email_body.html", context)
-    return HttpResponse(html_body)
 
 
 @login_required

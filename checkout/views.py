@@ -5,10 +5,8 @@ import json
 import stripe
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils.html import format_html
 from django.views.decorators.http import require_POST
@@ -16,8 +14,6 @@ from django.views.decorators.http import require_POST
 from accounts.models import Customer, UserCustomer
 from cart.context_processors import cart_contents
 from products.models import Product
-
-from .email_utils import build_confirmation_email_context
 from .forms import OrderForm
 from .models import Order
 from .order_utils import (
@@ -265,30 +261,3 @@ def order_confirmation(request, reference_code):
         order = get_object_or_404(Order, reference_code=reference_code)
 
     return render(request, "checkout/checkout_success.html", {"order": order})
-
-
-# TODO: Remove before deployment
-@login_required
-def preview_confirmation_email(request):
-    """Render the real confirmation email in the browser, for styling work.
-
-    Store-owner only. Shows real customer data from the most recent
-    order.
-    """
-    if not request.user.is_superuser:
-        messages.error(request, "Sorry, only store owners can do that.")
-        return redirect(reverse("home"))
-
-    order = Order.objects.order_by("-created_at").first()
-    if not order:
-        return HttpResponse(
-            "No order in the database yet — place a test order first."
-        )
-
-    context = build_confirmation_email_context(
-        request, order, settings.DEFAULT_FROM_EMAIL
-    )
-    html_body = render_to_string(
-        "checkout/confirmation_email_body.html", context
-    )
-    return HttpResponse(html_body)

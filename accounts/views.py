@@ -1,11 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
-from django.template.loader import render_to_string
+from django.shortcuts import get_object_or_404, redirect, render
 
 from checkout.models import Order
-from milky.email_utils import build_email_font_urls
 
 from .forms import CustomerForm, GiftACanForm
 from .models import Contact, UserCustomer
@@ -141,108 +138,3 @@ def delete_contact_view(request, contact_id):
     )
     request.session["profile_active_tab"] = "contacts"
     return redirect("profile")
-
-
-# TODO: Remove before deployment
-@login_required
-def preview_confirmation_signup_email(request):
-    """Render the real account-confirmation email in the browser, for
-    styling work. Store-owner only. Uses the logged-in user's own data and
-    a dummy activation link, since previewing shouldn't create a real key.
-    """
-    if not request.user.is_superuser:
-        messages.error(request, "Sorry, only store owners can do that.")
-        return redirect(reverse("home"))
-
-    context = {
-        "user": request.user,
-        "activate_url": request.build_absolute_uri(
-            reverse("account_confirm_email", args=["preview-key"])
-        ),
-        **build_email_font_urls(request),
-    }
-    html_body = render_to_string(
-        "account/email/email_confirmation_signup_message.html", context
-    )
-    return HttpResponse(html_body)
-
-
-# TODO: Remove before deployment
-@login_required
-def preview_account_already_exists_email(request):
-    """Render the real account-already-exists email in the browser, for
-    styling work. Store-owner only. Uses the logged-in user's own email and
-    a dummy reset link, since previewing shouldn't create a real one.
-    """
-    if not request.user.is_superuser:
-        messages.error(request, "Sorry, only store owners can do that.")
-        return redirect(reverse("home"))
-
-    context = {
-        "email": request.user.email,
-        "password_reset_url": request.build_absolute_uri(
-            reverse("account_reset_password")
-        ),
-        **build_email_font_urls(request),
-    }
-    html_body = render_to_string(
-        "account/email/account_already_exists_message.html", context
-    )
-    return HttpResponse(html_body)
-
-
-# TODO: Remove before deployment
-@login_required
-def preview_password_reset_email(request):
-    """Render the real password-reset email in the browser, for styling
-    work. Store-owner only. Builds a genuine reset key for the logged-in
-    user the same way allauth does, so the button in the preview actually
-    works and lands on the "set a new password" page.
-    """
-    if not request.user.is_superuser:
-        messages.error(request, "Sorry, only store owners can do that.")
-        return redirect(reverse("home"))
-
-    from allauth.account import app_settings as allauth_settings
-    from allauth.account.adapter import get_adapter
-    from allauth.account.utils import user_pk_to_url_str
-
-    token_generator = allauth_settings.PASSWORD_RESET_TOKEN_GENERATOR()
-    key = "{}-{}".format(
-        user_pk_to_url_str(request.user),
-        token_generator.make_token(request.user),
-    )
-
-    context = {
-        "user": request.user,
-        "password_reset_url": get_adapter(
-            request
-        ).get_reset_password_from_key_url(key),
-        **build_email_font_urls(request),
-    }
-    html_body = render_to_string(
-        "account/email/password_reset_key_message.html", context
-    )
-    return HttpResponse(html_body)
-
-
-# TODO: Remove before deployment
-@login_required
-def preview_unknown_account_email(request):
-    """Render the real unknown-account email in the browser, for styling
-    work. Store-owner only. Uses the logged-in user's own email and the
-    real signup URL.
-    """
-    if not request.user.is_superuser:
-        messages.error(request, "Sorry, only store owners can do that.")
-        return redirect(reverse("home"))
-
-    context = {
-        "email": request.user.email,
-        "signup_url": request.build_absolute_uri(reverse("account_signup")),
-        **build_email_font_urls(request),
-    }
-    html_body = render_to_string(
-        "account/email/unknown_account_message.html", context
-    )
-    return HttpResponse(html_body)

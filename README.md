@@ -1257,42 +1257,42 @@ Lighthouse (Chrome DevTools) was run on the deployed site, on mobile and desktop
 <details>
 <summary>Lighthouse reports</summary>
 
-<p align="center"><strong>Home — mobile</strong></p>
+<p align="center"><strong>Home (mobile)</strong></p>
 <p align="center">
   <img src="docs/lighthouse/lighthouse-home-mobile.png" alt="Lighthouse home page, mobile" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
-<p align="center"><strong>Home — desktop</strong></p>
+<p align="center"><strong>Home (desktop)</strong></p>
 <p align="center">
   <img src="docs/lighthouse/lighthouse-home-desktop.png" alt="Lighthouse home page, desktop" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
-<p align="center"><strong>All Products — mobile</strong></p>
+<p align="center"><strong>All Products (mobile)</strong></p>
 <p align="center">
   <img src="docs/lighthouse/lighthouse-all-products-mobile.png" alt="Lighthouse All Products page, mobile" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
-<p align="center"><strong>All Products — desktop</strong></p>
+<p align="center"><strong>All Products (desktop)</strong></p>
 <p align="center">
   <img src="docs/lighthouse/lighthouse-all-products-desktop.png" alt="Lighthouse All Products page, desktop" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
-<p align="center"><strong>Product Detail — mobile</strong></p>
+<p align="center"><strong>Product Detail (mobile)</strong></p>
 <p align="center">
   <img src="docs/lighthouse/lighthouse-product-detail-mobile.png" alt="Lighthouse Product Detail page, mobile" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
-<p align="center"><strong>Product Detail — desktop</strong></p>
+<p align="center"><strong>Product Detail (desktop)</strong></p>
 <p align="center">
   <img src="docs/lighthouse/lighthouse-product-detail-desktop.png" alt="Lighthouse Product Detail page, desktop" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
-<p align="center"><strong>Cart — mobile</strong></p>
+<p align="center"><strong>Cart (mobile)</strong></p>
 <p align="center">
   <img src="docs/lighthouse/lighthouse-cart-mobile.png" alt="Lighthouse Cart page, mobile" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 
-<p align="center"><strong>Cart — desktop</strong></p>
+<p align="center"><strong>Cart (desktop)</strong></p>
 <p align="center">
   <img src="docs/lighthouse/lighthouse-cart-desktop.png" alt="Lighthouse Cart page, desktop" style="width: 90%; max-width: 900px; height: auto;">
 </p>

@@ -12,12 +12,6 @@ urlpatterns = [
         name="order_confirmation",
     ),
     path("webhook/", webhook, name="webhook"),
-    # TODO: Remove before deployment
-    path(
-        "preview/confirmation-email/",
-        views.preview_confirmation_email,
-        name="preview_confirmation_email",
-    ),
     path(
         "cache_checkout_data/",
         views.cache_checkout_data,
