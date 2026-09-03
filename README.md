@@ -184,11 +184,11 @@ Key sections and navigation flow:
 
 #### Technical Implementation
 - Django 6.0.4 with a multi-app architecture (`home`, `products`, `cart`, `checkout`, `accounts`).
-- SQLite in development; PostgreSQL in production, wired through `DATABASE_URL` / `dj-database-url` (see [Deployment](#deployment)).
+- SQLite in development, PostgreSQL in production, wired through `DATABASE_URL` / `dj-database-url` (see [Deployment](#deployment)).
 - Static files and media served from AWS S3 in production via `django-storages` and a small `custom_storages.py`.
-- Photographic and illustrated assets (site imagery and product-card layers) are stored as WebP to keep page weight down; small UI icons stay as PNG.
+- Photographic and illustrated assets (site imagery and product-card layers) are stored as WebP to keep page weight down. Small UI icons stay as PNG.
 - Server-rendered templates with Bootstrap 5 utilities and `django-crispy-forms` (bootstrap5 pack).
-- Session-based cart and in-progress gift selection; neither is written to the database until an order is placed.
+- Session-based cart and in-progress gift selection. Neither is written to the database until an order is placed.
 - Stripe Payment Element for payment, with a webhook handler as the reliability fallback that actually sends the confirmation and gift emails.
 - Transactional emails rendered from HTML and plain-text templates, with a shared stylesheet (`templates/emails/_email_styles.css`) and helpers in `milky/email_utils.py`.
 - `django-allauth` for authentication, with mandatory email verification.
@@ -206,7 +206,7 @@ step. These choices were worked out in the wireframes below.
 
 ### Wireframes
 
-Wireframes and the high-fidelity design were both built in Figma:
+The wireframes and the high-fidelity design were built in Figma:
 
 **[Full Wireframes on Figma here](https://www.figma.com/design/90A4C1NyUtrnebcMyJtTlb/MILKY?node-id=1-5049)**
 
@@ -335,8 +335,24 @@ The Django admin interface manages the core catalogue and order data:
 - Editing or deleting line items automatically recalculates the parent order's total
 - A JS-injected "Same as delivery address" checkbox on the Invoice fieldset copies the delivery fields across when ticked and clears them when unticked, and self-checks on load when the two already match
 
+<p align="center"><strong>Order list view</strong></p>
 <p align="center">
-  <img src="docs/django/admin-orders.png" alt="Django admin order management" style="width: 90%; max-width: 1100px; height: auto;">
+  <img src="docs/django/admin-orders.png" alt="Django admin order list view" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Order detail: Order Info and Financials fieldsets</strong></p>
+<p align="center">
+  <img src="docs/django/order.png" alt="Django admin order detail, Order Info and Financials fieldsets with grand total read-only" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Order detail: Delivery Details fieldset</strong></p>
+<p align="center">
+  <img src="docs/django/delivery-order.png" alt="Django admin order detail, Delivery Details fieldset" style="width: 90%; max-width: 1100px; height: auto;">
+</p>
+
+<p align="center"><strong>Order detail: Invoice Details fieldset and inline order items</strong></p>
+<p align="center">
+  <img src="docs/django/invoice-order.png" alt="Django admin order detail, Invoice Details fieldset with the Same as delivery address checkbox and the inline order items" style="width: 90%; max-width: 1100px; height: auto;">
 </p>
 
 **Customers, Contacts & account links:**
@@ -350,13 +366,13 @@ The Django admin interface manages the core catalogue and order data:
 **Milky** implements CRUD across its core features, split between the customer-facing UI and the Django admin:
 
 #### **Products**
-- **Create / Update / Delete**: superusers only, directly from the storefront (Products Management), or via the Django admin
+- **Create / Update / Delete**: superusers only, directly from the storefront (Products Management), or via the Django admin. A product that appears in a past order cannot be hard-deleted, it is hidden from the shop (`is_available` off) instead, so order history stays intact
 - **Read**: everyone, on the home page (featured selection), All Products (full catalogue), and the product detail page
 
 #### **Reviews**
 - **Create**: authenticated users, from the product detail page
 - **Read**: everyone, paginated 3 per page on the product detail page
-- **Update / Delete**: not available to the review's author from the front end, superusers can edit or delete any review via the Django admin
+- **Update / Delete**: intentionally not exposed to the review's author on the front end, reviews are final once posted. Superusers can still edit or delete any review through the Django admin
 
 #### **Cart (session-based, no database record)**
 - **Create / Update / Delete**: add a product, change its quantity, or remove it, all reflected instantly (AJAX) without a page reload
@@ -369,7 +385,7 @@ The Django admin interface manages the core catalogue and order data:
 #### **Orders**
 - **Create**: created on successful Stripe payment. The browser return flow creates it first as Pending, if that flow is interrupted, the Stripe webhook creates it instead as a reliability fallback.
 - **Read**: the order confirmation page, and the "Orders" tab of the account profile
-- **Update**: order status only (Pending / Completed / Cancelled). The `payment_intent.succeeded` webhook moves an order to Completed and sends the emails, the `payment_intent.payment_failed` webhook moves it to Cancelled; a staff user can also set the status by hand in the Django admin.
+- **Update**: order status only (Pending / Completed / Cancelled). The `payment_intent.succeeded` webhook moves an order to Completed and sends the emails, the `payment_intent.payment_failed` webhook moves it to Cancelled. A staff user can also set the status by hand in the Django admin.
 
 #### **Account (Customer profile)**
 - **Create**: a `Customer` record is created automatically the first time a signed-in user reaches checkout, or the first time they save the "My Profile" form
@@ -436,7 +452,7 @@ CONTACT |o--o{ ORDERITEM : "gifted to (optional)"
 - `||` one and only one
 - `|o` zero or one (optional foreign key)
 - `o{` zero or many
-- `{` / `}` is the "crow's foot" (many); `--` is the relationship line
+- `{` / `}` is the "crow's foot" (many). `--` is the relationship line
 - **PK**: Primary Key
 - **FK**: Foreign Key
 
@@ -474,7 +490,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 ---
 
 **4. `accounts.Contact`**: a saved gift recipient ("friend")
-- **Foreign Key:** `customer` (to `Customer`, `CASCADE`): the account that saved this recipient; deleting the customer deletes their contacts
+- **Foreign Key:** `customer` (to `Customer`, `CASCADE`): the account that saved this recipient. Deleting the customer deletes their contacts
 - **Fields:** `name`, `surname` (CharField(255), required), `phone_number` (CharField(20), required), `email` (EmailField, required)
 - **Address (all required except `county`):** `address`, `city` (CharField(255)), `county` (CharField(100), null/blank), `postal_code` (CharField(20)), `country` (CountryField)
 - `ip_address` (GenericIPAddressField, captured server-side at creation)
@@ -491,7 +507,7 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
   - `price` (DecimalField, 6 digits / 2 decimal places)
   - `product_image` (ImageField, null/blank): the single image used in the cart, checkout and order confirmation
   - `product_image_url` (URLField, null/blank): optional external image link, used for the cart image only when nothing is uploaded to `product_image`
-  - `background_image`, `objects_image`, `can_image` (ImageField, null/blank): the layered storefront card; `background_image` is the base, the other two are optional overlays
+  - `background_image`, `objects_image`, `can_image` (ImageField, null/blank): the layered storefront card. `background_image` is the base, the other two are optional overlays
   - `stock` (PositiveIntegerField, nullable)
   - `is_available` (BooleanField, default `True`)
   - `featured` (BooleanField, default `False`): shown on the home page
@@ -503,16 +519,16 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 **6. `products.Review`**
 - **Foreign Keys:**
-  - `product` (to `Product`, `CASCADE`, `related_name="reviews"`): the product being reviewed; deleting the product deletes its reviews
-  - `order` (to `checkout.Order`, `SET_NULL`, optional): links a review to the order that "earned" it, used to resolve the reviewer's account; kept even if that order is later deleted
+  - `product` (to `Product`, `CASCADE`, `related_name="reviews"`): the product being reviewed. Deleting the product deletes its reviews
+  - `order` (to `checkout.Order`, `SET_NULL`, optional): links a review to the order that "earned" it, used to resolve the reviewer's account, and kept even if that order is later deleted
 - **Fields:** `name`, `surname` (CharField(255), required), `rating` (PositiveIntegerField), `comment` (TextField(500), blank/null)
 - **Constraint:** `rating` must be 1-5 (`MinValueValidator(1)` / `MaxValueValidator(5)`)
-- No `Meta` ordering; the product page lists them newest-first via `order_by("-id")`
+- No `Meta` ordering. The product page lists them newest-first via `order_by("-id")`
 
 ---
 
 **7. `checkout.Order`**
-- **Foreign Key:** `customer` (to `accounts.Customer`, `SET_NULL`, nullable): the account that placed the order; null for guest checkouts, and kept null if the customer is later deleted
+- **Foreign Key:** `customer` (to `accounts.Customer`, `SET_NULL`, nullable): the account that placed the order. Null for guest checkouts, and kept null if the customer is later deleted
 - **Fields:**
   - `reference_code` (CharField(100))
   - `stripe_pid` (CharField(254), nullable)
@@ -529,8 +545,8 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 
 **8. `checkout.OrderItem`**
 - **Foreign Keys:**
-  - `order` (to `Order`, `CASCADE`, `related_name="items"`): the order this line belongs to; deleting the order deletes its items
-  - `product` (to `Product`, `PROTECT`): the product bought on this line; a product that has been ordered can't be hard-deleted (the delete button hides it instead)
+  - `order` (to `Order`, `CASCADE`, `related_name="items"`): the order this line belongs to. Deleting the order deletes its items
+  - `product` (to `Product`, `PROTECT`): the product bought on this line. A product that has been ordered can't be hard-deleted (the delete button hides it instead)
   - `gift_contact` (to `accounts.Contact`, `SET_NULL`, optional): set only on the single gift line, points to the friend who is notified by email
 - **Fields:** `sku`, `unit_price` (snapshotted from the product at purchase time), `quantity`, `total_price` (auto-computed), `is_gift` (BooleanField, default `False`), `gift_message` (TextField, blank)
 - **Side effect:** saving an `OrderItem` also recalculates and re-saves its parent `Order`'s `order_total`
@@ -580,12 +596,12 @@ Example: `USER ||--o{ USERCUSTOMER` means each `USERCUSTOMER` belongs to exactly
 |---|---|---|
 | Single database, ORM only | Django ORM and migrations, no raw SQL | Portable from SQLite (dev) to PostgreSQL (prod) |
 | Explicit join model | `UserCustomer` links `User` and `Customer` instead of a `OneToOneField` | 1:1 in code, not constrained in the schema |
-| Deliberate `on_delete` | `CASCADE` for owned rows (order items, contacts, reviews); `SET_NULL` for `Order.customer`, `Review.order`, `OrderItem.gift_contact`; `PROTECT` for `OrderItem.product` | Related rows are cleaned up without destroying order history; deleting an ordered product is caught and turned into a hide (`is_available` off) |
+| Deliberate `on_delete` | `CASCADE` for owned rows (order items, contacts, reviews), `SET_NULL` for `Order.customer`, `Review.order` and `OrderItem.gift_contact`, `PROTECT` for `OrderItem.product` | Related rows are cleaned up without destroying order history, and deleting an ordered product is caught and turned into a hide (`is_available` off) |
 | Unique constraints | `Product.sku` and `Order.reference_code`, both auto-generated | No duplicate SKUs or order references |
 | Validated range | `Review.rating` bounded 1-5 by `MinValueValidator` / `MaxValueValidator` | Ratings can't go out of range |
 | Choice fields | `Product.flavor` (6 choices), `Order.status` (Pending / Completed / Cancelled) | Data validation, powers admin filtering |
 | Decimal money | `DecimalField` on every price and total, never a float | Exact currency arithmetic |
-| Snapshotted line items | `OrderItem` copies `sku` and `unit_price` at checkout | Product edits never rewrite past orders (deletion still cascades) |
+| Snapshotted line items | `OrderItem` copies `sku` and `unit_price` at checkout | Product edits never rewrite past orders (and an ordered product can't be hard-deleted, `PROTECT` blocks it) |
 | Denormalised totals | `order_total` / `delivery_cost` stored on `Order`, resynced by `save()` overrides on `Order` and `OrderItem` | Totals ready for templates and admin without recomputing |
 | Timestamp | `Order.created_at` (`auto_now_add`) | Order list sorts newest-first |
 | Session-only transient state | Cart and in-progress gift selection live in `request.session` | The cart and gift selection never become database rows on their own |
@@ -848,7 +864,7 @@ Destructive actions are protected by confirmation modals to keep the experience 
 #### **Input Fields & Forms**
 
 - All forms render through `django-crispy-forms` with the `crispy-bootstrap5` pack, so fields, labels and help text share one style
-- Field errors show inline, right under the field they belong to; required fields are marked
+- Field errors show inline, right under the field they belong to, and required fields are marked
 - `django-countries` provides the country dropdown on the delivery and invoice forms
 - **Custom widgets:**
   - A file-upload widget that previews the current image with a "Remove" toggle (Products Management)
@@ -865,7 +881,7 @@ Destructive actions are protected by confirmation modals to keep the experience 
 - Toasts are announced to screen readers via `role="alert"`, `aria-live` and `aria-atomic`
 - The cart summary and the product-page review list carry `aria-live="polite"` so their AJAX updates are read out
 - Every page leads with a single `<h1>`, with no skipped heading levels
-- Decorative images (backgrounds, commas, arrows) use an empty `alt`; meaningful images carry a descriptive one
+- Decorative images (backgrounds, commas, arrows) use an empty `alt`, and meaningful images carry a descriptive one
 - Dark-brown text on the cream background keeps body copy well above the WCAG AA 4.5:1 ratio
 
 #### **Base Templates**
@@ -985,7 +1001,7 @@ Installed via `requirements.txt`:
 
 </div>
 
-Dev / QA tooling: [black](https://pypi.org/project/black/), [flake8](https://pypi.org/project/flake8/), [html5validator](https://pypi.org/project/html5validator/).
+Dev / QA tooling: [flake8](https://pypi.org/project/flake8/) for Python linting.
 
 ### Frameworks, Libraries & Software
 
@@ -1012,7 +1028,7 @@ Dev / QA tooling: [black](https://pypi.org/project/black/), [flake8](https://pyp
 
 ## Testing
 
-The tables below are the **manual test plan** for the project, covering authentication, CRUD, permissions, forms, UX, accessibility, and responsive layout. **There is no automated test suite.** Every app's `tests.py` is still the default Django stub, and no CI pipeline is configured. `html5validator` is installed for the validator checks below.
+The tables below are the **manual test plan** for the project, covering authentication, CRUD, permissions, forms, UX, accessibility, and responsive layout. **There is no automated test suite**, every app's `tests.py` is empty and there is no automated build/test pipeline.
 
 Stripe runs in **test mode**, so checkout can be tested end to end without a real payment. Use card number `4242 4242 4242 4242` with any future expiry date, any 3-digit CVC and any postcode. More test cards are listed under [Deployment → Stripe](#stripe).
 
@@ -1023,7 +1039,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
 | Registration | Register with a new email and password | Account created, verification email sent (real email on Heroku, console in dev) | Pass |
-| Duplicate Registration | Register with an email that already has an account | No new account; an "account already exists" email is sent, with no message confirming the address exists | Pass |
+| Duplicate Registration | Register with an email that already has an account | No new account. An "account already exists" email is sent, with no message confirming the address exists | Pass |
 | Mandatory Email Verification | Try to sign in before verifying the email | Sign-in is blocked until the email is verified | Pass |
 | Sign In | Sign in with valid credentials | User is authenticated and redirected | Pass |
 | Invalid Sign In | Sign in with the wrong password | Error message shown, user stays on the sign-in page | Pass |
@@ -1042,11 +1058,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
 | Add Product (superuser) | Fill in the product form and submit | Product created and immediately visible in the catalogue | Pass |
-| Add Product with no images (superuser) | Submit the product form leaving the image fields empty | Product is created; All Products and the home page show the no-image placeholder for it instead of erroring | Pass |
-| Add Product with image URL only (superuser) | Fill in the Image URL field, leave the upload empty | Product is created; the linked image shows as the cart, checkout and confirmation thumbnail | Pass |
+| Add Product with no images (superuser) | Submit the product form leaving the image fields empty | Product is created. All Products and the home page show the no-image placeholder for it instead of erroring | Pass |
+| Add Product with image URL only (superuser) | Fill in the Image URL field, leave the upload empty | Product is created. The linked image shows as the cart, checkout and confirmation thumbnail | Pass |
 | Edit Product (superuser) | Change a product's fields and save | Changes reflected everywhere the product appears | Pass |
 | Delete Product (superuser) | Confirm deletion of a product that has never been ordered | Product removed from the catalogue | Pass |
-| Delete Ordered Product (superuser) | Delete a product that appears in a past order | The product is hidden from the shop (`is_available` off) instead of deleted; the past orders keep their line items; a warning toast explains why | Pass |
+| Delete Ordered Product (superuser) | Delete a product that appears in a past order | The product is hidden from the shop (`is_available` off) instead of deleted. The past orders keep their line items, and a warning toast explains why | Pass |
 | Add Review | Submit a star rating and comment on a product | Review appears in the paginated list | Pass |
 | Add / Edit / Delete Contact | Manage a saved gift recipient from the Contacts tab | Contact list updates immediately, in place | Pass |
 | Edit Profile Details | Change name, phone or address in the My Profile tab and save | Success toast, the new values persist on reload | Pass |
@@ -1064,11 +1080,11 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Products Management (non-superuser) | Visit `/products/add/` while signed in as a non-superuser | Redirected home with an error message | Pass |
 | Products Management (logged out) | Visit `/products/add/` while logged out | Redirected to the sign-in page | Pass |
 | Profile Access | Visit `/profile/` while logged out | Redirected to sign in | Pass |
-| Own-Data Scoping | Sign in, then paste another account's order confirmation URL | 404; you only see your own orders | Pass |
-| Guest Order Confirmation | Complete a guest checkout, then view the confirmation page | The page loads; a guest can only see the order they just placed, not another order's URL | Pass |
+| Own-Data Scoping | Sign in, then paste another account's order confirmation URL | 404. You only see your own orders | Pass |
+| Guest Order Confirmation | Complete a guest checkout, then view the confirmation page | The page loads. A guest can only see the order they just placed, not another order's URL | Pass |
 | Review While Logged Out | Open a product detail page while logged out | Review form is replaced by a "Sign In to leave a review" prompt | Pass |
 | Gift a Can While Logged Out | Open `/products/gift/` while logged out | The promo page shows with "Login to gift" / "Register", not the gift form | Pass |
-| Contact Ownership | While signed in as one user, paste another user's `delete_contact` / `edit_contact` URL | 404; the contact is neither shown nor deleted (scoped to its owner) | Pass |
+| Contact Ownership | While signed in as one user, paste another user's `delete_contact` / `edit_contact` URL | 404. The contact is neither shown nor deleted (scoped to its owner) | Pass |
 
 </div>
 
@@ -1098,9 +1114,9 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Delete Confirmation | Click delete on a product (superuser) or a contact | Confirmation modal appears before anything is removed | Pass |
 | Review Pagination | Page through a product's reviews | Review list swaps via AJAX without a full reload | Pass |
 | Free-Delivery Banner | Change the cart total above and below the threshold | The progress banner updates live to match | Pass |
-| Unavailable Product | Turn off a product's `is_available`, then check the catalogue and open its detail page directly | It no longer appears on All Products or the home page; its detail page shows a disabled "Currently Unavailable" button | Pass |
+| Unavailable Product | Turn off a product's `is_available`, then check the catalogue and open its detail page directly | It no longer appears on All Products or the home page. Its detail page shows a disabled "Currently Unavailable" button | Pass |
 | Zero-Stock Product | Open a product with `stock` at 0 | Add to Cart is replaced by a disabled "Out of Stock" button | Pass |
-| Product card with partial layers | View a product with only a card background, and one with background + can | The card renders with whatever layers are present; hovering moves the layers that exist and throws no JS error | Pass |
+| Product card with partial layers | View a product with only a card background, and one with background + can | The card renders with whatever layers are present. Hovering moves the layers that exist and throws no JS error | Pass |
 | Superuser overlay on any product | Open the detail page of a product with no card artwork, as a superuser | The Edit / Delete overlay is still shown | Pass |
 | Mobile Nav Dismiss | Open the mobile menu, then click outside it or open the account dropdown | The menu closes | Pass |
 | Gift Locked State | Open Gift a Can with a gift already in the cart | A page explains a gift is already in the cart, instead of the form | Pass |
@@ -1114,12 +1130,12 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Test Label | Test Action | Expected Outcome | Test Outcome |
 |------------|-------------|------------------|--------------|
-| Keyboard navigation | Tab through the navbar, a product card, and the checkout form | Every interactive element is reachable and shows a visible focus state | Pass (Chrome, Edge, Firefox; Safari needs its "Press Tab to highlight each item" setting, which is off by default) |
+| Keyboard navigation | Tab through the navbar, a product card, and the checkout form | Every interactive element is reachable and shows a visible focus state | Pass on Chrome, Edge and Firefox. Safari needs its "Press Tab to highlight each item" setting, which is off by default |
 | Screen reader, toasts | Trigger a success and an error toast with a screen reader running | Both are announced through their `aria-live` region | Pass |
 | Image alternatives | Inspect every `<img>` | Meaningful images have descriptive `alt`, decorative ones an empty `alt` | Pass |
 | Heading order | Run an outline check on each page type | One `<h1>` per page, no skipped levels | Pass |
 | Colour contrast | Check brown-on-cream and brown-on-gold in a contrast checker | Meets WCAG AA for body text and buttons | Pass (roughly 9.8:1 on cream, 7.6:1 on the gold buttons) |
-| WAVE | Run [WAVE](https://wave.webaim.org/) on each page type | No errors; contrast and ARIA warnings reviewed | Pass |
+| WAVE | Run [WAVE](https://wave.webaim.org/) on each page type | No errors. Contrast and ARIA warnings reviewed | Pass |
 
 </div>
 
@@ -1160,10 +1176,10 @@ The 17 warnings are all expected and need no change:
 | Warning | Count | Reason |
 |---|---|---|
 | Imported style sheet not checked | 1 | Jigsaw does not follow the `@import` for the Patrick Hand font |
-| CSS variables not statically checked | 10 | Jigsaw does not resolve `var(--token)` values; normal for a design-token-based stylesheet |
+| CSS variables not statically checked | 10 | Jigsaw does not resolve `var(--token)` values, which is normal for a design-token-based stylesheet |
 | `-webkit-appearance` / `::-webkit-*-spin-button` vendor extensions | 4 | Deliberate, to normalise the quantity number input across browsers |
-| `auto` not defined for `pointer-events` | 2 | `pointer-events: auto` is valid per the CSS spec and widely supported; Jigsaw's data is out of date |
-| `clip` is deprecated | 1 | Used in the visually-hidden pattern that hides a label while keeping it in the accessibility tree; `clip` stays the most cross-browser-compatible option |
+| `auto` not defined for `pointer-events` | 2 | `pointer-events: auto` is valid per the CSS spec and widely supported. Jigsaw's data is out of date |
+| `clip` is deprecated | 1 | Used in the visually-hidden pattern that hides a label while keeping it in the accessibility tree. `clip` stays the most cross-browser-compatible option |
 
 </div>
 
@@ -1225,13 +1241,13 @@ All Python source passes [flake8](https://flake8.pycqa.org/) with 0 errors (79-c
 
 | Device Category | Screen Size | Test Result | Notes |
 |----------------|-------------|-------------|-------|
-| Mobile - Very Small | 320px × 568px | Pass | iPhone 5 / SE (1st gen); a small below-360px CSS tweak keeps text and buttons from clipping |
+| Mobile - Very Small | 320px × 568px | Pass | iPhone 5 / SE (1st gen). A small below-360px CSS tweak keeps text and buttons from clipping |
 | Mobile - Small | 390px × 844px | Pass | |
 | Tablet | 768px × 1024px | Pass | Checkout switches to its two-column layout here |
 | Tablet/Small Desktop | 1024px × 900px | Pass | |
 | Laptop | 1440px × 1000px | Pass | |
 | Desktop - Large | 2560px × 1300px | Pass | Toast banner and body content stay aligned at the 1800px max content width |
-| Desktop - 5K | 5120px × 2880px | Pass | Content stays capped and centred at the 1800px max width; layout matches the 2560px case |
+| Desktop - 5K | 5120px × 2880px | Pass | Content stays capped and centred at the 1800px max width. Layout matches the 2560px case |
 
 </div>
 
@@ -1318,7 +1334,7 @@ Lighthouse (Chrome DevTools) was run on the deployed site, on mobile and desktop
 | The home page could be scrolled sideways a little on mobile | Fixed | Two Bootstrap `.row`s sat directly in a `<section>` with no `.container`, so the rows' negative gutter margins bled past the viewport. Wrapping both rows in `.container` fixed it. |
 | Opening the checkout page auto-scrolled the view down to the Stripe card fields | Fixed | The payment form carried an `autofocus`, which pulled the viewport to it as the Payment Element mounted. Removed the autofocus and reset the scroll position on load (`checkout/forms.py`, `static/js/checkout.js`). |
 | The toast container blocked clicks on links and buttons across the whole page | Fixed | The wrapper is `position: fixed` and full-width, so it sat over the page even with no toast showing. Added `pointer-events: none` on the wrapper and `pointer-events: auto` on the toasts themselves. |
-| After the move to Django 6, static and media files 404'd on Heroku | Fixed | Django 6 dropped `STATICFILES_STORAGE` / `DEFAULT_FILE_STORAGE`; the S3 backends now go in the new `STORAGES` dict, and `STATIC_ROOT` had to be set for `collectstatic` in the build. |
+| After the move to Django 6, static and media files 404'd on Heroku | Fixed | Django 6 dropped `STATICFILES_STORAGE` / `DEFAULT_FILE_STORAGE`. The S3 backends now go in the new `STORAGES` dict, and `STATIC_ROOT` had to be set for `collectstatic` in the build. |
 | A disabled "Add to Cart" button still let an unavailable product be added through a direct POST | Fixed | `add_to_cart` didn't re-check `is_available` server-side. Added the check so the add is rejected with an error message. |
 | A product URL with a non-numeric id (e.g. `/products/abc/`) reached the view and raised a 500 | Fixed | The route used `<product_id>` with no converter changed to `<int:product_id>`. |
 | Using the cart stepper to drop an item's quantity to 0 deleted the whole line | Fixed | Quantity is now clamped to a minimum of 1. Removal is only via the explicit remove button. |
@@ -1340,7 +1356,7 @@ All user stories from [User Stories](#user-stories) are validated below against 
 |---|---|---|
 | As a new visitor, I want to see the product range and understand the brand. | The home page opens with a hero and a featured-products showcase, all Products shows the full catalogue. | Home Page, All Products |
 | As a new visitor, I want to view a product's description, nutritional information, and customer reviews. | The Product Detail Page shows all three, plus a paginated review list. | Product Detail Page |
-| As a new visitor, I want to add products to my cart and check out as a guest. | The cart and checkout flows don't require an account. `Order.customer` is nullable for guest orders. | Cart, Checkout Page |
+| As a new visitor, I want to add products to my cart and check out as a guest. | The cart and checkout flows don't require an account, and a guest order is saved without a linked customer. | Cart, Checkout Page |
 | As a new visitor, I want to create an account so my details are saved for next time. | Registration via django-allauth, with delivery details saved to the `Customer` profile on request. | Register, Checkout Page ("save this delivery info") |
 
 </div>
@@ -1375,16 +1391,15 @@ All user stories from [User Stories](#user-stories) are validated below against 
 
 - **Secrets in environment variables:** `SECRET_KEY`, the three Stripe keys (`STRIPE_PUBLIC_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WH_SECRET`), the AWS credentials and the email credentials are all read from the environment, via a local, git-ignored `env.py` in development and Heroku config vars in production. Nothing sensitive is committed to the repo.
 - **`DEBUG` is environment-driven:** `DEBUG = "DEVELOPMENT" in os.environ`, so it is off in production. `ALLOWED_HOSTS` is limited to localhost and the Heroku app domain.
-- **CSRF protection:** Django's CSRF middleware is active and every server-rendered form includes `{% csrf_token %}`. The Stripe webhook is the only `@csrf_exempt` view; it is verified instead through the Stripe signature header (`STRIPE_WH_SECRET`).
-- **Authentication & access control:** account-only views (profile, contacts, reviews) are gated with `@login_required`; Products Management additionally goes through a `superuser_required` decorator (`add_product` / `edit_product` / `delete_product`). Cart and checkout stay open to guests by design, but no cart action writes to the database. Order pages are scoped so a guest can only see the order tied to their own session (`session["last_order"]`), and a signed-in user only orders linked to their own `Customer`.
+- **CSRF protection:** Django's CSRF middleware is active and every server-rendered form includes `{% csrf_token %}`. The Stripe webhook is the only `@csrf_exempt` view, verified instead through the Stripe signature header (`STRIPE_WH_SECRET`).
+- **Authentication & access control:** account-only views (profile, contacts, reviews) are gated with `@login_required`. Products Management additionally goes through a `superuser_required` decorator (`add_product` / `edit_product` / `delete_product`). Cart and checkout stay open to guests by design, but no cart action writes to the database. Order pages are scoped so a guest can only see the order tied to their own session (`session["last_order"]`), and a signed-in user only orders linked to their own `Customer`.
 - **Mandatory email verification:** `ACCOUNT_EMAIL_VERIFICATION = "mandatory"`, so a new account cannot sign in until its email is confirmed.
-- **Payment data:** card details are entered into Stripe's Payment Element (card fields rendered in a Stripe-controlled iframe) and never reach the Django server or database; only the Stripe PaymentIntent id is stored on the order.
-- **Passwords:** hashed with Django's default PBKDF2 hasher; the reset flow uses django-allauth's signed, time-limited email tokens.
+- **Payment data:** card details are entered into Stripe's Payment Element (card fields rendered in a Stripe-controlled iframe) and never reach the Django server or database. Only the Stripe PaymentIntent id is stored on the order.
+- **Passwords:** hashed with Django's default PBKDF2 hasher. The reset flow uses django-allauth's signed, time-limited email tokens.
+- **HTTPS hardening (production):** with `DEBUG` off, Django enables `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE` and a one-year HSTS policy (`SECURE_HSTS_SECONDS` / `INCLUDE_SUBDOMAINS` / `PRELOAD`), sends `X-Frame-Options: DENY` via `XFrameOptionsMiddleware` for clickjacking protection, and trusts Heroku's HTTPS termination through `SECURE_PROXY_SSL_HEADER`.
 
 ### Could be hardened
 
-- No explicit `SECURE_SSL_REDIRECT`, `SESSION_COOKIE_SECURE`, `CSRF_COOKIE_SECURE` or HSTS settings. Heroku serves the site over HTTPS, but Django is not yet told to require secure cookies or to redirect HTTP to HTTPS itself.
-- `django.middleware.clickjacking.XFrameOptionsMiddleware` was removed from the middleware stack, so no `X-Frame-Options` header is sent and the site can be framed by any origin.
 - `django-allauth`'s `socialaccount` app is installed with no providers configured.
 
 ## Deployment
@@ -1397,7 +1412,7 @@ The application was deployed to Heroku. The steps to deploy are as follows:
 
 1. Log in to the [Heroku dashboard](https://dashboard.heroku.com/) and click **New → Create new app**.
 2. Choose a unique app name and a region, then click **Create app**. Note the app's `<name>.herokuapp.com` URL.
-3. On the **Resources** tab, search the Add-ons bar for **Heroku Postgres** and add the **Essential-0** plan (the smallest Postgres plan; Heroku no longer offers a free tier). This sets a `DATABASE_URL` config var automatically. *(Any hosted PostgreSQL provider works; set `DATABASE_URL` yourself if you use one.)*
+3. On the **Resources** tab, search the Add-ons bar for **Heroku Postgres** and add the **Essential-0** plan (the smallest Postgres plan, since Heroku no longer offers a free tier). This sets a `DATABASE_URL` config var automatically. *(Any hosted PostgreSQL provider works. Set `DATABASE_URL` yourself if you use one.)*
 4. Locally, install the database and server packages: `pip install dj-database-url psycopg2 gunicorn`, then `pip freeze > requirements.txt`.
 5. In `milky/settings.py`, `import dj_database_url` and switch `DATABASES` to use PostgreSQL in production and SQLite in development:
 
@@ -1438,7 +1453,7 @@ The application was deployed to Heroku. The steps to deploy are as follows:
 
 9. In Heroku **Settings → Reveal Config Vars**, add:
    - `SECRET_KEY`: generate one with a [Django secret key generator](https://djecrety.ir/)
-   - `DISABLE_COLLECTSTATIC` = `1` (temporary; remove it once AWS S3 is configured below)
+   - `DISABLE_COLLECTSTATIC` = `1` (temporary, remove it once AWS S3 is configured below)
 10. Commit and push all of the above to GitHub.
 11. On the **Deploy** tab, connect the GitHub repository, then either **Deploy Branch** manually or **Enable Automatic Deploys** for `main`.
 12. Once the first build succeeds, open **More → Run console** and set up the database:
@@ -1454,7 +1469,7 @@ The application was deployed to Heroku. The steps to deploy are as follows:
 AWS S3 is used to store all static files and media. To configure it:
 
 1. Log in to AWS and open the **S3** service. Click **Create bucket**.
-2. Give the bucket a name (the project uses `milky-static`) and pick a region (`us-east-1`). Under **Object Ownership**, select **ACLs enabled** + **Bucket owner preferred**; under **Block Public Access**, **uncheck** "Block all public access" and tick the acknowledgement box, then **Create bucket**.
+2. Give the bucket a name (the project uses `milky-static`) and pick a region (`us-east-1`). Under **Object Ownership**, select **ACLs enabled** + **Bucket owner preferred**. Under **Block Public Access**, **uncheck** "Block all public access" and tick the acknowledgement box, then **Create bucket**.
 3. Open the bucket → **Properties** → **Static website hosting** → **Edit** → **Enable** → **Host a static website**, with `index.html` as the index document and `error.html` as the error document. *(Optional: the app serves files from the REST endpoint `milky-static.s3.amazonaws.com`, not the website endpoint, so this step isn't strictly required.)*
 4. **Permissions → CORS → Edit**, and paste:
 
@@ -1510,7 +1525,7 @@ AWS S3 is used to store all static files and media. To configure it:
 
    Name it (e.g. `milky-policy`), give it a description, and create it.
 9. Attach that policy to the group: **User groups → (your group) → Permissions → Add permissions → Attach policies**.
-10. **IAM → Users → Create user** (e.g. `milky-staticfiles-user`), add it to the group, and create it. Open the user → **Security credentials → Create access key → Application running outside AWS → Create access key**, then **Download .csv file** (the secret key is shown only once). In the CSV, the value **before** the comma is `AWS_ACCESS_KEY_ID`; everything **after** the comma (any `/` included) is `AWS_SECRET_ACCESS_KEY`.
+10. **IAM → Users → Create user** (e.g. `milky-staticfiles-user`), add it to the group, and create it. Open the user → **Security credentials → Create access key → Application running outside AWS → Create access key**, then **Download .csv file** (the secret key is shown only once). In the CSV, the value **before** the comma is `AWS_ACCESS_KEY_ID`. Everything **after** the comma (any `/` included) is `AWS_SECRET_ACCESS_KEY`.
 11. Locally, install the storage packages: `pip install boto3 django-storages`, then `pip freeze > requirements.txt`.
 12. Add `"storages"` to `INSTALLED_APPS`, and add this block to `settings.py`:
 
@@ -1655,11 +1670,19 @@ Drinks-brand storefronts and design concepts that informed Milky's playful, laye
 
 ### Media
 
-- **Generated with ChatGPT** (image generation): the product can images (the can layer on each product card), the illustration-style images (`can-kitchen`, `gift-a-can`, `gift-a-can-login`, `group-enjoying-drinks`), the auth-page illustrations (`login`, `logout`, `register`, `forgot-password`, `verify-email`), the error-page illustrations (`error-desktop`, `error-mobile`), and the texture map baked into the 3D can model.
-- The **3D can model** on the home page hero was modelled by me in **Blender** (ChatGPT only made the texture) and rendered in the browser with **Three.js**.
-- **Icons** (nutrition icons and decorative marks in `static/images/`): [Flaticon](https://www.flaticon.com/) (free licence, attribution required). UI icons (navbar, toasts, social links) are [Font Awesome](https://fontawesome.com/).
-- **Backgrounds and decorative layers** (home and section backgrounds, gradients, the product-card "objects" layer, brand marks): free stock imagery, and elements assembled by me in **Adobe Photoshop** (cut-outs, background removal, colour adjustments, layering).
-- **Fonts:** [Google Fonts](https://fonts.google.com/): Bebas Neue, Poppins, Patrick Hand
+<div align="center">
+
+| Asset | Source |
+|---|---|
+| Product can images (the can layer on each product card) and the texture map on the 3D can model | Generated with [ChatGPT](https://chatgpt.com/) |
+| Illustrations — lifestyle (`can-kitchen`, `gift-a-can`, `group-enjoying-drinks`), auth pages (`login`, `logout`, `register`, `forgot-password`, `verify-email`), error pages (`error-desktop`, `error-mobile`) | Generated with [ChatGPT](https://chatgpt.com/) |
+| 3D can model on the home hero | Modelled by me in [Blender](https://www.blender.org/), rendered in the browser with [Three.js](https://threejs.org/) |
+| Nutrition icons and decorative marks (in `static/images/`) | [Flaticon](https://www.flaticon.com/) — free licence, attribution required |
+| UI icons (navbar, toasts, social links) | [Font Awesome](https://fontawesome.com/) |
+| Backgrounds, gradients, the product-card "objects" layer, brand marks | Free stock imagery, assembled by me in [Adobe Photoshop](https://www.adobe.com/products/photoshop.html) (cut-outs, background removal, colour adjustment, layering) |
+| Fonts | [Google Fonts](https://fonts.google.com/) — Bebas Neue, Poppins, Patrick Hand |
+
+</div>
 
 ### Code References
 

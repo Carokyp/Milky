@@ -259,7 +259,7 @@ dd {
     color: var(--gold);
 }
 
-.navbar > .container-fluid {
+.navbar>.container-fluid {
     max-width: var(--site-max-width);
     margin: 0 auto;
     background-color: var(--light-cream);
@@ -502,7 +502,7 @@ dd {
 }
 
 /* Nudge down the heading */
-.back-btn + h1 {
+.back-btn+h1 {
     transform: translateY(0.08em);
 }
 
