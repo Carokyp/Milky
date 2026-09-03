@@ -1039,7 +1039,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 ### Automated Tests
 
-The suite lives in each app's `tests.py` and runs with `python manage.py test` (Django spins up a throwaway database, so real data is never touched). **59 tests, all passing** (the `main` branch runs 57; `develop` adds 2 for its extra settings).
+The suite lives in each app's `tests.py` and runs with `python manage.py test` (Django spins up a throwaway database, so real data is never touched). **59 tests, all passing** (the `main` branch runs 57, and `develop` adds 2 for its extra settings).
 
 <div align="center">
 
@@ -1052,7 +1052,7 @@ The suite lives in each app's `tests.py` and runs with `python manage.py test` (
 | `home` | the landing page loading and its showcase listing only `featured` **and** available products |
 | `milky` (`develop` only) | the develop branch's extra settings: the verbose console `LOGGING` config |
 
-**On the testing timeline:** the feature work was checked with the manual plan below as it was built. The automated suite was added near the end of the project, once the models and views had settled; from that point a test-first workflow was used for fixes and refinements.
+**On the testing timeline:** the feature work was checked with the manual plan below as it was built. The automated suite was added near the end of the project, once the models and views had settled. From that point a test-first workflow was used for fixes and refinements.
 
 ### Authentication
 
