@@ -47,6 +47,16 @@ CSRF_TRUSTED_ORIGINS = [
     "https://milky-app-839f694f035d.herokuapp.com",
 ]
 
+# HTTPS hardening — only in production (locally the site runs over plain HTTP).
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # Tell browsers to only ever reach the site over HTTPS, for a year.
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
 
 # Application definition
 
@@ -79,13 +89,14 @@ INSTALLED_APPS = [
 # Order matters: each request passes through these top to bottom,
 # and the response passes back through them bottom to top.
 MIDDLEWARE = [
-    "allauth.account.middleware.AccountMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "milky.urls"
