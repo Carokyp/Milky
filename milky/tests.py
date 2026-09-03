@@ -6,6 +6,7 @@ README). These tests pin the differences that develop is expected to add.
 
 Run with:  python manage.py test milky
 """
+
 from django.conf import settings
 from django.test import SimpleTestCase
 
@@ -18,9 +19,7 @@ class DevelopmentConfigTests(SimpleTestCase):
         # during `runserver`. main does not define LOGGING at all.
         handlers = getattr(settings, "LOGGING", {}).get("handlers", {})
         self.assertIn("console", handlers)
-        self.assertEqual(
-            handlers["console"]["class"], "logging.StreamHandler"
-        )
+        self.assertEqual(handlers["console"]["class"], "logging.StreamHandler")
 
     def test_django_logs_at_debug_level_on_develop(self):
         logging_config = getattr(settings, "LOGGING", {})

@@ -29,7 +29,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = "DEVELOPMENT" in os.environ
+# develop branch: DEBUG is ON by default so `runserver` works with no
+# env vars. The main branch ships DEBUG off by default. Set DEBUG=False
+# in the environment here to check production behaviour locally.
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -56,6 +59,36 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+
+
+# Logging — develop branch only.
+# Streams DEBUG-level logs (SQL, request errors, our own code) to the
+# console during `runserver`. The main branch leaves logging at Django's
+# defaults, so this whole block is one of the settings.py differences
+# between the two branches.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "[{asctime}] {levelname} {name}: {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+    },
+}
 
 
 # Application definition
@@ -136,7 +169,10 @@ AUTHENTICATION_BACKENDS = [
 # Required by django.contrib.sites, used internally by allauth
 SITE_ID = 1
 
-if "DEVELOPMENT" in os.environ:
+# develop branch: e-mail is keyed off DEBUG, so it prints to the console
+# out of the box. The main branch keys this off an explicit DEVELOPMENT
+# env var instead.
+if DEBUG:
     # Console backend: emails are printed to the terminal instead of
     # actually sent.
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
