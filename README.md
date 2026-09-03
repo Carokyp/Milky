@@ -69,6 +69,7 @@ directly from the front end, without ever touching the Django admin or the datab
 * [Security](#security)
 
 * [Deployment](#deployment)
+   * [Branching model](#branching-model)
    * [Heroku](#heroku)
    * [Amazon Web Services (AWS)](#amazon-web-services-aws)
    * [Stripe](#stripe)
@@ -1426,6 +1427,19 @@ All user stories from [User Stories](#user-stories) are validated below against 
 ## Deployment
 
 The application is hosted on **Heroku**, with all static files and media stored on **AWS S3**, payments handled by **Stripe**, and transactional email sent through **Gmail**.
+
+### Branching model
+
+The repository uses two long-lived branches.
+
+| Branch | Purpose | `settings.py` |
+|---|---|---|
+| `main` | Release branch. This is what Heroku deploys. | Production defaults. `DEBUG` off unless a `DEVELOPMENT` env var is set, HTTPS redirect / HSTS / secure cookies enabled, Gmail SMTP e-mail. |
+| `develop` | Working branch. All feature work and fixes happen here first. | Developer defaults. `DEBUG` on unless `DEBUG=False` is set, a verbose console `LOGGING` config, console e-mail backend. |
+
+`settings.py` is **genuinely different on each branch**, not switched at runtime. Work is done on `develop`, then merged into `main` for a release. When resolving that merge, each branch keeps its own `settings.py`, so `main` stays on the production config. The data store configuration stays in one place on each branch (the `DATABASES` block), and both branches read every secret from the environment.
+
+`develop` also carries `milky/tests.py`, which pins its extra settings (the console logging config) so an accidental change is caught by `python manage.py test`.
 
 ### Heroku
 
