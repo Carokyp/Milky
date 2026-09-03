@@ -1786,16 +1786,14 @@ textarea::placeholder {
         min-height: 320px;
         margin-left: auto;
         margin-right: auto;
-    }
-
-    .lifestyle-text-col .bubble-text-wrapper img {
-        transform: rotate(1deg) scale(1.6);
+        transform: translateX(30px) rotate(1deg) scale(1);
     }
 
     .lifestyle-photo-frame {
         margin-top: 0;
         max-width: 450px;
         transform: rotate(6deg);
+        left: 40px
     }
 
     /* Text stays centred in the cloud; cloud and photo each sit centred
@@ -2006,9 +2004,9 @@ textarea::placeholder {
     }
 
     .lifestyle-text-col .bubble-lifestyle img {
-        transform: rotate(1deg) scale(1.8);
+        transform: translateX(0px) rotate(1deg) scale(2);
     }
-
+    
     /* -- Gift -- */
 
     .gift-img-hero {
@@ -2087,7 +2085,7 @@ textarea::placeholder {
 
     /* -- Home: Lifestyle -- */
     .lifestyle-text-col .bubble-lifestyle img {
-        transform: rotate(1deg) scale(1.9);
+        transform: translateX(-30px) rotate(1deg) scale(2);
     }
 }
 
