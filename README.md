@@ -1027,7 +1027,7 @@ Dev / QA tooling: [flake8](https://pypi.org/project/flake8/) for Python linting.
 * [W3C HTML Validator](https://validator.w3.org/): validating the rendered HTML of every page
 * [W3C CSS Validator (Jigsaw)](https://jigsaw.w3.org/css-validator/): validating `static/css/base.css`
 * [JSHint](https://jshint.com/): linting the scripts in `static/js/`
-* [CI Python Linter](https://pep8ci.herokuapp.com/): checking the Python source for PEP 8 compliance
+* [flake8](https://flake8.pycqa.org/): checking the Python source for PEP 8 compliance
 * [WAVE](https://wave.webaim.org/): accessibility evaluation of each page type
 * [Lighthouse](https://developer.chrome.com/docs/lighthouse/): performance, accessibility, best-practices, and SEO audits
 
@@ -1045,7 +1045,7 @@ The suite lives in each app's `tests.py` and runs with `python manage.py test` (
 
 | App | What it covers |
 |---|---|
-| `checkout` | delivery fee above / below / at the £25 free-delivery threshold, `grand_total` with and without the gift promo discount, `OrderItem.save()` keeping the line total and the parent order total in sync, unique reference codes, a signed-in user getting a 404 on another user's order confirmation, and `build_order_kwargs()` (promo percent only with a gift, invoice address falling back to delivery) |
+| `checkout` | delivery fee above / below / at the $25 free-delivery threshold, `grand_total` with and without the gift promo discount, `OrderItem.save()` keeping the line total and the parent order total in sync, unique reference codes, a signed-in user getting a 404 on another user's order confirmation, and `build_order_kwargs()` (promo percent only with a gift, invoice address falling back to delivery) |
 | `products` | `generate_sku()` format and uniqueness, `single_image_url` fallback order, `Review.rating` rejected outside 1-5, the catalogue hiding unavailable products, `add`/`edit`/`delete` product refused to non-superusers, an ordered product being hidden (not hard-deleted), and the Gift a Can flow (login required, profile required, one gift per order, unavailable product refused, gifting to a saved contact) |
 | `cart` | adding / re-adding / updating / removing a session cart line, the 99-per-line cap, an unavailable product being refused, the running totals from `cart_contents()`, and the 10% gift discount being applied then cleared by `remove_gift` |
 | `accounts` | the profile and contact views behind `@login_required`, a contact needing a completed profile first, one user getting a 404 on another user's `edit-contact` / `delete-contact` URL, and `GiftACanForm` validation |
