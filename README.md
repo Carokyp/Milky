@@ -52,6 +52,7 @@ directly from the front end, without ever touching the Django admin or the datab
 * [Technologies Used](#technologies-used)
 
 * [Testing](#testing)
+   * [Automated Tests](#automated-tests)
    * [Authentication](#authentication)
    * [CRUD](#crud)
    * [Permissions](#permissions)
@@ -188,6 +189,7 @@ Key sections and navigation flow:
 - Static files and media served from AWS S3 in production via `django-storages` and a small `custom_storages.py`.
 - Photographic and illustrated assets (site imagery and product-card layers) are stored as WebP to keep page weight down. Small UI icons stay as PNG.
 - Server-rendered templates with Bootstrap 5 utilities and `django-crispy-forms` (bootstrap5 pack).
+- URLs follow one convention throughout: lower-case, hyphen-separated path segments (`/profile/order-history/`, `/checkout/cache-checkout-data/`, `/products/1/add-review/`), and every link is generated with `{% url %}` / `reverse()` from the route name, never hard-coded.
 - Session-based cart and in-progress gift selection. Neither is written to the database until an order is placed.
 - Stripe Payment Element for payment, with a webhook handler as the reliability fallback that actually sends the confirmation and gift emails.
 - Transactional emails rendered from HTML and plain-text templates, with a shared stylesheet (`templates/emails/_email_styles.css`) and helpers in `milky/email_utils.py`.
@@ -902,6 +904,8 @@ Destructive actions are protected by confirmation modals to keep the experience 
 
 All four custom error pages share the same branded layout: a breakpoint-swapped illustration, the status code, a short title, a plain-language message, and a single "Back to Home" call to action.
 
+The "Back to Home" button is the one clear way off the page, so a visitor who lands on a broken or forbidden URL gets straight back to the main page without touching the browser's back button. An automatic redirect was avoided on purpose, to keep the branded page and its screen-reader heading in place.
+
 <div align="center">
 
 | Error Code | Title Shown | Message Shown |
@@ -1028,9 +1032,25 @@ Dev / QA tooling: [flake8](https://pypi.org/project/flake8/) for Python linting.
 
 ## Testing
 
-The tables below are the **manual test plan** for the project, covering authentication, CRUD, permissions, forms, UX, accessibility, and responsive layout. **There is no automated test suite**, every app's `tests.py` is empty and there is no automated build/test pipeline.
+Testing has two parts: an **automated test suite** for the back-end logic and access rules, and a **manual test plan** (the tables below) for the flows a script cannot judge well, UX, accessibility, responsive layout and the Stripe checkout.
 
 Stripe runs in **test mode**, so checkout can be tested end to end without a real payment. Use card number `4242 4242 4242 4242` with any future expiry date, any 3-digit CVC and any postcode. More test cards are listed under [Deployment → Stripe](#stripe).
+
+### Automated Tests
+
+The suite lives in each app's `tests.py` and runs with `python manage.py test` (Django spins up a throwaway database, so real data is never touched). **43 tests, all passing.**
+
+<div align="center">
+
+| App | What it covers |
+|---|---|
+| `checkout` | delivery fee above / below / at the £25 free-delivery threshold, `grand_total` with and without the gift promo discount, `OrderItem.save()` keeping the line total and the parent order total in sync, unique reference codes, and that a signed-in user gets a 404 on another user's order confirmation |
+| `products` | `generate_sku()` format and uniqueness, `single_image_url` fallback order, `Review.rating` rejected outside 1-5, the catalogue hiding unavailable products, `add`/`edit`/`delete` product refused to non-superusers, and an ordered product being hidden (not hard-deleted) |
+| `cart` | adding / re-adding / updating / removing a session cart line, the 99-per-line cap, an unavailable product being refused, and the running totals from `cart_contents()` |
+| `accounts` | the profile and contact views behind `@login_required`, a contact needing a completed profile first, and one user getting a 404 on another user's `edit-contact` / `delete-contact` URL |
+| `home` | the landing page loading and its showcase listing only `featured` **and** available products |
+
+**On the testing timeline:** the feature work was checked with the manual plan below as it was built. The automated suite was added near the end of the project, once the models and views had settled; from that point a test-first workflow was used for fixes and refinements.
 
 ### Authentication
 
@@ -1084,7 +1104,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Guest Order Confirmation | Complete a guest checkout, then view the confirmation page | The page loads. A guest can only see the order they just placed, not another order's URL | Pass |
 | Review While Logged Out | Open a product detail page while logged out | Review form is replaced by a "Sign In to leave a review" prompt | Pass |
 | Gift a Can While Logged Out | Open `/products/gift/` while logged out | The promo page shows with "Login to gift" / "Register", not the gift form | Pass |
-| Contact Ownership | While signed in as one user, paste another user's `delete_contact` / `edit_contact` URL | 404. The contact is neither shown nor deleted (scoped to its owner) | Pass |
+| Contact Ownership | While signed in as one user, paste another user's `delete-contact` / `edit-contact` URL | 404. The contact is neither shown nor deleted (scoped to its owner) | Pass |
 
 </div>
 
@@ -1133,6 +1153,7 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 | Keyboard navigation | Tab through the navbar, a product card, and the checkout form | Every interactive element is reachable and shows a visible focus state | Pass on Chrome, Edge and Firefox. Safari needs its "Press Tab to highlight each item" setting, which is off by default |
 | Screen reader, toasts | Trigger a success and an error toast with a screen reader running | Both are announced through their `aria-live` region | Pass |
 | Image alternatives | Inspect every `<img>` | Meaningful images have descriptive `alt`, decorative ones an empty `alt` | Pass |
+| External links | Click the footer social links (X, Instagram, Facebook) | Each opens in a new tab (`target="_blank" rel="noopener"`) and its accessible name says "opens in a new tab". These are the only links that leave the site | Pass |
 | Heading order | Run an outline check on each page type | One `<h1>` per page, no skipped levels | Pass |
 | Colour contrast | Check brown-on-cream and brown-on-gold in a contrast checker | Meets WCAG AA for body text and buttons | Pass (roughly 9.8:1 on cream, 7.6:1 on the gold buttons) |
 | WAVE | Run [WAVE](https://wave.webaim.org/) on each page type | No errors. Contrast and ARIA warnings reviewed | Pass |
