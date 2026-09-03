@@ -962,10 +962,10 @@ textarea::placeholder {
 }
 
 .home-arrow {
-    top: 2rem;
+    top: 1.5rem;
     left: calc(50% + 70px);
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     transform: rotate(70deg);
     pointer-events: none;
 }
@@ -1580,10 +1580,10 @@ textarea::placeholder {
     }
 
     .home-arrow {
-        top: 3.5rem;
+        top: 3rem;
         left: calc(50% + 120px);
-        width: 60px;
-        height: 60px;
+        width: 55px;
+        height: 55px;
         transform: rotate(70deg);
     }
 
@@ -1765,8 +1765,8 @@ textarea::placeholder {
     }
 
     .home-arrow {
-        top: 4rem;
-        left: calc(50% + 110px);
+        top: 3.5rem;
+        left: calc(50% + 140px);
         width: 70px;
         height: 70px;
     }
@@ -1974,8 +1974,8 @@ textarea::placeholder {
     }
 
     .home-arrow {
-        top: 4.5rem;
-        left: calc(50% + 140px);
+        top: 3.6rem;
+        left: calc(50% + 200px);
         width: 75px;
         height: 75px;
     }
