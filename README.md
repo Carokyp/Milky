@@ -1237,19 +1237,76 @@ All Python source passes [flake8](https://flake8.pycqa.org/) with 0 errors (79-c
 
 ### Performance
 
-Lighthouse (Chrome DevTools) was used to audit performance, accessibility, best practices, and SEO. Reports are saved in `docs/lighthouse/`.
+Lighthouse (Chrome DevTools) was run on the deployed site, on mobile and desktop, for performance, accessibility, best practices, and SEO.
 
 <div align="center">
 
-| Page | Performance | Accessibility | Best Practices | SEO |
-|------|-------------|---------------|----------------|-----|
-| Home | | | | |
-| All Products | | | | |
-| Product Detail | | | | |
-| Cart | | | | |
-| Checkout | | | | |
+| Page | Device | Performance | Accessibility | Best Practices | SEO |
+|------|--------|-------------|---------------|----------------|-----|
+| Home | Mobile | 68 | 100 | 100 | 100 |
+| Home | Desktop | 81 | 100 | 100 | 100 |
+| All Products | Mobile | 65 | 100 | 100 | 100 |
+| All Products | Desktop | 90 | 100 | 100 | 100 |
+| Product Detail | Mobile | 74 | 100 | 100 | 100 |
+| Product Detail | Desktop | 70 | 100 | 100 | 100 |
+| Cart | Mobile | 77 | 100 | 100 | 100 |
+| Cart | Desktop | 91 | 100 | 100 | 100 |
 
 </div>
+
+<details>
+<summary>Lighthouse reports</summary>
+
+<p align="center"><strong>Home — mobile</strong></p>
+<p align="center">
+  <img src="docs/lighthouse/lighthouse-home-mobile.png" alt="Lighthouse home page, mobile" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+
+<p align="center"><strong>Home — desktop</strong></p>
+<p align="center">
+  <img src="docs/lighthouse/lighthouse-home-desktop.png" alt="Lighthouse home page, desktop" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+
+<p align="center"><strong>All Products — mobile</strong></p>
+<p align="center">
+  <img src="docs/lighthouse/lighthouse-all-products-mobile.png" alt="Lighthouse All Products page, mobile" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+
+<p align="center"><strong>All Products — desktop</strong></p>
+<p align="center">
+  <img src="docs/lighthouse/lighthouse-all-products-desktop.png" alt="Lighthouse All Products page, desktop" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+
+<p align="center"><strong>Product Detail — mobile</strong></p>
+<p align="center">
+  <img src="docs/lighthouse/lighthouse-product-detail-mobile.png" alt="Lighthouse Product Detail page, mobile" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+
+<p align="center"><strong>Product Detail — desktop</strong></p>
+<p align="center">
+  <img src="docs/lighthouse/lighthouse-product-detail-desktop.png" alt="Lighthouse Product Detail page, desktop" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+
+<p align="center"><strong>Cart — mobile</strong></p>
+<p align="center">
+  <img src="docs/lighthouse/lighthouse-cart-mobile.png" alt="Lighthouse Cart page, mobile" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+
+<p align="center"><strong>Cart — desktop</strong></p>
+<p align="center">
+  <img src="docs/lighthouse/lighthouse-cart-desktop.png" alt="Lighthouse Cart page, desktop" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+</details>
+
+**Notes on the scores**
+
+- **Accessibility (100) and SEO (100)** are full marks on every page.
+- **Best Practices** started at 77 and reached 100 after three changes: adding `XFrameOptionsMiddleware` (clickjacking protection), enabling HSTS / `SECURE_SSL_REDIRECT` / secure cookies in production, and loading `stripe.js` only on the checkout page instead of site-wide (which removed a third-party cookie from every other page).
+- **Performance** ranges from the mid-60s (mobile) to the low-90s (desktop) and is held back by deliberate design choices, not unoptimised code:
+  - Bootstrap and Font Awesome load render-blocking CSS from a CDN.
+  - The storefront is image-heavy by design (each product card is three layered images).
+  - On the home page only, the Three.js 3D can in the hero (~600 KB) is the single largest asset and the main drag on the mobile score.
+- Possible future improvements: subset and self-host Font Awesome, lazy-load Three.js after first paint, serve pre-minified CSS/JS, and set explicit `width`/`height` on images.
 
 ### Bugs Found, Fixed, and Unresolved
 
