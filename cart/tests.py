@@ -96,3 +96,27 @@ class CartTotalsContextTests(TestCase):
         response = self.client.get(reverse("view_cart"))
         self.assertEqual(response.context["delivery"], Decimal("0.00"))
         self.assertEqual(response.context["grand_total"], Decimal("30.00"))
+
+
+class GiftInCartTests(TestCase):
+    """A gift in the session adds the 10% promo discount and can be removed."""
+
+    def setUp(self):
+        self.product = make_product(price=Decimal("10.00"))
+        session = self.client.session
+        session["gift"] = {
+            "product_id": str(self.product.id),
+            "contact_id": 999,  # may not exist; the discount still applies
+            "personal_message": "",
+        }
+        session.save()
+
+    def test_gift_applies_the_10_percent_discount(self):
+        response = self.client.get(reverse("view_cart"))
+        # 10.00 gift + 3.99 delivery = 13.99, then 10% off -> 12.59
+        self.assertEqual(response.context["promo_discount"], Decimal("10"))
+        self.assertEqual(response.context["grand_total"], Decimal("12.59"))
+
+    def test_remove_gift_frees_the_slot(self):
+        self.client.post(reverse("remove_gift"))
+        self.assertNotIn("gift", self.client.session)

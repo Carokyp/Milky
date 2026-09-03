@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
+from .forms import GiftACanForm
 from .models import Contact, Customer, UserCustomer
 
 
@@ -15,6 +16,33 @@ class CustomerModelTests(TestCase):
     def test_str_is_the_full_name(self):
         customer = Customer.objects.create(name="Grace", surname="Hopper")
         self.assertEqual(str(customer), "Grace Hopper")
+
+
+class GiftACanFormTests(TestCase):
+    """The gift recipient form used on the Gift a Can page."""
+
+    def _data(self, **override):
+        data = {
+            "email": "pat@example.com",
+            "name": "Pat",
+            "surname": "Friend",
+            "phone_number": "0123456789",
+            "address": "3 Friend Road",
+            "postal_code": "LS1 1AA",
+            "city": "Leeds",
+            "country": "GB",
+        }
+        data.update(override)
+        return data
+
+    def test_complete_recipient_details_are_valid(self):
+        self.assertTrue(GiftACanForm(self._data()).is_valid())
+
+    def test_a_missing_required_field_is_rejected(self):
+        form = GiftACanForm(self._data(email="", address=""))
+        self.assertFalse(form.is_valid())
+        self.assertIn("email", form.errors)
+        self.assertIn("address", form.errors)
 
 
 class ProfileAccessTests(TestCase):

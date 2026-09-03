@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 
+from accounts.models import Contact, Customer, UserCustomer
 from checkout.models import OrderItem
 from checkout.tests import make_order
 
@@ -175,3 +176,110 @@ class AddReviewTests(TestCase):
         )
         self.assertEqual(self.product.reviews.count(), 1)
         self.assertEqual(self.product.reviews.first().rating, 4)
+
+
+class GiftPageTests(TestCase):
+    """The Gift a Can page: who may use it and the one-gift-per-order rule."""
+
+    def setUp(self):
+        self.product = make_product()
+        self.user = User.objects.create_user("gifter", password="pw-123456")
+        self.customer = Customer.objects.create(name="Gift", surname="Er")
+        UserCustomer.objects.create(user=self.user, customer=self.customer)
+
+    def _new_friend_post(self, **override):
+        data = {
+            "product_id": self.product.id,
+            "name": "Pat",
+            "surname": "Friend",
+            "email": "pat@example.com",
+            "phone_number": "0123456789",
+            "address": "3 Friend Road",
+            "city": "Leeds",
+            "postal_code": "LS1 1AA",
+            "country": "GB",
+        }
+        data.update(override)
+        return data
+
+    def test_page_loads_for_a_guest(self):
+        self.assertEqual(
+            self.client.get(reverse("gift_page")).status_code, 200
+        )
+
+    def test_posting_while_logged_out_redirects_to_login(self):
+        response = self.client.post(
+            reverse("gift_page"), self._new_friend_post()
+        )
+        self.assertRedirects(
+            response,
+            reverse("account_login"),
+            fetch_redirect_response=False,
+        )
+
+    def test_posting_without_a_profile_redirects_to_profile(self):
+        User.objects.create_user("bare", password="pw-123456")
+        self.client.login(username="bare", password="pw-123456")
+        response = self.client.post(
+            reverse("gift_page"), self._new_friend_post()
+        )
+        self.assertRedirects(response, reverse("profile"))
+
+    def test_a_valid_gift_is_stored_in_the_session(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("gift_page"), self._new_friend_post()
+        )
+        self.assertRedirects(response, reverse("view_cart"))
+        self.assertEqual(
+            self.client.session["gift"]["product_id"], str(self.product.id)
+        )
+        self.assertEqual(Contact.objects.count(), 1)
+
+    def test_only_one_gift_per_order(self):
+        self.client.force_login(self.user)
+        session = self.client.session
+        session["gift"] = {
+            "product_id": str(self.product.id),
+            "contact_id": 1,
+            "personal_message": "",
+        }
+        session.save()
+
+        response = self.client.post(
+            reverse("gift_page"), self._new_friend_post()
+        )
+        self.assertRedirects(response, reverse("gift_page"))
+        # The second attempt never creates a contact.
+        self.assertEqual(Contact.objects.count(), 0)
+
+    def test_gifting_an_unavailable_product_is_rejected(self):
+        self.client.force_login(self.user)
+        self.product.is_available = False
+        self.product.save()
+        response = self.client.post(
+            reverse("gift_page"), self._new_friend_post()
+        )
+        self.assertRedirects(response, reverse("gift_page"))
+        self.assertNotIn("gift", self.client.session)
+
+    def test_gifting_to_a_saved_contact(self):
+        self.client.force_login(self.user)
+        contact = Contact.objects.create(
+            customer=self.customer,
+            name="Sam",
+            surname="Saved",
+            email="sam@example.com",
+            phone_number="0123456789",
+            address="4 Saved Street",
+            city="York",
+            postal_code="YO1 1AA",
+            country="GB",
+            ip_address="127.0.0.1",
+        )
+        response = self.client.post(
+            reverse("gift_page"),
+            {"product_id": self.product.id, "existing_contact": contact.id},
+        )
+        self.assertRedirects(response, reverse("view_cart"))
+        self.assertEqual(self.client.session["gift"]["contact_id"], contact.id)
