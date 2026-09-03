@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 const stars = document.querySelectorAll('.star-btn');
 const ratingInput = document.getElementById('rating-input');
 

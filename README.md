@@ -1129,10 +1129,10 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Tool | Target | Result |
 |------|--------|--------|
-| [W3C HTML Validator](https://validator.w3.org/) | Each rendered page (validated from view-source) | *to run* |
-| [W3C CSS Validator (Jigsaw)](https://jigsaw.w3.org/css-validator/) | `static/css/base.css` | *to run* |
-| [JSHint](https://jshint.com/) | Files in `static/js/` | *to run* |
-| [flake8](https://flake8.pycqa.org/) / [black](https://black.readthedocs.io/) | Python source (79-char lines, `setup.cfg` + `pyproject.toml`) | *to run* |
+| [W3C HTML Validator](https://validator.w3.org/) | Each rendered page (validated from view-source) | Pass |
+| [W3C CSS Validator (Jigsaw)](https://jigsaw.w3.org/css-validator/) | `static/css/base.css` | Pass (0 errors, 17 warnings, all expected) |
+| [JSHint](https://jshint.com/) | Every file in `static/js/` (11 files) | Pass (0 warnings, 0 errors) |
+| [flake8](https://flake8.pycqa.org/) | Python source (79-char lines, config in `setup.cfg`) | Pass (0 errors) |
 
 </div>
 
@@ -1140,31 +1140,69 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 <summary>HTML validation</summary>
 
 <p align="center">
-  <img src="docs/testing/validator-html.png" alt="W3C HTML validator results" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/testing/html-validation.png" alt="W3C HTML validator results" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 </details>
 
 <details>
 <summary>CSS validation</summary>
 
+`static/css/base.css` passes the [W3C Jigsaw validator](https://jigsaw.w3.org/css-validator/) with **0 errors**.
+
 <p align="center">
-  <img src="docs/testing/validator-css.png" alt="W3C CSS validator results" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/testing/css-validation.png" alt="W3C CSS validator results, no errors" style="width: 90%; max-width: 900px; height: auto;">
+</p>
+
+The 17 warnings are all expected and need no change:
+
+<div align="center">
+
+| Warning | Count | Reason |
+|---|---|---|
+| Imported style sheet not checked | 1 | Jigsaw does not follow the `@import` for the Patrick Hand font |
+| CSS variables not statically checked | 10 | Jigsaw does not resolve `var(--token)` values; normal for a design-token-based stylesheet |
+| `-webkit-appearance` / `::-webkit-*-spin-button` vendor extensions | 4 | Deliberate, to normalise the quantity number input across browsers |
+| `auto` not defined for `pointer-events` | 2 | `pointer-events: auto` is valid per the CSS spec and widely supported; Jigsaw's data is out of date |
+| `clip` is deprecated | 1 | Used in the visually-hidden pattern that hides a label while keeping it in the accessibility tree; `clip` stays the most cross-browser-compatible option |
+
+</div>
+
+<p align="center">
+  <img src="docs/testing/css-warning.png" alt="W3C CSS validator warnings" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 </details>
 
 <details>
 <summary>JavaScript validation</summary>
 
-<p align="center">
-  <img src="docs/testing/validator-js.png" alt="JSHint results" style="width: 90%; max-width: 900px; height: auto;">
-</p>
+Every file in `static/js/` was run through [JSHint](https://jshint.com/) and passes with **0 warnings and 0 errors**. Each file carries a `/* jshint esversion: 6 */` directive at the top (`esversion: 8` for `checkout.js`, which uses `async`/`await`), plus `/* global bootstrap */` or `/* global Stripe */` where those library globals are used.
+
+<div align="center">
+
+| File | Result |
+|------|--------|
+| `add-review.js` | <img src="docs/testing/jshint-add-review.png" alt="JSHint results for add-review.js, no warnings" width="600"> |
+| `admin-invoice.js` | <img src="docs/testing/jshint-admin.png" alt="JSHint results for admin-invoice.js, no warnings" width="600"> |
+| `can-3d.js` | <img src="docs/testing/3d-can.png" alt="JSHint results for can-3d.js, no warnings" width="600"> |
+| `cart.js` | <img src="docs/testing/jshint-cart.png" alt="JSHint results for cart.js, no warnings" width="600"> |
+| `checkout.js` | <img src="docs/testing/jshint-checkout.png" alt="JSHint results for checkout.js, no warnings" width="600"> |
+| `country-field.js` | <img src="docs/testing/jshint-countryfield.png" alt="JSHint results for country-field.js, no warnings" width="600"> |
+| `gift-page.js` | <img src="docs/testing/gift-page.png" alt="JSHint results for gift-page.js, no warnings" width="600"> |
+| `main.js` | <img src="docs/testing/jshint-main.png" alt="JSHint results for main.js, no warnings" width="600"> |
+| `product-detail.js` | <img src="docs/testing/jshint-product-detail.png" alt="JSHint results for product-detail.js, no warnings" width="600"> |
+| `profile.js` | <img src="docs/testing/jshint-profile.png" alt="JSHint results for profile.js, no warnings" width="600"> |
+| `toast.js` | <img src="docs/testing/jshint-toast.png" alt="JSHint results for toast.js, no warnings" width="600"> |
+
+</div>
 </details>
 
 <details>
 <summary>Python validation</summary>
 
+All Python source passes [flake8](https://flake8.pycqa.org/) with 0 errors (79-char lines, config in `setup.cfg`). `env.py`, `.venv/`, `__pycache__/` and the auto-generated `migrations/` are excluded in `setup.cfg`.
+
 <p align="center">
-  <img src="docs/testing/validator-python.png" alt="CI Python Linter results" style="width: 90%; max-width: 900px; height: auto;">
+  <img src="docs/testing/python-flake8.png" alt="flake8 run with no errors" style="width: 90%; max-width: 900px; height: auto;">
 </p>
 </details>
 
@@ -1174,10 +1212,10 @@ Stripe runs in **test mode**, so checkout can be tested end to end without a rea
 
 | Browser | Version | Result |
 |---------|---------|--------|
-| Chrome | | *to test* |
-| Firefox | | *to test* |
-| Safari | | *to test* |
-| Edge | | *to test* |
+| Chrome | 151 | Pass |
+| Firefox | 152 | Pass |
+| Safari | 26.6 | Pass |
+| Edge | 152 | Pass |
 
 </div>
 

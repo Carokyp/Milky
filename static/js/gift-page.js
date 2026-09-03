@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 (function() {
     // This template renders one of three states — logged out, logged in with a gift
     // already in progress, or logged in with the form — so every element below is
@@ -100,7 +102,7 @@
          * validation) when an existing contact is picked, and restores
          * them otherwise.
          */
-        function toggleNewContactFields() {
+        const toggleNewContactFields = function () {
             if (contactSelect.value) {
                 newFields.style.display = 'none';
                 newControls.forEach(function(el) {
@@ -114,7 +116,7 @@
                     }
                 });
             }
-        }
+        };
 
         contactSelect.addEventListener('change', toggleNewContactFields);
         toggleNewContactFields();

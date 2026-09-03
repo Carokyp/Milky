@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 import * as THREE from 'three';
 import {
     GLTFLoader
@@ -107,7 +109,7 @@ if (container) {
      * Renders one frame and schedules the next: swings the loaded can back
      * and forth on its Y axis, then draws the scene.
      */
-    function animate() {
+    const animate = function () {
         requestAnimationFrame(animate);
 
         if (can) {
@@ -116,20 +118,20 @@ if (container) {
         }
 
         renderer.render(scene, camera);
-    }
+    };
     animate();
 
     /**
      * Resizes the renderer and updates the camera aspect ratio to match the
      * viewer container's current dimensions.
      */
-    function handleResize() {
+    const handleResize = function () {
         const width = container.clientWidth;
         const height = container.clientHeight;
 
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
-    }
+    };
     window.addEventListener('resize', handleResize);
 }

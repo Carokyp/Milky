@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 /**
  * Wires up each quantity +/- button on the product detail page to adjust
  * the quantity input, staying within the 1-99 range.

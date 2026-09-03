@@ -1,3 +1,6 @@
+/* jshint esversion: 6 */
+/* global bootstrap */
+
 /**
  * Toggles a contact between its read-only view and its edit form.
  * @param {string} contactId - The id of the contact being toggled.

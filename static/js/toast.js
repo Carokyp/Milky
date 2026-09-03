@@ -1,3 +1,6 @@
+/* jshint esversion: 6 */
+/* global bootstrap */
+
 /**
  * Auto-shows every Bootstrap toast on the page once the DOM is ready,
  * auto-hiding each one after a short delay.

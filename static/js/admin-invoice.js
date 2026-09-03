@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 /**
  * Adds a "same as delivery address" checkbox to the admin order's invoice
  * fields, copying delivery values into the invoice fields when checked and

@@ -1,3 +1,6 @@
+/* jshint esversion: 6 */
+/* global bootstrap */
+
 /**
  * Closes the responsive navbar collapse if it is currently expanded.
  */

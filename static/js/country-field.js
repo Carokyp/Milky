@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 /**
  * Styles a country <select> like a placeholder until a real value is
  * chosen: gray text while empty, black text once a country is selected.

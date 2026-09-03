@@ -1,3 +1,6 @@
+/* jshint esversion: 8 */
+/* global Stripe */
+
 // Disable automatic scroll restoration to prevent the page from jumping to the previous scroll position on reload.
 if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';

@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 // Helper functions
 
 /**
@@ -141,7 +143,8 @@ document.querySelectorAll('form[action*="/cart/remove/"]').forEach(form => {
                     window.location.reload();
                     return;
                 }
-                form.closest('.cart-item-row')?.remove();
+                const row = form.closest('.cart-item-row');
+                if (row) row.remove();
                 updateCartDisplay(data);
             })
             .catch(err => console.error('Remove failed', err));
