@@ -14,6 +14,7 @@ from accounts.models import Customer, UserCustomer
 from products.models import Product
 
 from .models import Order, OrderItem
+from .order_utils import build_order_kwargs
 
 
 def make_order(**overrides):
@@ -139,3 +140,48 @@ class CheckoutGuardTests(TestCase):
     def test_empty_cart_redirects_to_the_catalogue(self):
         response = self.client.get(reverse("checkout"))
         self.assertRedirects(response, reverse("all_products"))
+
+
+class BuildOrderKwargsTests(TestCase):
+    """build_order_kwargs() shared by the checkout view and the webhook."""
+
+    def _order_data(self, **override):
+        data = {
+            "same_as_delivery": True,
+            "delivery_name": "Ada",
+            "delivery_surname": "Lovelace",
+            "delivery_city": "London",
+            "email": "ada@example.com",
+        }
+        data.update(override)
+        return data
+
+    def test_promo_discount_is_set_only_when_there_is_a_gift(self):
+        with_gift = build_order_kwargs(
+            self._order_data(), customer=None, gift={"product_id": "1"}
+        )
+        without_gift = build_order_kwargs(
+            self._order_data(), customer=None, gift=None
+        )
+        self.assertEqual(with_gift["promo_discount_percent"], Decimal("10"))
+        self.assertIsNone(without_gift["promo_discount_percent"])
+
+    def test_invoice_falls_back_to_delivery_when_same_as_delivery(self):
+        kwargs = build_order_kwargs(
+            self._order_data(), customer=None, gift=None
+        )
+        self.assertEqual(kwargs["invoice_name"], "Ada")
+        self.assertEqual(kwargs["invoice_city"], "London")
+
+    def test_separate_invoice_address_is_kept_when_requested(self):
+        kwargs = build_order_kwargs(
+            self._order_data(
+                same_as_delivery=False,
+                invoice_name="Charles",
+                invoice_city="Bath",
+            ),
+            customer=None,
+            gift=None,
+        )
+        self.assertEqual(kwargs["invoice_name"], "Charles")
+        self.assertEqual(kwargs["invoice_city"], "Bath")
