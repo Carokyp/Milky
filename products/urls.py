@@ -12,6 +12,6 @@ urlpatterns = [
         views.delete_product,
         name="delete_product",
     ),
-    path("<int:product_id>/add_review/", views.add_review, name="add_review"),
+    path("<int:product_id>/add-review/", views.add_review, name="add_review"),
     path("gift/", views.gift_page_view, name="gift_page"),
 ]
